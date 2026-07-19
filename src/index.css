@@ -1,0 +1,196 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Unbounded", system-ui, sans-serif;
+  --font-body: "Onest", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --color-void: #06040a;
+  --color-void-2: #0b0714;
+  --color-ink: #f2efff;
+  --color-mute: #9a92b8;
+  --color-vio: #7c6cff;
+  --color-cyan-neon: #5fe3ff;
+  --color-amber-neon: #ffb35c;
+  --color-pink-neon: #ff5ca8;
+
+  --animate-marquee: marquee 30s linear infinite;
+  --animate-scroll-dash: scroll-dash 2.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  --animate-pulse-dot: pulse-dot 2.4s ease-in-out infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes scroll-dash {
+    0% {
+      transform: scaleY(0);
+      transform-origin: top;
+    }
+    45% {
+      transform: scaleY(1);
+      transform-origin: top;
+    }
+    55% {
+      transform: scaleY(1);
+      transform-origin: bottom;
+    }
+    100% {
+      transform: scaleY(0);
+      transform-origin: bottom;
+    }
+  }
+
+  @keyframes pulse-dot {
+    0%,
+    100% {
+      opacity: 1;
+      box-shadow: 0 0 0 0 rgba(124, 108, 255, 0.7);
+    }
+    50% {
+      opacity: 0.6;
+      box-shadow: 0 0 0 7px rgba(124, 108, 255, 0);
+    }
+  }
+}
+
+html {
+  background: #06040a;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(124, 108, 255, 0.45) #0b0714;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+body {
+  font-family: var(--font-body);
+  background: #06040a;
+  color: var(--color-ink);
+  overscroll-behavior-y: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+[type="button"],
+[type="submit"],
+[type="reset"],
+[role="button"],
+a,
+label[for],
+select,
+summary {
+  cursor: pointer;
+}
+
+button:disabled,
+[type="button"]:disabled,
+[type="submit"]:disabled,
+[aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
+::selection {
+  background: #7c6cff;
+  color: #06040a;
+}
+
+/* трекинг заголовков */
+h2 { letter-spacing: -0.014em; }
+h4 { letter-spacing: -0.004em; }
+
+::-webkit-scrollbar {
+  width: 9px;
+}
+::-webkit-scrollbar-track {
+  background: #0b0714;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #7c6cff, #ff5ca8);
+  border-radius: 99px;
+}
+
+/* контурный текст */
+.text-stroke {
+  -webkit-text-stroke: 1.5px rgba(242, 239, 255, 0.85);
+  color: transparent;
+}
+@media (min-width: 768px) {
+  .text-stroke {
+    -webkit-text-stroke-width: 2px;
+  }
+}
+.text-stroke-vio {
+  -webkit-text-stroke: 1.5px rgba(124, 108, 255, 0.9);
+  color: transparent;
+}
+@media (min-width: 768px) {
+  .text-stroke-vio {
+    -webkit-text-stroke-width: 2px;
+  }
+}
+.text-stroke-ghost {
+  -webkit-text-stroke: 1px rgba(242, 239, 255, 0.16);
+  color: transparent;
+}
+
+/* градиентный заголовок */
+.text-gradient-neon {
+  background: linear-gradient(92deg, #7c6cff 0%, #5fe3ff 45%, #ff5ca8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.text-gradient-warm {
+  background: linear-gradient(92deg, #ffb35c 0%, #ff5ca8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ------- декоративные оверлеи ------- */
+
+.pattern-grid {
+  background-image: linear-gradient(rgba(242, 239, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(242, 239, 255, 0.045) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/* ------- фон героя: фото + плавная смена цвета (без дыхания) ------- */
+
+.hero-photo {
+  transform: scale(1.04);
+  animation: hero-hue-cycle 20s linear infinite;
+  will-change: filter;
+}
+
+.hero-color-shift {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 72% 40%, rgba(124, 108, 255, 0.22), transparent 45%),
+    radial-gradient(ellipse at 78% 55%, rgba(95, 227, 255, 0.12), transparent 40%);
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+
+@keyframes hero-hue-cycle {
+  0% {
+    filter: saturate(1.12) contrast(1.06) hue-rotate(0deg);
+  }
+  100% {
+    filter: saturate(1.12) contrast(1.06) hue-rotate(360deg);
+  }
+}
+
