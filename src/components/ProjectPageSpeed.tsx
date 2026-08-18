@@ -163,7 +163,7 @@ export default function ProjectPageSpeed({
               aria-hidden
             />
             <span className="min-w-0 text-pretty">
-              Доводим сайты до 95+ очков — это быстрее и удобнее 90% конкурентов.
+              Выводим сайты на высокие оценки, чтобы они были быстрее, чем у конкурентов.
             </span>
           </p>
         </div>

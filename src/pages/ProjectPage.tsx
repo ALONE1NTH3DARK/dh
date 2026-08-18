@@ -198,8 +198,7 @@ export default function ProjectPage() {
           </div>
         </section>
 
-        {/* Quote — тёмный блок */}
-        {project.quote && (
+        {project.quote?.text.trim() ? (
           <section className="relative bg-void px-5 py-20 md:px-10 md:py-24">
             <motion.blockquote
               initial={{ opacity: 0, y: 28 }}
@@ -221,7 +220,7 @@ export default function ProjectPage() {
               </footer>
             </motion.blockquote>
           </section>
-        )}
+        ) : null}
 
         {/* Next / CTA — тёмная секция, два пятна по бокам */}
         <section className="relative overflow-hidden bg-void px-5 py-16 md:px-10 md:py-20">
@@ -259,20 +258,16 @@ export default function ProjectPage() {
             <Link
               to="/"
               state={{ scrollTo: "contact" }}
-              data-track="Кейс — Связаться с нами"
+              data-track="Кейс — Заказать сайт"
               className="group flex flex-1 flex-col items-start justify-between rounded-2xl border border-dashed border-white/20 p-6 shadow-[0_0_0_transparent] transition-[border-color,box-shadow] duration-500 hover:border-vio hover:shadow-[0_0_40px_rgba(124,108,255,0.18)] md:p-8"
             >
-              <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-mute">
-                Следующий кейс
+              <p className="font-display text-xl font-semibold uppercase leading-tight text-ink md:text-2xl">
+                Следующий кейс может быть —{" "}
+                <span className="text-gradient-neon">ваш</span>?
               </p>
-              <div className="mt-6">
-                <p className="font-display text-xl font-semibold uppercase leading-tight text-ink md:text-2xl">
-                  Может быть — <span className="text-gradient-neon">ваш</span>?
-                </p>
-                <span className="mt-5 inline-flex rounded-full bg-ink px-6 py-3 font-mono text-[14px] font-semibold uppercase tracking-[2px] text-void transition-colors group-hover:bg-vio group-hover:text-ink">
-                  Связаться с нами
-                </span>
-              </div>
+              <span className="mt-5 inline-flex rounded-full bg-ink px-6 py-3 font-mono text-[14px] font-semibold uppercase tracking-[2px] text-void transition-colors group-hover:bg-vio group-hover:text-ink">
+                Заказать сайт
+              </span>
             </Link>
 
             {next && (

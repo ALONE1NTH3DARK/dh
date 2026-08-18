@@ -41,7 +41,7 @@ type Props = { features: ProjectFeature[]; slug: string };
 
 /**
  * Секция фишек только на странице кейса (/project/:slug).
- * Ряды: 60/40 → 40/60 → 60/40
+ * Сколько фич в данных — столько рядов. Чередование: текст|картинка → картинка|текст.
  */
 export default function ProjectFeatures({ features, slug }: Props) {
   if (!features?.length) return null;
@@ -64,7 +64,7 @@ export default function ProjectFeatures({ features, slug }: Props) {
           </h2>
         </motion.div>
 
-        {features.slice(0, 3).map((f, i) => {
+        {features.map((f, i) => {
           const mediaLeft = i % 2 === 1;
           return (
             <motion.div

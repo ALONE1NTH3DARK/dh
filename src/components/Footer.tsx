@@ -1,15 +1,6 @@
 import { useEffect, useRef } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { scrollToId } from "../lib/scrollState";
-
-const LINKS = [
-  { label: "Результат", id: "clients" },
-  { label: "Портфолио", id: "portfolio" },
-  { label: "О команде", id: "about" },
-  { label: "Цены", id: "pricing" },
-  { label: "Отзывы", id: "reviews" },
-  { label: "Контакты", id: "contact" },
-];
 
 const SOCIAL = [
   { label: "Instagram", href: "https://instagram.com/darkhorse_webagency" },
@@ -17,8 +8,14 @@ const SOCIAL = [
   { label: "WhatsApp", href: "https://wa.me/77070701337" },
 ];
 
-/** Подгоняет текст ровно по ширине контейнера (как секция Контакты — 1200px). */
-function FitWidthWordmark({ text }: { text: string }) {
+/** Подгоняет текст ровно по ширине контейнера. */
+function FitWidthWordmark({
+  text,
+  className = "text-gradient-neon uppercase tracking-[-0.04em]",
+}: {
+  text: string;
+  className?: string;
+}) {
   const boxRef = useRef<HTMLSpanElement>(null);
   const textRef = useRef<HTMLSpanElement>(null);
 
@@ -48,7 +45,7 @@ function FitWidthWordmark({ text }: { text: string }) {
     <span ref={boxRef} className="block w-full overflow-hidden">
       <span
         ref={textRef}
-        className="text-gradient-neon block whitespace-nowrap font-display font-bold uppercase leading-none tracking-[-0.04em]"
+        className={`block whitespace-nowrap font-display font-bold leading-none ${className}`}
       >
         {text}
       </span>
@@ -58,22 +55,13 @@ function FitWidthWordmark({ text }: { text: string }) {
 
 export default function Footer() {
   const location = useLocation();
-  const navigate = useNavigate();
   const isHome = location.pathname === "/";
-
-  const goSection = (id: string) => {
-    if (isHome) {
-      scrollToId(`#${id}`);
-      return;
-    }
-    navigate("/", { state: { scrollTo: id } });
-  };
 
   return (
     <footer className="relative z-20 overflow-hidden bg-void pt-16 md:pt-20">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[linear-gradient(92deg,#7c6cff_0%,#5fe3ff_45%,#ff5ca8_100%)]"
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/[0.06]"
       />
       <div
         aria-hidden
@@ -94,33 +82,45 @@ export default function Footer() {
       <div className="relative mx-auto w-full max-w-[1600px] px-5 md:px-10">
         {/* Бейдж + описание */}
         <div className="relative z-30 max-w-md">
-          <div className="group relative inline-block">
-            <button
-              type="button"
-              className="bg-gradient-to-br from-[#AF5] via-[#9ef07a] to-[#5fe3ff] px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.3em] text-[#06040a] transition-opacity duration-200 group-hover:opacity-90 md:text-xs"
-              aria-haspopup="menu"
-              aria-label="Соцсети @DARKHORSE_WEBAGENCY"
+          <div className="relative inline-grid">
+            <a
+              href="tel:+77070701337"
+              data-track="Футер — Телефон"
+              className="z-10 col-start-1 row-start-1 w-[0] min-w-full translate-y-[8px] leading-[0.7]"
             >
-              @DARKHORSE_WEBAGENCY
-            </button>
+              <FitWidthWordmark
+                text="+7 70 70 70 13 37"
+                className="text-[#AF5] tracking-[-0.05em]"
+              />
+            </a>
+            <div className="group relative col-start-1 row-start-2">
+              <button
+                type="button"
+                className="bg-gradient-to-br from-[#AF5] via-[#9ef07a] to-[#5fe3ff] px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.3em] text-[#06040a] transition-opacity duration-200 group-hover:opacity-90 md:text-xs"
+                aria-haspopup="menu"
+                aria-label="Соцсети @DARKHORSE_WEBAGENCY"
+              >
+                @DARKHORSE_WEBAGENCY
+              </button>
 
-            <div
-              role="menu"
-              className="invisible absolute left-0 top-full z-40 pt-1.5 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
-            >
-              <div className="min-w-[10.5rem] overflow-hidden border border-[#AF5]/80 bg-void py-0.5 shadow-[0_16px_40px_rgba(0,0,0,0.55)]">
-                {SOCIAL.map((item) => (
-                  <a
-                    key={item.label}
-                    role="menuitem"
-                    href={item.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block px-1.5 py-0.5 font-mono text-[11px] uppercase tracking-[0.18em] text-[#AF5] transition-colors hover:bg-gradient-to-r hover:from-[#AF5] hover:via-[#9ef07a] hover:to-[#5fe3ff] hover:text-[#06040a] light:text-[#06040a]"
-                  >
-                    {item.label}
-                  </a>
-                ))}
+              <div
+                role="menu"
+                className="invisible absolute left-0 top-full z-40 pt-1.5 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
+              >
+                <div className="min-w-[10.5rem] overflow-hidden border border-[#AF5]/80 bg-void py-0.5 shadow-[0_16px_40px_rgba(0,0,0,0.55)]">
+                  {SOCIAL.map((item) => (
+                    <a
+                      key={item.label}
+                      role="menuitem"
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block px-1.5 py-0.5 font-mono text-[11px] uppercase tracking-[0.18em] text-[#AF5] transition-colors hover:bg-gradient-to-r hover:from-[#AF5] hover:via-[#9ef07a] hover:to-[#5fe3ff] hover:text-[#06040a] light:text-[#06040a]"
+                    >
+                      {item.label}
+                    </a>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -154,21 +154,30 @@ export default function Footer() {
             © {new Date().getFullYear()} Darkhorse · Все права защищены
           </p>
 
-          <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 md:justify-end">
-            {LINKS.map((l) => (
-              <button
-                key={l.id}
-                onClick={() => goSection(l.id)}
-                className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute transition-colors hover:text-ink"
-              >
-                {l.label}
-              </button>
-            ))}
+          <nav className="flex flex-wrap items-center justify-center gap-x-2 gap-y-2 md:justify-end">
             <a
               href="mailto:hello@darkhorse.kz"
               className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute transition-colors hover:text-ink"
             >
-              Почта
+              Написать на почту
+            </a>
+            <span className="text-mute/50" aria-hidden>
+              •
+            </span>
+            <Link
+              to="/privacy"
+              className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute transition-colors hover:text-ink"
+            >
+              Политика конфиденциальности
+            </Link>
+            <span className="text-mute/50" aria-hidden>
+              •
+            </span>
+            <a
+              href="/sitemap.xml"
+              className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute transition-colors hover:text-ink"
+            >
+              Карта сайта
             </a>
           </nav>
         </div>

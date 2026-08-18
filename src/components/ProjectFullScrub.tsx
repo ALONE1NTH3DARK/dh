@@ -160,8 +160,8 @@ export default function ProjectFullScrub({ src, slug, url, title }: Props) {
             : "flex min-h-dvh items-center py-20 md:py-24"
         }
       >
-        <div className="mx-auto w-full max-w-[1400px] px-5 md:px-10">
-          <div className="overflow-hidden rounded-2xl border border-white/[0.09] bg-void-2 shadow-[0_40px_100px_rgba(0,0,0,0.45)] light:shadow-[0_18px_40px_rgba(24,21,31,0.12),0_36px_88px_rgba(24,21,31,0.14)]">
+        <div className="mx-auto w-full max-w-[1400px] px-1.5 md:px-10">
+          <div className="isolate overflow-hidden rounded-2xl border border-white/[0.09] bg-void-2 shadow-[0_40px_100px_rgba(0,0,0,0.45)] [transform:translateZ(0)] light:shadow-[0_18px_40px_rgba(24,21,31,0.12),0_36px_88px_rgba(24,21,31,0.14)]">
             <div className="flex items-center gap-3 border-b border-white/[0.07] px-4 py-3 md:px-5">
               <div className="flex shrink-0 gap-1.5">
                 <span className="size-2 rounded-full bg-pink-neon/70" />
@@ -176,7 +176,11 @@ export default function ProjectFullScrub({ src, slug, url, title }: Props) {
             <div className="relative flex">
               <div
                 ref={frameRef}
-                className="relative h-[62vh] w-full overflow-hidden sm:h-[68vh] lg:h-[72vh]"
+                className={`relative h-[62vh] w-full overflow-hidden sm:h-[68vh] lg:h-[72vh] ${
+                  showImage
+                    ? ""
+                    : "rounded-b-2xl [clip-path:inset(0_round_0_0_1rem_1rem)]"
+                }`}
               >
                 {showImage ? (
                   <img

@@ -221,7 +221,7 @@ export default function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: watching ? 0 : 1 }}
         transition={{ duration: 0.5 }}
-        className="pointer-events-none absolute inset-x-5 bottom-[max(1.25rem,env(safe-area-inset-bottom,0px))] z-10 flex justify-center md:inset-x-10 md:bottom-7"
+        className="pointer-events-none absolute inset-x-5 bottom-[max(1.25rem,env(safe-area-inset-bottom,0px))] z-10 hidden justify-center md:inset-x-10 md:bottom-7 md:flex"
       >
         <div className="flex items-center gap-4">
           <div className="relative h-14 w-px overflow-hidden bg-white/15">

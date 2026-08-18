@@ -42,7 +42,7 @@ function NextCaseSlide() {
       <button
         type="button"
         onClick={() => scrollToId("#contact")}
-        data-track="Портфолио — Обсудить сайт"
+        data-track="Портфолио — Заказать сайт"
         className={`${SLIDE_CARD} p-0 text-left font-[inherit]`}
       >
         <SlideChrome label="your.site" showArrow={false} />
@@ -66,17 +66,9 @@ function NextCaseSlide() {
           </div>
         </div>
 
-        <div className={SLIDE_FOOTER}>
-          <div className="min-w-0">
-            <p className="truncate font-display text-sm font-medium tracking-wide text-ink md:text-lg">
-              Ваш проект
-            </p>
-            <p className="mt-1 font-mono text-[12px] uppercase tracking-[0.22em] text-mute">
-              Новый сайт · старт
-            </p>
-          </div>
+        <div className="flex h-[4.5rem] shrink-0 items-center justify-start border-t border-white/[0.07] px-4 md:h-[5.25rem] md:px-5">
           <span className="shrink-0 rounded-full bg-ink px-5 py-2.5 font-mono text-[14px] font-semibold uppercase tracking-[2px] text-void transition-all duration-300 group-hover:bg-vio group-hover:text-ink group-hover:shadow-[0_0_32px_rgba(124,108,255,0.4)] md:px-6 md:py-3">
-            Обсудить сайт
+            Заказать сайт
           </span>
         </div>
       </button>
@@ -225,7 +217,8 @@ export default function Portfolio() {
                         {pr.title}
                       </p>
                       <p className="mt-1 font-mono text-[12px] uppercase tracking-[0.22em] text-mute">
-                        {pr.cat} · {pr.time}
+                        {pr.cat}
+                        <span className="hidden md:inline"> · {pr.time}</span>
                       </p>
                     </div>
                     <span className="text-stroke-ghost shrink-0 font-display text-3xl font-semibold leading-none tracking-tight md:text-4xl">

@@ -92,7 +92,10 @@ export default function ProjectVideoPlayer({
   };
 
   return (
-    <div ref={wrapRef} className="absolute inset-0">
+    <div
+      ref={wrapRef}
+      className="absolute inset-0 overflow-hidden rounded-b-2xl [clip-path:inset(0_round_0_0_1rem_1rem)] [transform:translateZ(0)]"
+    >
       <video
         ref={videoRef}
         playsInline
@@ -100,7 +103,7 @@ export default function ProjectVideoPlayer({
         controls={false}
         disablePictureInPicture
         aria-label={`Запись сайта ${title}`}
-        className="absolute inset-0 h-full w-full bg-void-2 object-cover object-top"
+        className="absolute inset-0 h-full w-full rounded-b-2xl bg-void-2 object-cover object-top"
         onClick={toggle}
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}

@@ -59,8 +59,8 @@ export default function DigitalCardGift() {
           </span>
           <span className="hidden h-3 w-px shrink-0 bg-white/15 md:block" aria-hidden />
           <span className="min-w-0 text-pretty font-display text-[15px] font-semibold uppercase leading-snug tracking-[0.04em] md:text-[17px] md:leading-none">
-            <span className="text-ink">Электронная визитка </span>
-            <span className="text-gradient-warm">в подарок</span>
+            <span className="text-ink">Электронная визитка{" "}</span>
+            <span className="text-gradient-warm max-md:block">в подарок</span>
           </span>
         </span>
         )}
