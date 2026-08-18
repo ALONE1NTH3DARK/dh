@@ -8,14 +8,13 @@ import {
   Share2,
 } from "lucide-react";
 import { trackFormSubmit } from "../lib/analytics";
+import { submitContact } from "../lib/submitContact";
+import { TURNSTILE_SITE_KEY } from "../lib/turnstile";
 import SectionAtmosphere from "./SectionAtmosphere";
 import SectionLabel from "./SectionLabel";
 import TurnstileField from "./TurnstileField";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
-
-const TURNSTILE_SITE_KEY =
-  import.meta.env.VITE_TURNSTILE_SITE_KEY ?? "0x4AAAAAAEB-1S6pNgcHh_lg";
 
 const INPUT_CLASS =
   "w-full border-b border-white/15 bg-transparent py-4 text-base text-ink outline-none transition-colors placeholder:text-mute/55 focus:border-vio";
@@ -45,13 +44,9 @@ export default function Contact() {
     setError(null);
 
     try {
-      const res = await fetch("/api/contact.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const delivered = await submitContact(payload);
 
-      if (!res.ok) {
+      if (!delivered) {
         throw new Error("delivery_failed");
       }
 

@@ -80,7 +80,7 @@ export default function TurnstileField({
   onTokenRef.current = onToken;
 
   useEffect(() => {
-    if (isLabCrawler()) return;
+    if (isLabCrawler() || !siteKey) return;
 
     let cancelled = false;
 

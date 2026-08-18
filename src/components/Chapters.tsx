@@ -1,5 +1,6 @@
-import { motion } from "framer-motion";
-import type { ReactNode } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ChevronDown } from "lucide-react";
+import { useState, type ReactNode } from "react";
 import SectionAtmosphere from "./SectionAtmosphere";
 import SectionLabel from "./SectionLabel";
 
@@ -19,28 +20,105 @@ function Reveal({ children, delay = 0, className = "" }: { children: ReactNode; 
   );
 }
 
+function SpoilerButton({
+  open,
+  controls,
+  label,
+  onToggle,
+}: {
+  open: boolean;
+  controls: string;
+  label: string;
+  onToggle: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-expanded={open}
+      aria-controls={controls}
+      aria-label={open ? "Свернуть" : "Открыть"}
+      data-track={`${label} — ${open ? "Свернуть" : "Открыть"}`}
+      className="mt-1 grid size-10 shrink-0 place-items-center rounded-full border border-white/15 text-ink transition-all duration-300 hover:border-vio/60 hover:bg-vio/15 hover:shadow-[0_0_28px_rgba(124,108,255,0.25)] md:hidden"
+    >
+      <ChevronDown
+        className={`size-4 transition-transform duration-400 ${open ? "rotate-180" : ""}`}
+      />
+    </button>
+  );
+}
+
+function SpoilerCopy({
+  id,
+  open,
+  className,
+  children,
+}: {
+  id: string;
+  open: boolean;
+  className?: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className={className}>
+      <div className="hidden space-y-4 md:block">{children}</div>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            id={id}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.55, ease: EASE }}
+            className="overflow-hidden md:hidden"
+          >
+            <div className="space-y-4">{children}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 /* -------------------- для кого я работаю -------------------- */
 export function ResultChapter() {
+  const [clientsOpen, setClientsOpen] = useState(false);
+  const [formatOpen, setFormatOpen] = useState(false);
+
   return (
     <section id="clients" className="relative bg-void px-5 py-16 md:px-10 md:py-24">
       <SectionAtmosphere tone="cyan" dots />
 
       <div className="relative mx-auto flex w-full max-w-[1200px] flex-col gap-16 md:gap-24">
         {/* 1/3 заголовок · 2/3 текст */}
-        <Reveal className="grid gap-8 lg:grid-cols-3 lg:gap-16">
+        <Reveal className="grid md:gap-8 lg:grid-cols-3 lg:gap-16">
           <div className="lg:col-span-1">
             <SectionLabel>Для кого я работаю</SectionLabel>
-            <h2 className="font-display text-[clamp(1.9rem,4.2vw,2.55rem)] font-semibold uppercase leading-[1.20] text-pretty">
-              <span className="text-ink">Не для всех.</span>
-              <br />
-              <span className="text-gradient-neon">Для тех, кому нужен результат</span>
-            </h2>
+            <div className="flex items-start justify-between gap-4">
+              <h2 className="min-w-0 flex-1 font-display text-[clamp(1.9rem,4.2vw,2.55rem)] font-semibold uppercase leading-[1.20] text-pretty">
+                <span className="text-ink">Не для всех.</span>
+                <br />
+                <span className="text-gradient-neon">Для тех, кому нужен результат</span>
+              </h2>
+              <SpoilerButton
+                open={clientsOpen}
+                controls="clients-copy"
+                label="Для кого я работаю"
+                onToggle={() => setClientsOpen((value) => !value)}
+              />
+            </div>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-mute">
               Беру проекты, где сайт — инструмент роста, а не галочка в чек-листе.
             </p>
           </div>
 
-          <div className="space-y-4 text-[19px] leading-relaxed text-mute lg:col-span-2">
+          <SpoilerCopy
+            id="clients-copy"
+            open={clientsOpen}
+            className={`text-[19px] leading-relaxed text-mute lg:col-span-2 ${
+              clientsOpen ? "mt-8 md:mt-0" : ""
+            }`}
+          >
             <p>
               Чаще всего работаю с владельцами услуг и локального бизнеса: салоны,
               клиники, образование, ремонт, B2B. Им нужен стабильный канал заявок —
@@ -56,12 +134,18 @@ export function ResultChapter() {
               убедительный лендинг, чтобы проверить спрос. Короткий цикл, гибкая
               структура под гипотезы, метрики сразу после релиза.
             </p>
-          </div>
+          </SpoilerCopy>
         </Reveal>
 
         {/* 2/3 текст · 1/3 заголовок справа */}
-        <Reveal delay={0.08} className="grid gap-8 lg:grid-cols-3 lg:gap-16">
-          <div className="order-2 space-y-4 text-[19px] leading-relaxed text-mute lg:order-1 lg:col-span-2">
+        <Reveal delay={0.08} className="grid md:gap-8 lg:grid-cols-3 lg:gap-16">
+          <SpoilerCopy
+            id="format-copy"
+            open={formatOpen}
+            className={`order-2 text-[19px] leading-relaxed text-mute lg:order-1 lg:col-span-2 ${
+              formatOpen ? "mt-8 md:mt-0" : ""
+            }`}
+          >
             <p>
               Отдельно люблю камерные штуки: свадебные веб-приглашения,
               мини-лендинги к событию, подарочные страницы. Маленький продукт —
@@ -76,14 +160,22 @@ export function ResultChapter() {
               Если узнаёте себя в одном из этих сценариев — напишите. Разберём
               задачу за 30 минут и скажем, имеет ли смысл идти дальше.
             </p>
-          </div>
+          </SpoilerCopy>
 
           <div className="order-1 lg:order-2 lg:col-span-1 lg:text-right">
             <SectionLabel className="lg:flex-row-reverse">Формат работы</SectionLabel>
-            <h2 className="font-display text-[clamp(1.9rem,4.2vw,2.55rem)] font-semibold uppercase leading-[1.20]">
-              <span className="text-ink">Четыре </span>
-              <span className="text-gradient-neon">направления</span>
-            </h2>
+            <div className="flex items-start justify-between gap-4 lg:justify-end">
+              <h2 className="min-w-0 flex-1 font-display text-[clamp(1.9rem,4.2vw,2.55rem)] font-semibold uppercase leading-[1.20]">
+                <span className="text-ink">Четыре </span>
+                <span className="text-gradient-neon">направления</span>
+              </h2>
+              <SpoilerButton
+                open={formatOpen}
+                controls="format-copy"
+                label="Формат работы"
+                onToggle={() => setFormatOpen((value) => !value)}
+              />
+            </div>
             <p className="mt-4 text-sm leading-relaxed text-mute lg:ml-auto lg:max-w-xs">
               С ними получается сильнее всего — и по дизайну, и по цифрам после
               запуска.

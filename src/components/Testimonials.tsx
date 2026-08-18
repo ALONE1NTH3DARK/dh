@@ -70,6 +70,9 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 const INTERVAL = 6000;
 const CARD_MAX = 680;
 const GAP = 28;
+const PAD_MOBILE = 20; // px-5
+const PAD_DESKTOP = 40; // md:px-10
+const MD = 768;
 const N = REVIEWS.length;
 const SLIDE_MS = 850;
 const EASE_CSS = "cubic-bezier(0.22, 1, 0.36, 1)";
@@ -81,6 +84,8 @@ export default function Testimonials() {
   const [offset, setOffset] = useState(N);
   const [animate, setAnimate] = useState(true);
   const [cardW, setCardW] = useState(CARD_MAX);
+  const [originX, setOriginX] = useState(PAD_MOBILE);
+  const viewportRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const lockRef = useRef(false);
   const offsetRef = useRef(offset);
@@ -98,12 +103,21 @@ export default function Testimonials() {
   }, []);
 
   useEffect(() => {
+    const el = viewportRef.current;
+    if (!el) return;
+
     const syncWidth = () => {
-      setCardW(Math.min(CARD_MAX, Math.max(280, window.innerWidth - 48)));
+      const width = el.clientWidth;
+      const pad = width >= MD ? PAD_DESKTOP : PAD_MOBILE;
+      const nextW = Math.min(CARD_MAX, Math.max(280, width - pad * 2));
+      setCardW(nextW);
+      setOriginX((width - nextW) / 2);
     };
+
     syncWidth();
-    window.addEventListener("resize", syncWidth);
-    return () => window.removeEventListener("resize", syncWidth);
+    const observer = new ResizeObserver(syncWidth);
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -159,7 +173,7 @@ export default function Testimonials() {
     lockRef.current = false;
   };
 
-  const trackX = `calc(50vw - ${cardW / 2}px - ${offset * step}px)`;
+  const trackX = originX - offset * step;
 
   return (
     <section
@@ -202,14 +216,14 @@ export default function Testimonials() {
         </motion.div>
       </div>
 
-      <div className="relative w-full">
+      <div ref={viewportRef} className="relative w-full">
         <div
           className="flex items-stretch"
           onTransitionEnd={onTrackTransitionEnd}
           style={{
             gap: GAP,
             width: "max-content",
-            transform: `translate3d(${trackX}, 0, 0)`,
+            transform: `translate3d(${trackX}px, 0, 0)`,
             transition: animate ? `transform ${SLIDE_MS}ms ${EASE_CSS}` : "none",
           }}
         >
