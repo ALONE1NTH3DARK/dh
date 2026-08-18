@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Google-InspectionTool
+Allow: /
+
+User-agent: Google-PageSpeed
+Allow: /
+
+User-agent: Chrome-Lighthouse
+Allow: /
+
+Disallow: /admin
+Disallow: /api/
+
+Sitemap: https://darkhorse.kz/sitemap.xml

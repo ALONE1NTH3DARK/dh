@@ -44,7 +44,7 @@ export default function BrandMark({ className, interactive = false }: BrandMarkP
             "transition-transform duration-500 ease-in-out group-hover:rotate-[360deg]"
         )}
       >
-        <HorseshoeIcon className="size-4 text-void" />
+        <HorseshoeIcon className="size-6 text-[#06040a]" />
       </span>
     </span>
   );

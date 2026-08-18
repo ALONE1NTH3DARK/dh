@@ -1,22 +1,16 @@
-import noirPreview from "../assets/portfolio/noir-preview.jpg";
-import noirFull from "../assets/portfolio/noir-full.jpg";
-import pulsePreview from "../assets/portfolio/pulse-preview.jpg";
-import pulseFull from "../assets/portfolio/pulse-full.jpg";
-import atelierPreview from "../assets/portfolio/atelier-nord-preview.jpg";
-import atelierFull from "../assets/portfolio/atelier-nord-full.jpg";
-import umamiPreview from "../assets/portfolio/umami-preview.jpg";
-import umamiFull from "../assets/portfolio/umami-full.jpg";
-import beyondPreview from "../assets/portfolio/beyond-preview.jpg";
-import beyondFull from "../assets/portfolio/beyond-full.jpg";
-import cortexPreview from "../assets/portfolio/cortex-preview.jpg";
-import cortexFull from "../assets/portfolio/cortex-full.jpg";
-import lumenPreview from "../assets/portfolio/lumen-preview.jpg";
-import lumenFull from "../assets/portfolio/lumen-full.jpg";
-
 export interface ProjectHighlight {
   title: string;
   text: string;
   metric?: string;
+}
+
+export interface ProjectFeature {
+  title: string;
+  text: string;
+  /** Путь к gif/картинке фичи — public/projects/{slug}/N.gif */
+  media: string;
+  /** Пара технологий для примера */
+  tech: string[];
 }
 
 export interface Project {
@@ -36,21 +30,29 @@ export interface Project {
   challenge: string;
   solution: string;
   highlights: ProjectHighlight[];
-  metrics: { value: string; label: string }[];
+  features: ProjectFeature[];
+  /** Google PageSpeed Insights — свои цифры у каждого проекта */
+  pagespeed: {
+    performance: number;
+    accessibility: number;
+    bestPractices: number;
+    seo: number;
+  };
   stack: string[];
   quote?: { text: string; author: string; role: string };
 }
 
+
 export const PROJECTS: Project[] = [
   {
-    slug: "noir",
-    preview: noirPreview,
-    full: noirFull,
-    title: "Noir",
-    cat: "Fashion e-commerce",
-    url: "noir-boutique.ru",
+    slug: "hype",
+    preview: "/projects/hype/preview.jpg",
+    full: "/projects/hype/full.jpg",
+    title: "Креативное агенство HYPE",
+    cat: "Корпоративный сайт",
+    url: "hype.kz",
     result: "+148% продаж",
-    time: "3 недели",
+    time: "1 месяц",
     year: "2025",
     client: "Noir Boutique",
     summary:
@@ -60,11 +62,6 @@ export const PROJECTS: Project[] = [
     solution:
       "Собрали новую структуру каталога, ускорили загрузку до секунды и выстроили сценарий покупки вокруг визуала коллекции и доверия к бренду.",
     highlights: [
-      {
-        title: "Витрина, которая продаёт",
-        text: "Крупные кадры, фильтры без перезагрузки и карточки товара с акцентом на материал и посадку.",
-        metric: "+148%",
-      },
       {
         title: "Корзина без трения",
         text: "Оплата в один экран, сохранённые размеры и прозрачная доставка — меньше брошенных заказов.",
@@ -76,12 +73,35 @@ export const PROJECTS: Project[] = [
         metric: "<1 с",
       },
     ],
-    metrics: [
-      { value: "+148%", label: "онлайн-продаж" },
-      { value: "4.2%", label: "конверсия" },
-      { value: "−41%", label: "брошенных корзин" },
-      { value: "3 нед.", label: "до запуска" },
+    features: [
+      {
+        title: "Живой каталог коллекции",
+        text: "Карточки товаров с крупными кадрами и быстрыми фильтрами без перезагрузки страницы. Покупатель сразу видит посадку, ткань и наличие размеров.",
+        media: `/projects/hype/1.gif`,
+
+        tech: ["React", "Headless CMS"],
+      },
+      {
+        title: "Корзина в один экран",
+        text: "Оформление заказа собрано компактно: доставка, оплата и подтверждение — без лишних шагов. Меньше брошенных корзин на мобильных.",
+        media: `/projects/hype/2.gif`,
+
+        tech: ["YooKassa", "TypeScript"],
+      },
+      {
+        title: "Мобильный приоритет",
+        text: "Интерфейс заточен под большой палец: крупные зоны нажатия, быстрый скролл ленты и мгновенная подгрузка фото.",
+        media: `/projects/hype/3.gif`,
+
+        tech: ["Vite", "CSS"],
+      },
     ],
+    pagespeed: {
+      performance: 98,
+      accessibility: 100,
+      bestPractices: 100,
+      seo: 100,
+    },
     stack: ["React", "Headless CMS", "YooKassa", "SEO"],
     quote: {
       text: "Сайт окупается ежедневно. Конверсия выросла с 1,8% до 4,2%, а клиенты отдельно отмечают дизайн.",
@@ -90,14 +110,14 @@ export const PROJECTS: Project[] = [
     },
   },
   {
-    slug: "pulse",
-    preview: pulsePreview,
-    full: pulseFull,
-    title: "Pulse",
-    cat: "Финтех-платформа",
-    url: "pulse.finance",
+    slug: "photograph",
+    preview: "/projects/photograph/preview.webp",
+    full: "/projects/photograph/full.webp",
+    title: "Свадебный фотограф",
+    cat: "Сайт портфолио",
+    url: "фотограф.kz",
     result: "×3 конверсия",
-    time: "8 недель",
+    time: "2 недели",
     year: "2025",
     client: "Pulse Finance",
     summary:
@@ -123,12 +143,35 @@ export const PROJECTS: Project[] = [
         metric: "24/7",
       },
     ],
-    metrics: [
-      { value: "×3", label: "больше заявок" },
-      { value: "−35%", label: "стоимость лида" },
-      { value: "24/7", label: "приём заявок" },
-      { value: "8 нед.", label: "до запуска" },
+    features: [
+      {
+        title: "Цифры вместо жаргона",
+        text: "Каждый финтех-продукт объясняется выгодой и понятной метрикой. Клиент за секунды понимает, зачем ему сервис.",
+        media: `/projects/photograph/1.gif`,
+
+        tech: ["Next.js", "Analytics"],
+      },
+      {
+        title: "Квиз вместо холодной формы",
+        text: "Короткий сценарий сегментирует пользователя и ведёт в нужный продукт. Заявки приходят уже «тёплыми».",
+        media: `/projects/photograph/2.gif`,
+
+        tech: ["TypeScript", "CRM"],
+      },
+      {
+        title: "Доверие с первого экрана",
+        text: "Лицензии, безопасность и кейсы — в зоне первого взгляда. Меньше сомнений перед отправкой заявки.",
+        media: `/projects/photograph/3.gif`,
+
+        tech: ["React", "SEO"],
+      },
     ],
+    pagespeed: {
+      performance: 100,
+      accessibility: 98,
+      bestPractices: 100,
+      seo: 97,
+    },
     stack: ["Next.js", "TypeScript", "Analytics", "CRM"],
     quote: {
       text: "Новая подача цифр сработала и на клиентов, и на инвесторов. Продукт наконец выглядит на уровне лидеров рынка.",
@@ -138,13 +181,13 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: "atelier-nord",
-    preview: atelierPreview,
-    full: atelierFull,
-    title: "Atelier Nord",
-    cat: "Архитектурное бюро",
-    url: "ateliernord.studio",
+    preview: "/projects/atelier-nord/preview.jpg",
+    full: "/projects/atelier-nord/full.jpg",
+    title: "Дешевле.kz интернет-магазин",
+    cat: "Интернет-магазин",
+    url: "дешевле.kz",
     result: "+90% запросов",
-    time: "4 недели",
+    time: "6 недель",
     year: "2024",
     client: "Atelier Nord",
     summary:
@@ -168,12 +211,35 @@ export const PROJECTS: Project[] = [
         text: "Типографика, воздух и крупные кадры задают тон дорогих проектов ещё до разговора.",
       },
     ],
-    metrics: [
-      { value: "+90%", label: "целевых запросов" },
-      { value: "↑ чек", label: "среднего запроса" },
-      { value: "×2", label: "глубина кейсов" },
-      { value: "4 нед.", label: "до запуска" },
+    features: [
+      {
+        title: "Кейсы как истории",
+        text: "Каждый проект — путь от брифа до реализации. Заказчик видит глубину бюро ещё до звонка.",
+        media: `/projects/atelier-nord/1.gif`,
+
+        tech: ["React", "CMS"],
+      },
+      {
+        title: "Фильтр по типу задачи",
+        text: "Частный дом, офис или редевелопмент — релевантные работы находятся за два клика.",
+        media: `/projects/atelier-nord/2.gif`,
+
+        tech: ["Motion", "TypeScript"],
+      },
+      {
+        title: "Премиальный ритм страницы",
+        text: "Типографика, воздух и крупные кадры задают тон дорогих проектов до первого разговора.",
+        media: `/projects/atelier-nord/3.gif`,
+
+        tech: ["CSS", "SEO"],
+      },
     ],
+    pagespeed: {
+      performance: 96,
+      accessibility: 100,
+      bestPractices: 98,
+      seo: 100,
+    },
     stack: ["React", "CMS", "Motion", "SEO"],
     quote: {
       text: "Теперь заказчики приходят уже готовыми обсуждать дорогой дизайн-проект — уровень доверия вырос моментально.",
@@ -183,13 +249,13 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: "umami",
-    preview: umamiPreview,
-    full: umamiFull,
+    preview: "/projects/umami/preview.jpg",
+    full: "/projects/umami/full.jpg",
     title: "Umami",
-    cat: "Ресторан",
+    cat: "Лэндинг ресторана",
     url: "umami.rest",
     result: "+72% броней",
-    time: "3 недели",
+    time: "2 недели",
     year: "2025",
     client: "Umami",
     summary:
@@ -213,23 +279,46 @@ export const PROJECTS: Project[] = [
         text: "Тёмный визуальный язык и свет акцентов передают настроение зала ещё до визита.",
       },
     ],
-    metrics: [
-      { value: "+72%", label: "онлайн-броней" },
-      { value: "30 с", label: "до подтверждения" },
-      { value: "2 шага", label: "до брони" },
-      { value: "3 нед.", label: "до запуска" },
+    features: [
+      {
+        title: "Бронь за 30 секунд",
+        text: "Дата, время и число гостей — подтверждение без звонка администратору. Столы заполняются заранее.",
+        media: `/projects/umami/1.gif`,
+
+        tech: ["Booking API", "React"],
+      },
+      {
+        title: "Меню как витрина",
+        text: "Сезонные позиции с акцентами шефа. Гость приходит уже «проголодавшимся».",
+        media: `/projects/umami/2.gif`,
+
+        tech: ["CMS", "TypeScript"],
+      },
+      {
+        title: "Вечерняя атмосфера",
+        text: "Тёмный визуальный язык и свет акцентов передают настроение зала ещё до визита.",
+        media: `/projects/umami/3.gif`,
+
+        tech: ["CSS", "Motion"],
+      },
     ],
+    pagespeed: {
+      performance: 100,
+      accessibility: 100,
+      bestPractices: 100,
+      seo: 100,
+    },
     stack: ["React", "Booking API", "CMS"],
   },
   {
     slug: "beyond",
-    preview: beyondPreview,
-    full: beyondFull,
+    preview: "/projects/beyond/preview.jpg",
+    full: "/projects/beyond/full.jpg",
     title: "Beyond",
-    cat: "Тревел-агентство",
+    cat: "Сайт курорта",
     url: "beyond.travel",
     result: "+210% заявок",
-    time: "5 недель",
+    time: "1 месяц",
     year: "2025",
     client: "Beyond Travel",
     summary:
@@ -253,23 +342,46 @@ export const PROJECTS: Project[] = [
         text: "Форма сразу уходит менеджеру с тегами — клиент получает предложение в тот же день.",
       },
     ],
-    metrics: [
-      { value: "+210%", label: "заявок" },
-      { value: "×2", label: "качество лидов" },
-      { value: "1 день", label: "до ответа" },
-      { value: "5 нед.", label: "до запуска" },
+    features: [
+      {
+        title: "Квиз маршрута",
+        text: "Бюджет, сезон и формат отдыха собираются в короткие шаги — заявка приходит сегментированной.",
+        media: `/projects/beyond/1.gif`,
+
+        tech: ["Quiz funnel", "CRM"],
+      },
+      {
+        title: "Истории направлений",
+        text: "Не список отелей, а сценарии путешествия: для кого, зачем и что получите.",
+        media: `/projects/beyond/2.gif`,
+
+        tech: ["React", "CMS"],
+      },
+      {
+        title: "Ответ в тот же день",
+        text: "Форма уходит менеджеру с тегами — клиент получает предложение без лишней переписки.",
+        media: `/projects/beyond/3.gif`,
+
+        tech: ["Analytics", "API"],
+      },
     ],
+    pagespeed: {
+      performance: 97,
+      accessibility: 99,
+      bestPractices: 100,
+      seo: 98,
+    },
     stack: ["React", "Quiz funnel", "CRM", "Analytics"],
   },
   {
     slug: "cortex",
-    preview: cortexPreview,
-    full: cortexFull,
+    preview: "/projects/cortex/preview.jpg",
+    full: "/projects/cortex/full.jpg",
     title: "Cortex",
-    cat: "SaaS-платформа",
+    cat: "Лэндинг бутика",
     url: "cortex.app",
     result: "×2.6 регистраций",
-    time: "10 недель",
+    time: "2 недели",
     year: "2024",
     client: "Cortex",
     summary:
@@ -293,23 +405,46 @@ export const PROJECTS: Project[] = [
         text: "Короткая форма, соц.логин и онбординг-подсказки с первой минуты.",
       },
     ],
-    metrics: [
-      { value: "×2.6", label: "регистраций" },
-      { value: "+38%", label: "активация trial" },
-      { value: "3 роли", label: "сценария" },
-      { value: "10 нед.", label: "до запуска" },
+    features: [
+      {
+        title: "Use-case storytelling",
+        text: "Три роли пользователя — три сценария выгоды. Каждый видит себя в продукте за минуту.",
+        media: `/projects/cortex/1.gif`,
+
+        tech: ["Next.js", "Product demo"],
+      },
+      {
+        title: "Интерактивное демо",
+        text: "Ключевые экраны SaaS прямо на лендинге — меньше сомнений перед регистрацией.",
+        media: `/projects/cortex/2.gif`,
+
+        tech: ["TypeScript", "React"],
+      },
+      {
+        title: "Trial без трения",
+        text: "Короткая форма, соц.логин и подсказки с первой минуты онбординга.",
+        media: `/projects/cortex/3.gif`,
+
+        tech: ["Stripe", "Analytics"],
+      },
     ],
+    pagespeed: {
+      performance: 99,
+      accessibility: 100,
+      bestPractices: 97,
+      seo: 100,
+    },
     stack: ["Next.js", "Product demo", "Stripe", "Analytics"],
   },
   {
     slug: "lumen",
-    preview: lumenPreview,
-    full: lumenFull,
-    title: "Lumen",
-    cat: "Косметика D2C",
-    url: "lumen-cosmetics.ru",
+    preview: "/projects/lumen/preview.jpg",
+    full: "/projects/lumen/full.webp",
+    title: "Психлог Москва",
+    cat: "Персональный сайт",
+    url: "психолог.moscow",
     result: "+134% выручки",
-    time: "4 недели",
+    time: "1 месяц",
     year: "2025",
     client: "Lumen Cosmetics",
     summary:
@@ -333,12 +468,35 @@ export const PROJECTS: Project[] = [
         text: "Светлая эстетика и спокойная типографика отстроили Lumen от «кричащего» масс-маркета.",
       },
     ],
-    metrics: [
-      { value: "+134%", label: "выручки" },
-      { value: "+22%", label: "средний чек" },
-      { value: "2–3", label: "продукта в квизе" },
-      { value: "4 нед.", label: "до запуска" },
+    features: [
+      {
+        title: "Подбор за минуту",
+        text: "Квиз по типу кожи выдаёт 2–3 продукта — выше средний чек и меньше возвратов.",
+        media: `/projects/lumen/1.gif`,
+
+        tech: ["Quiz", "React"],
+      },
+      {
+        title: "Доверие к составу",
+        text: "Ингредиенты и клинические факты рядом с кнопкой «В корзину» — возражения закрываются на месте.",
+        media: `/projects/lumen/2.gif`,
+
+        tech: ["E-commerce", "CMS"],
+      },
+      {
+        title: "Чистый D2C-бренд",
+        text: "Светлая эстетика и спокойная типографика отстраивают бренд от «кричащего» масс-маркета.",
+        media: `/projects/lumen/3.gif`,
+
+        tech: ["Email", "CSS"],
+      },
     ],
+    pagespeed: {
+      performance: 100,
+      accessibility: 96,
+      bestPractices: 100,
+      seo: 99,
+    },
     stack: ["React", "E-commerce", "Quiz", "Email"],
   },
 ];

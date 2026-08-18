@@ -1,0 +1,46 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Google PageSpeed / Lighthouse / Search — не переписывать служебные файлы в SPA
+  RewriteRule ^robots\.txt$ - [L]
+  RewriteRule ^sitemap\.xml$ - [L]
+
+  RewriteRule ^api/telegram-config\.php$ - [F,L]
+  RewriteRule ^api/admin-config\.php$ - [F,L]
+  RewriteRule ^api/data/ - [F,L]
+  RewriteRule ^api/lib/ - [F,L]
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
+
+# Метка для хостинга/WAF: эти UA — легитимные краулеры Google, не банить
+<IfModule mod_setenvif.c>
+  SetEnvIfNoCase User-Agent "Googlebot" google_crawler
+  SetEnvIfNoCase User-Agent "Google-InspectionTool" google_crawler
+  SetEnvIfNoCase User-Agent "Google-PageSpeed" google_crawler
+  SetEnvIfNoCase User-Agent "Chrome-Lighthouse" google_crawler
+  SetEnvIfNoCase User-Agent "PTST" google_crawler
+  SetEnvIfNoCase User-Agent "Storebot-Google" google_crawler
+  SetEnvIfNoCase User-Agent "AdsBot-Google" google_crawler
+</IfModule>
+
+<Files "telegram-config.php">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Deny from all
+  </IfModule>
+</Files>
+
+<Files "admin-config.php">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Deny from all
+  </IfModule>
+</Files>

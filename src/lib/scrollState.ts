@@ -9,3 +9,15 @@ export function scrollToId(id: string) {
     document.querySelector(id)?.scrollIntoView({ behavior: "smooth" });
   }
 }
+
+/** 100svh in px. Stable when the mobile URL bar shows/hides (unlike innerHeight / 100dvh). */
+export function readSvh(): number {
+  if (typeof document === "undefined") return 0;
+  const probe = document.createElement("div");
+  probe.style.cssText =
+    "position:fixed;left:0;top:0;height:100svh;width:0;pointer-events:none;visibility:hidden";
+  document.documentElement.appendChild(probe);
+  const h = probe.getBoundingClientRect().height;
+  probe.remove();
+  return h || window.innerHeight;
+}

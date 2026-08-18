@@ -3,16 +3,30 @@ import { useLocation } from "react-router-dom";
 import Lenis from "lenis";
 import Nav from "../components/Nav";
 import Hero from "../components/Hero";
-import { ResultChapter, IncludedChapter } from "../components/Chapters";
+import { ResultChapter, AboutChapter } from "../components/Chapters";
 import Portfolio from "../components/Portfolio";
-import SolidSections, { Services, Stats, Process } from "../components/SolidSections";
+import DigitalCardGift from "../components/DigitalCardGift";
+import SolidSections, { Services, Process } from "../components/SolidSections";
 import Pricing from "../components/Pricing";
+import Footer from "../components/Footer";
 import { lenisRef, scrollToId } from "../lib/scrollState";
+import { isLabCrawler } from "../lib/labCrawler";
+
+function pinHomeToTop() {
+  window.scrollTo(0, 0);
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+  lenisRef.current?.scrollTo(0, { immediate: true });
+}
 
 export default function HomePage() {
   const location = useLocation();
 
   useEffect(() => {
+    if (isLabCrawler()) return;
+
+    if (!window.location.hash) pinHomeToTop();
+
     document.documentElement.classList.add("lenis", "lenis-smooth");
 
     const lenis = new Lenis({
@@ -21,6 +35,10 @@ export default function HomePage() {
       touchMultiplier: 1.4,
     });
     lenisRef.current = lenis;
+
+    if (!window.location.hash) {
+      lenis.scrollTo(0, { immediate: true });
+    }
 
     let raf = 0;
     const loop = (time: number) => {
@@ -51,14 +69,16 @@ export default function HomePage() {
       <main className="relative z-10">
         <Hero />
         <Services />
-        <Stats />
-        <ResultChapter />
-        <Portfolio />
-        <IncludedChapter />
         <Process />
+        <Portfolio />
+        <DigitalCardGift />
+        <AboutChapter />
+        <ResultChapter />
         <Pricing />
         <SolidSections />
       </main>
+
+      <Footer />
     </div>
   );
 }
