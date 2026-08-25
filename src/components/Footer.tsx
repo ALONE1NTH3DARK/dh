@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useT } from "../i18n/useT";
 import { scrollToId } from "../lib/scrollState";
 
 const SOCIAL = [
@@ -33,12 +34,20 @@ function FitWidthWordmark({
       el.style.fontSize = `${(available / measured) * 100}px`;
     };
 
-    fit();
-    void document.fonts?.ready.then(fit);
+    const raf = requestAnimationFrame(() => {
+      fit();
+      void document.fonts?.ready.then(fit);
+    });
 
     const ro = new ResizeObserver(fit);
     ro.observe(box);
-    return () => ro.disconnect();
+    const parent = box.parentElement;
+    if (parent) ro.observe(parent);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      ro.disconnect();
+    };
   }, [text]);
 
   return (
@@ -54,6 +63,7 @@ function FitWidthWordmark({
 }
 
 export default function Footer() {
+  const t = useT();
   const location = useLocation();
   const isHome = location.pathname === "/";
 
@@ -61,11 +71,11 @@ export default function Footer() {
     <footer className="relative z-20 overflow-hidden bg-void pt-16 md:pt-20">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/[0.06]"
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-white/[0.06] light:bg-black/[0.06]"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.14]"
+        className="pointer-events-none absolute inset-0 opacity-[0.14] light:opacity-[0.08]"
         style={{
           backgroundImage: `
             linear-gradient(color-mix(in srgb, var(--color-ink) 8%, transparent) 1px, transparent 1px),
@@ -80,34 +90,47 @@ export default function Footer() {
       />
       {/* Как хедер: max-w-[1600px] + px-5/md:px-10 — от логотипа до «Связаться» */}
       <div className="relative mx-auto w-full max-w-[1600px] px-5 md:px-10">
-        {/* Бейдж + описание */}
-        <div className="relative z-30 max-w-md">
-          <div className="relative inline-grid">
+        <div className="relative z-30 flex flex-col gap-8 md:flex-row md:items-center md:justify-between md:gap-16">
+          <div className="min-w-0 flex-1">
+            <Link
+              to="/"
+              onClick={(e) => {
+                if (isHome) {
+                  e.preventDefault();
+                  scrollToId("#top");
+                }
+              }}
+              className="block w-full"
+              aria-label={t.footer.home}
+            >
+              <FitWidthWordmark text="Darkhorse" />
+            </Link>
+          </div>
+
+          <div className="shrink-0 md:text-right">
             <a
               href="tel:+77070701337"
               data-track="Футер — Телефон"
-              className="z-10 col-start-1 row-start-1 w-[0] min-w-full translate-y-[8px] leading-[0.7]"
+              className="block font-display text-[25px] font-bold leading-none tracking-[-0.05em] text-ink"
             >
-              <FitWidthWordmark
-                text="+7 70 70 70 13 37"
-                className="text-[#AF5] tracking-[-0.05em]"
-              />
+              +7 70 70 70 13 37
             </a>
-            <div className="group relative col-start-1 row-start-2">
+
+            <div className="group relative mt-1">
               <button
                 type="button"
-                className="bg-gradient-to-br from-[#AF5] via-[#9ef07a] to-[#5fe3ff] px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.3em] text-[#06040a] transition-opacity duration-200 group-hover:opacity-90 md:text-xs"
+                className="bg-ink px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.3em] text-void md:text-xs"
                 aria-haspopup="menu"
-                aria-label="Соцсети @DARKHORSE_WEBAGENCY"
+                aria-label={t.footer.social}
               >
                 @DARKHORSE_WEBAGENCY
               </button>
 
               <div
                 role="menu"
-                className="invisible absolute left-0 top-full z-40 pt-1.5 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
+                className="invisible absolute right-0 top-full z-40 min-w-full opacity-0 transition-opacity duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
               >
-                <div className="min-w-[10.5rem] overflow-hidden border border-[#AF5]/80 bg-void py-0.5 shadow-[0_16px_40px_rgba(0,0,0,0.55)]">
+                <div className="border border-ink/20 bg-void-2 py-0.5 light:border-black/10">
                   {SOCIAL.map((item) => (
                     <a
                       key={item.label}
@@ -115,7 +138,8 @@ export default function Footer() {
                       href={item.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block px-1.5 py-0.5 font-mono text-[11px] uppercase tracking-[0.18em] text-[#AF5] transition-colors hover:bg-gradient-to-r hover:from-[#AF5] hover:via-[#9ef07a] hover:to-[#5fe3ff] hover:text-[#06040a] light:text-[#06040a]"
+                      data-track={`Футер — ${item.label}`}
+                      className="block px-1.5 py-0.5 font-mono text-[11px] uppercase tracking-[0.18em] text-ink transition-colors hover:bg-ink hover:text-void"
                     >
                       {item.label}
                     </a>
@@ -123,43 +147,26 @@ export default function Footer() {
                 </div>
               </div>
             </div>
+
+            <p className="mt-2 text-[15px] text-mute/45 light:text-mute/70">
+              {t.footer.tagline}
+            </p>
           </div>
-
-          <p className="mt-3 text-sm leading-relaxed text-mute md:text-base">
-            Веб разработка любой сложности. Сайты под ключ, которые продают, пока
-            вы занимаетесь бизнесом.
-          </p>
-        </div>
-
-        {/* Wordmark */}
-        <div className="relative mt-6 md:mt-8">
-          <Link
-            to="/"
-            onClick={(e) => {
-              if (isHome) {
-                e.preventDefault();
-                scrollToId("#top");
-              }
-            }}
-            className="block w-full"
-            aria-label="DARKHORSE — на главную"
-          >
-            <FitWidthWordmark text="Darkhorse" />
-          </Link>
         </div>
 
         {/* Низ */}
-        <div className="relative z-10 mt-8 flex flex-col items-center justify-between gap-4 border-t border-white/[0.06] py-6 text-center md:mt-10 md:flex-row md:text-left">
+        <div className="relative z-10 mt-8 flex flex-col items-center justify-between gap-4 border-t border-white/[0.06] py-6 text-center light:border-black/[0.06] md:mt-10 md:flex-row md:text-left">
           <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-mute">
-            © {new Date().getFullYear()} Darkhorse · Все права защищены
+            © {new Date().getFullYear()} Darkhorse · {t.footer.rights}
           </p>
 
           <nav className="flex flex-wrap items-center justify-center gap-x-2 gap-y-2 md:justify-end">
             <a
               href="mailto:hello@darkhorse.kz"
+              data-track="Футер — Почта"
               className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute transition-colors hover:text-ink"
             >
-              Написать на почту
+              {t.footer.email}
             </a>
             <span className="text-mute/50" aria-hidden>
               •
@@ -168,17 +175,17 @@ export default function Footer() {
               to="/privacy"
               className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute transition-colors hover:text-ink"
             >
-              Политика конфиденциальности
+              {t.footer.privacy}
             </Link>
             <span className="text-mute/50" aria-hidden>
               •
             </span>
-            <a
-              href="/sitemap.xml"
+            <Link
+              to="/sitemap"
               className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute transition-colors hover:text-ink"
             >
-              Карта сайта
-            </a>
+              {t.footer.sitemap}
+            </Link>
           </nav>
         </div>
       </div>

@@ -129,6 +129,8 @@ html[data-theme="light"] {
 /* Тонкий скроллбар только там, где он занимает место в макете. */
 @media (min-width: 768px) {
   html {
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
     scrollbar-width: thin;
     scrollbar-color: rgba(124, 108, 255, 0.45) var(--color-void-2);
   }
@@ -342,12 +344,28 @@ h4 {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+
+  /* светлая тема: тот же переход, но без неонового циана на конце */
+  @variant light {
+    background-image: linear-gradient(92deg, #7c6cff 0%, #4ab3e4 100%);
+  }
 }
 .text-gradient-warm {
   background: linear-gradient(92deg, #ffb35c 0%, #ff5ca8 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+/* герой: тёмная — neon, светлая — warm */
+.text-gradient-hero {
+  background: linear-gradient(92deg, #7c6cff 0%, #5fe3ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+
+  @variant light {
+    background-image: linear-gradient(92deg, #ffb35c 0%, #ff5ca8 100%);
+  }
 }
 
 /* ------- сеточные / атмосферные оверлеи ------- */

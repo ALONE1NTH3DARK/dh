@@ -1,4 +1,5 @@
 import { useRef, useState, type FormEvent } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   AtSign,
@@ -7,6 +8,8 @@ import {
   Send,
   Share2,
 } from "lucide-react";
+import { useT } from "../i18n/useT";
+import { useLocale } from "../lib/locale";
 import { trackFormSubmit } from "../lib/analytics";
 import { submitContact } from "../lib/submitContact";
 import { TURNSTILE_SITE_KEY } from "../lib/turnstile";
@@ -20,6 +23,8 @@ const INPUT_CLASS =
   "w-full border-b border-white/15 bg-transparent py-4 text-base text-ink outline-none transition-colors placeholder:text-mute/55 focus:border-vio";
 
 export default function Contact() {
+  const t = useT();
+  const locale = useLocale();
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -56,7 +61,7 @@ export default function Contact() {
       setShowCaptcha(false);
       setTurnstileToken(null);
     } catch {
-      setError("Не удалось отправить. Попробуйте ещё раз или напишите в Telegram.");
+      setError(t.contact.error);
       setTurnstileToken(null);
       setTurnstileReset((value) => value + 1);
     } finally {
@@ -97,16 +102,15 @@ export default function Contact() {
           transition={{ duration: 0.9, ease: EASE }}
           className="lg:pt-4"
         >
-          <SectionLabel className="mb-5">Контакты</SectionLabel>
+          <SectionLabel className="mb-5">{t.contact.label}</SectionLabel>
 
           <h2 className="font-display text-[clamp(2.2rem,5.2vw,3.4rem)] font-semibold uppercase leading-[1.20]">
-            <span className="block text-ink">Всегда</span>
-            <span className="block text-gradient-warm">на связи</span>
+            <span className="block text-ink">{t.contact.title1}</span>
+            <span className="block text-gradient-warm">{t.contact.title2}</span>
           </h2>
 
           <p className="mt-5 max-w-md text-[17px] leading-relaxed text-mute">
-            Обсудим задачу, зададим несколько точных вопросов и предложим
-            следующие шаги без навязчивых продаж.
+            {t.contact.lead}
           </p>
 
           <div className="mt-9 space-y-8">
@@ -118,7 +122,7 @@ export default function Contact() {
               <Phone className="size-5 shrink-0 text-cyan-neon" />
               <span className="min-w-0">
                 <span className="block font-mono text-[14px] uppercase tracking-[1.4px] text-mute">
-                  Телефон
+                  {t.contact.phone}
                 </span>
                 <span className="mt-1 block font-display text-[21px] font-medium leading-8 tracking-[-0.8px] text-ink">
                   +7 (707) 070-13-37
@@ -145,7 +149,7 @@ export default function Contact() {
               <Share2 className="mt-0.5 size-5 shrink-0 text-cyan-neon" />
               <span className="min-w-0">
                 <span className="block font-mono text-[14px] uppercase tracking-[1.4px] text-mute">
-                  Мессенджеры
+                  {t.contact.messengers}
                 </span>
                 <div className="mt-4 flex flex-col items-start gap-3">
                   <a
@@ -191,47 +195,45 @@ export default function Contact() {
           <div className="mb-6 flex items-center justify-between gap-4">
             <div>
               <h3 className="font-display text-sm font-medium uppercase tracking-wide text-ink md:text-base">
-                Написать сообщение
+                {t.contact.write}
               </h3>
-              <p className="mt-2 text-sm text-mute">Ответим в течение 10 минут</p>
+              <p className="mt-2 text-sm text-mute">{t.contact.replyIn}</p>
             </div>
             <span className="hidden items-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] text-[#7ee9c4] light:text-[#0c8a62] sm:flex">
-              <span className="size-1.5 animate-pulse rounded-full bg-[#7ee9c4] light:bg-[#0c8a62]" /> Сейчас онлайн
+              <span className="size-1.5 animate-pulse rounded-full bg-[#7ee9c4] light:bg-[#0c8a62]" /> {t.contact.online}
             </span>
           </div>
 
-          <form ref={formRef} onSubmit={submit} className="space-y-3">
+          <form key={locale} ref={formRef} onSubmit={submit} className="space-y-3">
             <div className="grid gap-x-6 md:grid-cols-2">
               <label>
-                <span className="font-mono text-[14px] uppercase tracking-[1.4px] text-mute">Имя:</span>
-                <input className={INPUT_CLASS} name="name" required placeholder="Как к вам обращаться" />
+                <span className="font-mono text-[14px] uppercase tracking-[1.4px] text-mute">{t.contact.name}</span>
+                <input className={INPUT_CLASS} name="name" required placeholder={t.contact.namePlaceholder} />
               </label>
               <label>
-                <span className="font-mono text-[14px] uppercase tracking-[1.4px] text-mute">Телефон:</span>
-                <input className={INPUT_CLASS} name="contact" required placeholder="+7 000 000-00-00" />
+                <span className="font-mono text-[14px] uppercase tracking-[1.4px] text-mute">{t.contact.phoneLabel}</span>
+                <input className={INPUT_CLASS} name="contact" required placeholder="+7 000 000 00 00" />
               </label>
             </div>
 
             <label className="block pt-4">
-              <span className="font-mono text-[14px] uppercase tracking-[1.4px] text-mute">Что нужно сделать:</span>
-              <select className={`${INPUT_CLASS} appearance-none`} name="project" defaultValue="Продающий сайт">
-                <option className="bg-void-2" value="Продающий сайт">Продающий сайт</option>
-                <option className="bg-void-2" value="Интернет-магазин">Интернет-магазин</option>
-                <option className="bg-void-2" value="Веб-приложение">Веб-приложение</option>
-                <option className="bg-void-2" value="Редизайн сайта">Редизайн сайта</option>
-                <option className="bg-void-2" value="Пока не знаю">Пока не знаю</option>
-              </select>
+              <span className="font-mono text-[14px] uppercase tracking-[1.4px] text-mute">{t.contact.message}</span>
+              <textarea className={`${INPUT_CLASS} min-h-28 resize-none`} name="message" placeholder={t.contact.messagePlaceholder} />
             </label>
 
             <label className="block pt-4">
-              <span className="font-mono text-[14px] uppercase tracking-[1.4px] text-mute">Сообщение:</span>
-              <textarea className={`${INPUT_CLASS} min-h-28 resize-none`} name="message" placeholder="Цель сайта, сроки, ориентир по бюджету" />
+              <span className="font-mono text-[14px] uppercase tracking-[1.4px] text-mute">{t.contact.replyVia}</span>
+              <select className={`${INPUT_CLASS} appearance-none`} name="project" defaultValue={t.contact.viaTelegram}>
+                <option className="bg-void-2" value={t.contact.viaTelegram}>{t.contact.viaTelegram}</option>
+                <option className="bg-void-2" value={t.contact.viaWhatsApp}>{t.contact.viaWhatsApp}</option>
+                <option className="bg-void-2" value={t.contact.viaCall}>{t.contact.viaCall}</option>
+              </select>
             </label>
 
             {showCaptcha ? (
               <div className="pt-5">
                 <p className="mb-3 font-mono text-[14px] uppercase tracking-[1.4px] text-mute">
-                  Подтвердите отправку:
+                  {t.contact.captcha}
                 </p>
                 <TurnstileField
                   siteKey={TURNSTILE_SITE_KEY}
@@ -249,7 +251,15 @@ export default function Contact() {
 
             <div className="flex flex-col gap-5 pt-7 sm:flex-row sm:items-center sm:justify-between">
               <p className="max-w-xs text-xs leading-relaxed text-mute/75">
-                Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности.
+                {t.contact.privacyBefore}
+                <br />
+                <Link
+                  to="/privacy"
+                  className="underline underline-offset-2 transition-colors hover:text-ink"
+                >
+                  {t.contact.privacyLink}
+                </Link>
+                .
               </p>
               <button
                 type="submit"
@@ -257,7 +267,7 @@ export default function Contact() {
                 data-track="Форма — Отправить сообщение"
                 className="group flex shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-vio to-pink-neon px-7 py-4 font-mono text-[14px] font-semibold uppercase tracking-[2px] text-[#f2efff] transition-all hover:shadow-[0_0_45px_rgba(124,108,255,0.5)] disabled:cursor-not-allowed disabled:opacity-70"
               >
-                {submitted ? "Сообщение отправлено" : sending ? "Отправляем…" : showCaptcha && !turnstileToken ? "Ждём проверку…" : "Отправить"}
+                {submitted ? t.contact.sent : sending ? t.contact.sending : showCaptcha && !turnstileToken ? t.contact.waiting : t.contact.send}
               </button>
             </div>
           </form>

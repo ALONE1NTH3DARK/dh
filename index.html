@@ -3,9 +3,25 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="description" content="DARKHORSE WEBAGENCY — создаём современные продающие сайты под ключ: стратегия, дизайн, разработка и рост конверсии." />
+    <!--seo-->
+    <title>Веб-студия DARKHORSE — продающие сайты под ключ</title>
+    <meta name="description" content="Создаём современные сайты под ключ: стратегия, дизайн, разработка и рост конверсии. Веб-агентство DARKHORSE — сайты, где эстетика работает на заявки." />
     <meta name="robots" content="index, follow, max-image-preview:large" />
-    <title>DARKHORSE WEBAGENCY — продающие сайты под ключ</title>
+    <link rel="canonical" href="https://darkhorse.kz/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ru_KZ" />
+    <meta property="og:site_name" content="DARKHORSE WEBAGENCY" />
+    <meta property="og:title" content="Веб-студия DARKHORSE — продающие сайты под ключ" />
+    <meta property="og:description" content="Создаём современные сайты под ключ: стратегия, дизайн, разработка и рост конверсии. Веб-агентство DARKHORSE — сайты, где эстетика работает на заявки." />
+    <meta property="og:url" content="https://darkhorse.kz/" />
+    <meta property="og:image" content="https://darkhorse.kz/og.jpg" />
+    <meta property="og:image:alt" content="DARKHORSE — продающие сайты под ключ" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Веб-студия DARKHORSE — продающие сайты под ключ" />
+    <meta name="twitter:description" content="Создаём современные сайты под ключ: стратегия, дизайн, разработка и рост конверсии. Веб-агентство DARKHORSE — сайты, где эстетика работает на заявки." />
+    <meta name="twitter:image" content="https://darkhorse.kz/og.jpg" />
+    <!--/seo-->
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon.ico" sizes="48x48" />
     <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
@@ -16,7 +32,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Unbounded:wght@200;300;400;500;600;800&family=Onest:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700&family=Onest:wght@300;400;500&family=JetBrains+Mono:wght@400;600&display=swap"
       rel="stylesheet"
     />
   </head>
@@ -40,6 +56,9 @@
         document.documentElement.style.colorScheme = "light";
         document.querySelector('meta[name="theme-color"]')?.setAttribute("content", "#f4f1fa");
       }
+      const storedLocale = localStorage.getItem("dh_locale");
+      document.documentElement.lang =
+        storedLocale === "en" || storedLocale === "ru" ? storedLocale : "ru";
     } catch (e) {}
   </script>
   <body>
