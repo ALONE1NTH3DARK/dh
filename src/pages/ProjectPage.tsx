@@ -8,6 +8,7 @@ import ProjectFullScrub from "../components/ProjectFullScrub";
 import ProjectFeatures from "../components/ProjectFeatures";
 import ProjectPageSpeed from "../components/ProjectPageSpeed";
 import Footer from "../components/Footer";
+import BackToTop from "../components/BackToTop";
 import ProjectAtmosphere, { ProjectPageWash } from "../components/ProjectAtmosphere";
 import SectionLabel from "../components/SectionLabel";
 
@@ -300,6 +301,7 @@ export default function ProjectPage() {
       </main>
 
       <Footer />
+      <BackToTop key={project.slug} />
     </div>
   );
 }

@@ -9,6 +9,7 @@ import DigitalCardGift from "../components/DigitalCardGift";
 import SolidSections, { Services, Process } from "../components/SolidSections";
 import Pricing from "../components/Pricing";
 import Footer from "../components/Footer";
+import BackToTop from "../components/BackToTop";
 import { lenisRef, scrollToId } from "../lib/scrollState";
 import { isLabCrawler } from "../lib/labCrawler";
 
@@ -79,6 +80,7 @@ export default function HomePage() {
       </main>
 
       <Footer />
+      <BackToTop track="Главная — Наверх" />
     </div>
   );
 }

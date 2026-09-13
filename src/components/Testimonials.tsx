@@ -178,7 +178,7 @@ export default function Testimonials() {
   return (
     <section
       id="reviews"
-      className="relative overflow-hidden border-t border-white/[0.07] bg-void py-20 md:py-24"
+      className="relative overflow-hidden border-t border-white/[0.07] bg-void py-20 scroll-mt-12 md:py-24"
     >
       <div className="relative mx-auto mb-12 w-full max-w-[1200px] px-5 md:px-10">
         <motion.div

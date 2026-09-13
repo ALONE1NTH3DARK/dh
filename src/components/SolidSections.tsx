@@ -223,7 +223,7 @@ export function Process() {
 /* ---------- CTA ---------- */
 function CTA() {
   return (
-    <section className="relative overflow-hidden border-t border-white/[0.07] bg-void px-5 py-24 md:px-10 md:py-32">
+    <section id="cta" className="relative overflow-hidden border-t border-white/[0.07] bg-void px-5 py-24 md:px-10 md:py-32">
       <SectionAtmosphere tone="dual" grid />
 
       <div className="relative mx-auto max-w-[900px] text-center">

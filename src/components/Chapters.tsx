@@ -86,7 +86,7 @@ export function ResultChapter() {
   const [formatOpen, setFormatOpen] = useState(false);
 
   return (
-    <section id="clients" className="relative bg-void px-5 py-16 md:px-10 md:py-24">
+    <section id="clients" className="relative scroll-mt-12 bg-void px-5 py-16 md:px-10 md:py-24">
       <SectionAtmosphere tone="cyan" dots />
 
       <div className="relative mx-auto flex w-full max-w-[1200px] flex-col gap-16 md:gap-24">

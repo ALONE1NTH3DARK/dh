@@ -31,6 +31,9 @@
   --animate-marquee: marquee 60s linear infinite;
   --animate-scroll-dash: scroll-dash 2.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
   --animate-play-wave: play-wave 2.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  --animate-fab-telegram-enter: fab-telegram-enter 0.45s 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-fab-totop-enter: fab-totop-enter 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-fab-totop-exit: fab-totop-exit 0.18s ease-out both;
 
   @keyframes marquee {
     from {
@@ -68,6 +71,39 @@
     100% {
       transform: scale(2.6);
       opacity: 0;
+    }
+  }
+
+  @keyframes fab-telegram-enter {
+    from {
+      opacity: 0;
+      transform: scale(0);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes fab-totop-enter {
+    from {
+      opacity: 0;
+      transform: translateY(80px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fab-totop-exit {
+    from {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(8px) scale(0.92);
     }
   }
 
@@ -397,5 +433,17 @@ h4 {
   background:
     linear-gradient(90deg, transparent, rgba(124, 108, 255, 0.06), transparent),
     radial-gradient(ellipse at 50% 0%, rgba(95, 227, 255, 0.07), transparent 60%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fab-telegram-enter,
+  .animate-fab-totop-enter {
+    animation: none;
+  }
+
+  .animate-fab-totop-exit {
+    animation: none;
+    opacity: 0;
+  }
 }
 
