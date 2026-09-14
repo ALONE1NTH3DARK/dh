@@ -10,11 +10,12 @@ import SectionLabel from "./SectionLabel";
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 const reveal = (delay: number) => ({
-  initial: { opacity: 0, y: 60, filter: "blur(12px)" },
+  initial: { opacity: 0, y: 40, filter: "blur(12px)" },
   animate: {
     opacity: 1,
     y: 0,
     filter: "blur(0px)",
+    // Снимаем filter после появления, иначе слой остаётся размываемым
     transitionEnd: { filter: "none" },
   },
   transition: { duration: 1.2, delay, ease: EASE },
@@ -139,7 +140,7 @@ export default function Hero() {
 
       {/* Главный экран уезжает вправо на ~50% */}
       <motion.div
-        className="relative z-10 mx-auto flex min-h-dvh w-full max-w-[1200px] flex-col items-center justify-center px-5 pb-20 pt-28 text-center will-change-transform md:items-start md:px-10 md:pb-24 md:pt-32 md:text-left"
+        className="relative z-10 mx-auto flex min-h-dvh w-full max-w-[1200px] flex-col items-center justify-center px-5 pb-20 pt-28 text-center md:items-start md:px-10 md:pb-24 md:pt-32 md:text-left"
         initial={false}
         animate={{ x: watching ? (isMd ? "50%" : "100%") : "0%" }}
         transition={{ duration: 0.9, ease: EASE }}
@@ -174,9 +175,9 @@ export default function Hero() {
         </h1>
 
         <div className="mt-6 flex flex-col gap-6 md:mt-8 md:gap-7">
-          <motion.p {...reveal(0.8)} className="max-w-2xl text-[19px] leading-relaxed text-mute">
-            {t.hero.lead}{" "}
-            <span className="text-ink">
+          <motion.p {...reveal(0.8)} className="max-w-[36rem] text-[19px] leading-relaxed text-mute">
+            {t.hero.lead}
+            <span className="mt-1 block text-ink">
               {t.hero.leadAccent}
             </span>
           </motion.p>

@@ -6,14 +6,18 @@ import {
   Sparkles,
 } from "lucide-react";
 import type { ReactNode } from "react";
+import { useT } from "../i18n/useT";
 import { scrollToId } from "../lib/scrollState";
 import Testimonials from "./Testimonials";
 import Contact from "./Contact";
 import SectionAtmosphere from "./SectionAtmosphere";
 import SectionLabel from "./SectionLabel";
-import turnkeyImg from "../assets/services/turnkey.jpg";
-import brandImg from "../assets/services/brand.jpg";
-import supportImg from "../assets/services/support.jpg";
+import turnkeyImg from "../assets/services/turnkey.webp";
+import turnkeyLightImg from "../assets/services/turnkey-light.webp";
+import brandImg from "../assets/services/brand.webp";
+import brandLightImg from "../assets/services/brand-light.webp";
+import supportImg from "../assets/services/support.webp";
+import supportLightImg from "../assets/services/support-light.webp";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -37,12 +41,12 @@ function Reveal({ children, delay = 0, className = "" }: { children: ReactNode; 
 }
 
 /* ---------- marquee ---------- */
-const MARQUEE_ITEMS = ["Заявки", "Продажи", "Дизайн", "Скорость", "Доверие", "Рост"];
-
 function Marquee() {
+  const t = useT();
+  const items = t.services.marquee;
   const half = (
     <div className="flex shrink-0 items-center">
-      {MARQUEE_ITEMS.concat(MARQUEE_ITEMS).map((item, i) => (
+      {items.concat(items).map((item, i) => (
         <span key={i} className="flex items-center">
           <span
             className={`px-8 font-display text-[32px] font-semibold uppercase tracking-tight md:px-10 ${
@@ -70,31 +74,19 @@ function Marquee() {
 }
 
 /* ---------- услуги ---------- */
-const SERVICES = [
-  {
-    icon: Rocket,
-    title: "Сайт под ключ",
-    text: "Стратегия, дизайн, копирайтинг, базовое SEO, запуск. Вы только утверждаете на ключевых этапах - остальное делаем мы.",
-    tag: "от 2 недель",
-    image: turnkeyImg,
-  },
-  {
-    icon: Settings,
-    title: "В надёжных руках",
-    text: "Выразительный дизайн, удобная структура и современные технологии - быстрый и удобный сайт на любом устройстве.",
-    tag: "в каждом проекте",
-    image: brandImg,
-  },
-  {
-    icon: HeartHandshake,
-    title: "Поддержка и рост",
-    text: "Правки, новые разделы и функции. Быстро добавим всё необходимое - сайт развивается вместе с вашим бизнесом.",
-    tag: "30 дней бесплатно",
-    image: supportImg,
-  },
+const SERVICE_META = [
+  { icon: Rocket, image: turnkeyImg, lightImage: turnkeyLightImg },
+  { icon: Settings, image: brandImg, lightImage: brandLightImg },
+  { icon: HeartHandshake, image: supportImg, lightImage: supportLightImg },
 ];
 
 export function Services() {
+  const t = useT();
+  const services = t.services.items.map((item, i) => ({
+    ...item,
+    ...SERVICE_META[i],
+  }));
+
   return (
     <>
     <section id="services" className="relative overflow-hidden bg-void px-5 py-24 md:px-10 md:py-32">
@@ -102,19 +94,18 @@ export function Services() {
 
       <SectionInner>
         <Reveal className="mb-12 text-center md:mb-16">
-          <SectionLabel center>Результат</SectionLabel>
+          <SectionLabel center>{t.services.label}</SectionLabel>
           <h2 className="font-display text-[clamp(2.2rem,5.4vw,3.6rem)] font-semibold uppercase leading-[1.20] text-pretty">
-            Сайты, <span className="text-stroke">которые</span>{" "}
-            <span className="text-gradient-neon">продают</span>
+            {t.services.titleBefore}<span className="text-stroke">{t.services.titleStroke}</span>{" "}
+            <span className="text-gradient-neon">{t.services.titleAccent}</span>
           </h2>
           <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-mute md:text-base">
-            Понятное для клиента представление вас или вашего бизнеса
-            в интернете.
+            {t.services.subtitle}
           </p>
         </Reveal>
 
         <div className="grid gap-8 md:grid-cols-3">
-          {SERVICES.map((s, i) => (
+          {services.map((s, i) => (
             <Reveal key={s.title} delay={0.08 * (i + 1)}>
               <div className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/[0.07] bg-void-2 shadow-[0_0_0_transparent] transition-[border-color,box-shadow] duration-500 hover:border-vio/40 hover:shadow-[0_0_40px_rgba(124,108,255,0.18)]">
                 {/* Картинка + иконка на нижнем краю */}
@@ -123,9 +114,20 @@ export function Services() {
                     <img
                       src={s.image}
                       alt=""
-                      className="h-full w-full object-cover"
+                      className="h-full w-full object-cover light:hidden"
+                      loading="lazy"
+                      decoding="async"
                     />
+                    <img
+                      src={s.lightImage}
+                      alt=""
+                      className="hidden h-full w-full object-cover light:block"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    {/* Затемнение снизу вверх — оставить на случай, если снова понадобится
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-void-2 via-transparent to-transparent opacity-80" />
+                    */}
                   </div>
                   <div className="absolute bottom-0 left-10 z-10 grid size-12 translate-y-1/2 place-items-center rounded-full bg-void-2 shadow-[0_6px_16px_rgba(0,0,0,0.22)] light:shadow-[0_6px_16px_rgba(24,21,31,0.1)] md:left-12 md:size-[3.25rem]">
                     <s.icon className="size-5 text-cyan-neon" strokeWidth={1.75} />
@@ -155,45 +157,25 @@ export function Services() {
 }
 
 /* ---------- процесс ---------- */
-const STEPS = [
-  {
-    num: "01",
-    title: "Знакомство",
-    text: "Бесплатная консультация на 30 минут: разбираем задачу, называем точную цену и срок. Без обязательств.",
-  },
-  {
-    num: "02",
-    title: "Концепт за 3 дня",
-    text: "Первый экран и структура продаж — вы видите будущий сайт до оплаты полной стоимости.",
-  },
-  {
-    num: "03",
-    title: "Производство",
-    text: "Демо каждую неделю: вы смотрите сайт вживую и вносите пожелания на любом этапе.",
-  },
-  {
-    num: "04",
-    title: "Запуск и оплата",
-    text: "Подключаем аналитику и рекламу. Оплачиваете только после запуска и полного ознакомления с сайтом.",
-  },
-];
-
 export function Process() {
+  const t = useT();
+  const steps = t.process.steps;
+
   return (
     <section id="process" className="relative overflow-hidden border-b border-white/[0.07] bg-void px-5 py-24 md:px-10 md:py-32">
       <SectionAtmosphere tone="pink" dots />
 
       <SectionInner>
         <Reveal className="mb-12 flex flex-col items-center text-center md:mb-16 md:items-start md:text-left">
-          <SectionLabel>Как всё происходит</SectionLabel>
+          <SectionLabel>{t.process.label}</SectionLabel>
           <h2 className="font-display text-[clamp(2.2rem,5.4vw,3.6rem)] font-semibold uppercase leading-[1.20]">
-            Легко и <span className="text-gradient-neon">честно</span>
+            {t.process.titleBefore}<span className="text-gradient-neon">{t.process.titleAccent}</span>
           </h2>
         </Reveal>
 
         <div className="relative grid gap-6 md:grid-cols-2 md:gap-8 xl:grid-cols-4">
           <span className="pointer-events-none absolute left-0 top-5 hidden h-px w-full bg-gradient-to-r from-vio/50 via-white/10 to-pink-neon/50 xl:block" />
-          {STEPS.map((s, i) => (
+          {steps.map((s, i) => (
             <Reveal key={s.num} delay={0.09 * i} className="relative flex flex-col items-center text-center md:items-start md:text-left">
               <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-vio md:hidden">
                 {s.num}
@@ -211,7 +193,7 @@ export function Process() {
           <p className="inline-flex max-w-full items-start gap-2.5 rounded-full border border-white/15 px-4 py-2.5 text-[17px] leading-snug text-mute sm:items-center sm:gap-3 sm:px-6 sm:py-3 sm:leading-none">
             <HeartHandshake className="mt-0.5 size-3.5 shrink-0 text-amber-neon sm:mt-0 sm:size-4" strokeWidth={1.75} aria-hidden />
             <span className="min-w-0 text-pretty">
-              30 дней правок бесплатно — поддерживаем наши проекты и ваш бизнес
+              {t.process.footer}
             </span>
           </p>
         </Reveal>
@@ -222,6 +204,8 @@ export function Process() {
 
 /* ---------- CTA ---------- */
 function CTA() {
+  const t = useT();
+
   return (
     <section id="cta" className="relative overflow-hidden border-t border-white/[0.07] bg-void px-5 py-24 md:px-10 md:py-32">
       <SectionAtmosphere tone="dual" grid />
@@ -229,17 +213,16 @@ function CTA() {
       <div className="relative mx-auto max-w-[900px] text-center">
         <Reveal>
           <SectionLabel center className="mb-8">
-            Бесплатная консультация
+            {t.cta.label}
           </SectionLabel>
           <h2 className="font-display text-[clamp(2.55rem,7vw,5.4rem)] font-semibold uppercase leading-[1.20] text-pretty">
-            Ваш сайт уже
+            {t.cta.title1}
             <br />
-            <span className="text-stroke">мог бы</span>{" "}
-            <span className="text-gradient-neon">продавать</span>
+            <span className="text-stroke">{t.cta.titleStroke}</span>{" "}
+            <span className="text-gradient-neon">{t.cta.titleAccent}</span>
           </h2>
           <p className="mx-auto mt-8 max-w-xl text-base leading-relaxed text-mute md:text-lg">
-            Расскажите о бизнесе и через 3 дня мы покажем концепт первого экрана и
-            стратегию развития. Никакого спама и навязчивых звонков лишь конкретные предложения чем мы можем помочь вам.
+            {t.cta.text}
           </p>
         </Reveal>
 
@@ -249,14 +232,14 @@ function CTA() {
             data-track="Финал — Оставить заявку"
             className="group flex items-center gap-3 rounded-full bg-ink px-8 py-4 font-mono text-[14px] font-semibold uppercase tracking-[2px] text-void transition-all duration-300 hover:bg-vio hover:text-ink hover:shadow-[0_0_50px_rgba(124,108,255,0.5)]"
           >
-            Оставить заявку
+            {t.cta.apply}
           </button>
           <button
             onClick={() => scrollToId("#portfolio")}
             data-track="Финал — Ещё раз к работам"
             className="rounded-full border border-white/15 px-8 py-4 font-mono text-[14px] font-semibold uppercase tracking-[2px] text-ink transition-all duration-300 hover:border-white/50 hover:bg-white/5"
           >
-            Ещё раз к работам
+            {t.cta.again}
           </button>
         </Reveal>
       </div>

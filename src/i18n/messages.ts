@@ -1,7 +1,7 @@
 export const ru = {
   nav: {
     home: "На главную",
-    contact: "Связаться с нами",
+    contact: "Связаться",
     openMenu: "Открыть меню",
     closeMenu: "Закрыть меню",
     lightTheme: "Светлая тема",
@@ -34,7 +34,7 @@ export const ru = {
     line2Before: "сайты ",
     line2Stroke: "по",
     line3: "честной цене",
-    lead: "Нужен эффектный сайт, который подсвечивает лучшие стороны бизнеса и даёт клиентам удобные способы взаимодействия?",
+    lead: "Нужен сайт, который подсвечивает лучшие стороны бизнеса и даёт клиентам удобные способы взаимодействия?",
     leadAccent: "Создаём сайты, где эстетика работает на конверсию.",
     scroll1: "Листайте",
     scroll2: "дальше",
@@ -44,7 +44,7 @@ export const ru = {
     titleBefore: "Сайты, ",
     titleStroke: "которые",
     titleAccent: "продают",
-    subtitle: "Понятное для клиента представление вас или вашего бизнеса в интернете.",
+    subtitle: "Создаём понятный образ вашего бизнеса в интернете.",
     items: [
       {
         title: "Сайт под ключ",
@@ -52,7 +52,7 @@ export const ru = {
         tag: "от 2 недель",
       },
       {
-        title: "В надёжных руках",
+        title: "Крепкая база",
         text: "Выразительный дизайн, удобная структура и современные технологии - быстрый и удобный сайт на любом устройстве.",
         tag: "в каждом проекте",
       },
@@ -72,7 +72,7 @@ export const ru = {
       {
         num: "01",
         title: "Знакомство",
-        text: "Бесплатная консультация на 30 минут: разбираем задачу, называем точную цену и срок. Без обязательств.",
+        text: "Бесплатная консультация: разбираем задачу, называем точную цену и срок. Без обязательств.",
       },
       {
         num: "02",
@@ -87,7 +87,7 @@ export const ru = {
       {
         num: "04",
         title: "Запуск и оплата",
-        text: "Подключаем аналитику и рекламу. Оплачиваете только после запуска и полного ознакомления с сайтом.",
+        text: "Подключаем формы и аналитику. Оплачиваете только после запуска и полного ознакомления с сайтом.",
       },
     ],
     footer: "30 дней правок бесплатно — поддерживаем наши проекты и ваш бизнес",
@@ -96,7 +96,15 @@ export const ru = {
     label: "Портфолио",
     titleBefore: "Последние ",
     titleAccent: "проекты",
-    scrollHint: "Скролл вниз двигает ленту",
+    scrollHint: "Скролл двигает ленту",
+    filterLabel: "Тип проектов",
+    filters: {
+      latest: "Последние",
+      landing: "Лэндинги",
+      site: "Сайты",
+      shop: "Магазины",
+      blog: "Блоги",
+    },
     nextLabel: "ваш.сайт",
     nextTitle: "Следующий сайт может быть ",
     nextAccent: "ваш?",
@@ -355,6 +363,7 @@ export const ru = {
     footer: "Выводим сайты на высокие оценки, чтобы они были быстрее, чем у конкурентов.",
   },
   backToTop: "Наверх",
+  openTelegram: "Telegram",
   player: {
     recording: "Запись сайта",
     play: "Смотреть",
@@ -497,7 +506,7 @@ export type Messages = DeepString<typeof ru>;
 export const en: Messages = {
   nav: {
     home: "Back to home",
-    contact: "Contact us",
+    contact: "Contact",
     openMenu: "Open menu",
     closeMenu: "Close menu",
     lightTheme: "Light theme",
@@ -530,7 +539,7 @@ export const en: Messages = {
     line2Before: "websites ",
     line2Stroke: "at",
     line3: "a fair price",
-    lead: "Need a striking website that highlights what your business does best and makes it easy for clients to get in touch?",
+    lead: "Need a website that highlights what your business does best and makes it easy for clients to get in touch?",
     leadAccent: "We build sites where aesthetics drive conversion.",
     scroll1: "Scroll",
     scroll2: "further",
@@ -548,7 +557,7 @@ export const en: Messages = {
         tag: "from 2 weeks",
       },
       {
-        title: "In good hands",
+        title: "Solid base",
         text: "Expressive design, a clear structure and modern tech — a fast, easy site on every device.",
         tag: "in every project",
       },
@@ -568,7 +577,7 @@ export const en: Messages = {
       {
         num: "01",
         title: "Intro call",
-        text: "A free 30-minute consult: we unpack the brief, give you a firm price and timeline. No strings attached.",
+        text: "A free consultation: we unpack the brief, give you a firm price and timeline. No strings attached.",
       },
       {
         num: "02",
@@ -583,7 +592,7 @@ export const en: Messages = {
       {
         num: "04",
         title: "Launch and pay",
-        text: "We connect analytics and ads. You pay only after launch, once you’ve fully reviewed the site.",
+        text: "We connect forms and analytics. You pay only after launch, once you’ve fully reviewed the site.",
       },
     ],
     footer: "30 days of free revisions — we stand behind our work and your business",
@@ -592,7 +601,15 @@ export const en: Messages = {
     label: "Portfolio",
     titleBefore: "Latest ",
     titleAccent: "projects",
-    scrollHint: "Scroll down to move the reel",
+    scrollHint: "Scroll to move the reel",
+    filterLabel: "Project type",
+    filters: {
+      latest: "Latest",
+      landing: "Landings",
+      site: "Websites",
+      shop: "Stores",
+      blog: "Blogs",
+    },
     nextLabel: "yours.site",
     nextTitle: "The next site could be ",
     nextAccent: "yours?",
@@ -851,6 +868,7 @@ export const en: Messages = {
     footer: "We ship sites with high scores so they load faster than the competition.",
   },
   backToTop: "Back to top",
+  openTelegram: "Telegram",
   player: {
     recording: "Site recording",
     play: "Play",

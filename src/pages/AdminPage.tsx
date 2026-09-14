@@ -101,17 +101,6 @@ export default function AdminPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    document.title = "Статистика · DARKHORSE";
-
-    const meta = document.createElement("meta");
-    meta.name = "robots";
-    meta.content = "noindex, nofollow";
-    document.head.appendChild(meta);
-
-    return () => meta.remove();
-  }, []);
-
-  useEffect(() => {
     let cancelled = false;
 
     void api("/api/admin-session.php")
@@ -497,6 +486,7 @@ function Timeline({
   className?: string;
 }) {
   const max = Math.max(1, ...data.map((point) => point.views));
+  const columns = Math.max(data.length, 1);
 
   return (
     <section className={`${CARD} ${className}`}>
@@ -514,36 +504,31 @@ function Timeline({
         </div>
       </div>
 
-      <div className="mt-7 overflow-x-auto">
-        <div
-          className={`flex h-48 items-end gap-1 md:gap-1.5 ${
-            data.length > 10 ? "w-max min-w-full" : "w-full"
-          }`}
-        >
-          {data.map((point) => (
-            <div
-              key={point.bucket}
-              className={`group flex h-full flex-col justify-end gap-1 ${
-                data.length > 10 ? "w-7 shrink-0" : "min-w-0 flex-1"
-              }`}
-              title={`${point.label}: ${point.views} просмотров, ${point.visitors} посетителей`}
-            >
-              <div className="flex h-full items-end justify-center gap-[2px]">
-                <span
-                  className="w-full max-w-3 rounded-t bg-vio/80 transition-colors group-hover:bg-vio"
-                  style={{ height: `${Math.max(2, (point.views / max) * 100)}%` }}
-                />
-                <span
-                  className="w-full max-w-3 rounded-t bg-cyan-neon/60 transition-colors group-hover:bg-cyan-neon"
-                  style={{ height: `${Math.max(2, (point.visitors / max) * 100)}%` }}
-                />
-              </div>
-              <span className="truncate text-center font-mono text-[8px] uppercase tracking-wide text-mute/60 md:text-[9px]">
-                {point.label}
-              </span>
+      <div
+        className="mt-7 grid h-48 items-end gap-1"
+        style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
+      >
+        {data.map((point) => (
+          <div
+            key={point.bucket}
+            className="group flex h-full min-w-0 flex-col justify-end gap-1"
+            title={`${point.label}: ${point.views} просмотров, ${point.visitors} посетителей`}
+          >
+            <div className="flex min-h-0 flex-1 items-end justify-center gap-px">
+              <span
+                className="min-w-0 flex-1 rounded-t bg-vio/80 transition-colors group-hover:bg-vio"
+                style={{ height: `${Math.max(2, (point.views / max) * 100)}%` }}
+              />
+              <span
+                className="min-w-0 flex-1 rounded-t bg-cyan-neon/60 transition-colors group-hover:bg-cyan-neon"
+                style={{ height: `${Math.max(2, (point.visitors / max) * 100)}%` }}
+              />
             </div>
-          ))}
-        </div>
+            <span className="truncate text-center font-mono text-[8px] uppercase tracking-wide text-mute/60 md:text-[9px]">
+              {point.label}
+            </span>
+          </div>
+        ))}
       </div>
     </section>
   );

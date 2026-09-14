@@ -1,5 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { Image, Play } from "lucide-react";
+import { useT } from "../i18n/useT";
 import { lenisRef, readSvh } from "../lib/scrollState";
 import ProjectVideoPlayer from "./ProjectVideoPlayer";
 
@@ -51,6 +53,7 @@ const switchBtn =
 /** Sticky-рамка: сначала всегда full-скриншот. Если в папке есть video*.mp4 —
  *  под окном появляются круглые кнопки, чтобы переключить зону на плеер. */
 export default function ProjectFullScrub({ src, slug, url, title }: Props) {
+  const t = useT();
   const wrapRef = useRef<HTMLElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
@@ -186,12 +189,17 @@ export default function ProjectFullScrub({ src, slug, url, title }: Props) {
                   <img
                     ref={imgRef}
                     src={src}
-                    alt={`Сайт ${title}`}
+                    alt={`${t.project.siteAlt} ${title}`}
                     className="absolute left-0 top-0 w-full will-change-transform"
                     draggable={false}
                   />
                 ) : videoSrc ? (
-                  <ProjectVideoPlayer key={videoSrc} src={videoSrc} title={title} />
+                  <ProjectVideoPlayer
+                    key={videoSrc}
+                    src={videoSrc}
+                    title={title}
+                    autoPlay
+                  />
                 ) : null}
               </div>
 
@@ -214,7 +222,7 @@ export default function ProjectFullScrub({ src, slug, url, title }: Props) {
               <button
                 type="button"
                 onClick={() => setActive("image")}
-                aria-label="Скриншот сайта"
+                aria-label={t.project.screenshot}
                 aria-pressed={showImage}
                 className={`${switchBtn} ${
                   showImage
@@ -231,8 +239,14 @@ export default function ProjectFullScrub({ src, slug, url, title }: Props) {
                   <button
                     key={path}
                     type="button"
-                    onClick={() => setActive(index)}
-                    aria-label={`Видео ${index + 1}`}
+                    onClick={() => {
+                      if (active !== index) {
+                        flushSync(() => setActive(index));
+                      }
+                      const video = frameRef.current?.querySelector("video");
+                      void video?.play().catch(() => {});
+                    }}
+                    aria-label={`${t.project.video} ${index + 1}`}
                     aria-pressed={selected}
                     className={`${switchBtn} relative ${
                       selected

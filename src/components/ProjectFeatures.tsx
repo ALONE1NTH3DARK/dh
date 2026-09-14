@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import type { ProjectFeature } from "../data/projects";
+import { useT } from "../i18n/useT";
 import ProjectAtmosphere from "./ProjectAtmosphere";
 import SectionLabel from "./SectionLabel";
 
@@ -44,6 +45,7 @@ type Props = { features: ProjectFeature[]; slug: string };
  * Сколько фич в данных — столько рядов. Чередование: текст|картинка → картинка|текст.
  */
 export default function ProjectFeatures({ features, slug }: Props) {
+  const t = useT();
   if (!features?.length) return null;
 
   return (
@@ -57,10 +59,10 @@ export default function ProjectFeatures({ features, slug }: Props) {
           transition={{ duration: 0.7, ease: EASE }}
           className="text-center"
         >
-          <SectionLabel center>Фишки</SectionLabel>
+          <SectionLabel center>{t.project.featuresLabel}</SectionLabel>
           <h2 className="font-display text-[clamp(2.2rem,5.2vw,3.2rem)] font-semibold uppercase leading-[1.20] text-pretty">
-            Детали, которые{" "}
-            <span className="text-gradient-neon">работают</span>
+            {t.project.featuresTitle}<span className="text-stroke">{t.project.featuresStroke}</span>{" "}
+            <span className="text-gradient-neon">{t.project.featuresAccent}</span>
           </h2>
         </motion.div>
 
@@ -89,12 +91,12 @@ export default function ProjectFeatures({ features, slug }: Props) {
                 </p>
                 {f.tech?.length > 0 && (
                   <div className="mt-6 flex flex-wrap gap-2">
-                    {f.tech.map((t) => (
+                    {f.tech.map((tag) => (
                       <span
-                        key={t}
+                        key={tag}
                         className="rounded-full border border-white/10 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-mute"
                       >
-                        {t}
+                        {tag}
                       </span>
                     ))}
                   </div>

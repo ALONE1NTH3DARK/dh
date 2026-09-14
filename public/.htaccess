@@ -11,6 +11,9 @@
   RewriteRule ^api/data/ - [F,L]
   RewriteRule ^api/lib/ - [F,L]
   RewriteRule ^index\.html$ - [L]
+  # Пререндер: /digital-cards и /project/slug отдают свой index.html
+  RewriteCond %{DOCUMENT_ROOT}/$1/index.html -f
+  RewriteRule ^(.+?)/?$ $1/index.html [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule . /index.html [L]

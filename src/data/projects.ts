@@ -1,3 +1,5 @@
+import { PROJECTS_EN } from "./projects.en";
+
 export interface ProjectHighlight {
   title: string;
   text: string;
@@ -13,6 +15,8 @@ export interface ProjectFeature {
   tech: string[];
 }
 
+export type ProjectKind = "latest" | "landing" | "site" | "shop" | "blog";
+
 export interface Project {
   slug: string;
   /** Карточка в «Последние работы» */
@@ -21,6 +25,8 @@ export interface Project {
   full: string;
   title: string;
   cat: string;
+  /** Категории ленты: последние / лендинг / сайт / магазин / блог */
+  kinds: ProjectKind[];
   url: string;
   result: string;
   time: string;
@@ -46,10 +52,11 @@ export interface Project {
 export const PROJECTS: Project[] = [
   {
     slug: "hype",
-    preview: "/projects/hype/preview.jpg",
+    preview: "/projects/hype/preview.webp",
     full: "/projects/hype/full.jpg",
     title: "Креативное агенство HYPE",
     cat: "Корпоративный сайт",
+    kinds: ["latest", "site"],
     url: "hype.kz",
     result: "+148% продаж",
     time: "1 месяц",
@@ -115,6 +122,7 @@ export const PROJECTS: Project[] = [
     full: "/projects/photograph/full.webp",
     title: "Свадебный фотограф",
     cat: "Сайт портфолио",
+    kinds: ["latest", "site"],
     url: "фотограф.kz",
     result: "×3 конверсия",
     time: "2 недели",
@@ -181,10 +189,11 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: "atelier-nord",
-    preview: "/projects/atelier-nord/preview.jpg",
+    preview: "/projects/atelier-nord/preview.webp",
     full: "/projects/atelier-nord/full.jpg",
     title: "Дешевле.kz интернет-магазин",
     cat: "Интернет-магазин",
+    kinds: ["latest", "shop"],
     url: "дешевле.kz",
     result: "+90% запросов",
     time: "6 недель",
@@ -248,11 +257,79 @@ export const PROJECTS: Project[] = [
     },
   },
   {
+    slug: "nordhaus",
+    preview: "/projects/atelier-nord/preview.webp",
+    full: "/projects/atelier-nord/full.jpg",
+    title: "Nordhaus",
+    cat: "Интернет-магазин",
+    kinds: ["shop"],
+    url: "nordhaus.kz",
+    result: "+64% заказов",
+    time: "6 недель",
+    year: "2026",
+    client: "Nordhaus",
+    summary:
+      "Магазин мебели и света, где коллекция читается как витрина: от первого экрана до оплаты — без лишних шагов.",
+    challenge:
+      "Старый каталог путал серии и терял покупателей в корзине. Заказы часто уходили в WhatsApp.",
+    solution:
+      "Собрали понятный каталог, быстрые фильтры и короткое оформление заказа с доставкой и оплатой на одном экране.",
+    highlights: [
+      {
+        title: "Каталог без шума",
+        text: "Серии, размеры и наличие сразу на карточке — меньше вопросов менеджеру.",
+        metric: "+64%",
+      },
+      {
+        title: "Корзина в один шаг",
+        text: "Доставка, оплата и подтверждение на одном экране — меньше брошенных заказов.",
+        metric: "−28%",
+      },
+      {
+        title: "Фильтры по комнате",
+        text: "Гостиная, спальня, свет — нужная позиция находится за пару кликов.",
+      },
+    ],
+    features: [
+      {
+        title: "Живой каталог",
+        text: "Крупные фото, быстрые фильтры и наличие размеров без перезагрузки страницы.",
+        media: `/projects/atelier-nord/1.gif`,
+        tech: ["React", "Headless CMS"],
+      },
+      {
+        title: "Оплата на одном экране",
+        text: "Адрес, способ получения и оплата собраны компактно — удобно с телефона.",
+        media: `/projects/atelier-nord/2.gif`,
+        tech: ["Kaspi", "TypeScript"],
+      },
+      {
+        title: "Карточки серий",
+        text: "Материал, габариты и похожие позиции рядом — проще собрать комплект.",
+        media: `/projects/atelier-nord/3.gif`,
+        tech: ["Vite", "SEO"],
+      },
+    ],
+    pagespeed: {
+      performance: 97,
+      accessibility: 99,
+      bestPractices: 100,
+      seo: 100,
+    },
+    stack: ["React", "Headless CMS", "Kaspi", "SEO"],
+    quote: {
+      text: "Заказы наконец идут с сайта, а не из переписок. Каталог стали листать, а не спрашивать «есть ли в наличии».",
+      author: "Дарья Белова",
+      role: "Основательница Nordhaus",
+    },
+  },
+  {
     slug: "umami",
-    preview: "/projects/umami/preview.jpg",
+    preview: "/projects/umami/preview.webp",
     full: "/projects/umami/full.jpg",
     title: "Umami",
     cat: "Лэндинг ресторана",
+    kinds: ["latest", "landing"],
     url: "umami.rest",
     result: "+72% броней",
     time: "2 недели",
@@ -311,12 +388,13 @@ export const PROJECTS: Project[] = [
     stack: ["React", "Booking API", "CMS"],
   },
   {
-    slug: "beyond",
-    preview: "/projects/beyond/preview.jpg",
-    full: "/projects/beyond/full.jpg",
-    title: "Beyond",
+    slug: "borovoe-houses",
+    preview: "/projects/borovoe-houses/cover.webp",
+    full: "/projects/borovoe-houses/case.webp",
+    title: "Borovoe Houses",
     cat: "Сайт курорта",
-    url: "beyond.travel",
+    kinds: ["latest", "site"],
+    url: "borovoehouses.kz",
     result: "+210% заявок",
     time: "1 месяц",
     year: "2025",
@@ -346,21 +424,21 @@ export const PROJECTS: Project[] = [
       {
         title: "Квиз маршрута",
         text: "Бюджет, сезон и формат отдыха собираются в короткие шаги — заявка приходит сегментированной.",
-        media: `/projects/beyond/1.gif`,
+        media: `/projects/borovoe-houses/1.gif`,
 
         tech: ["Quiz funnel", "CRM"],
       },
       {
         title: "Истории направлений",
         text: "Не список отелей, а сценарии путешествия: для кого, зачем и что получите.",
-        media: `/projects/beyond/2.gif`,
+        media: `/projects/borovoe-houses/2.gif`,
 
         tech: ["React", "CMS"],
       },
       {
         title: "Ответ в тот же день",
         text: "Форма уходит менеджеру с тегами — клиент получает предложение без лишней переписки.",
-        media: `/projects/beyond/3.gif`,
+        media: `/projects/borovoe-houses/3.gif`,
 
         tech: ["Analytics", "API"],
       },
@@ -374,16 +452,17 @@ export const PROJECTS: Project[] = [
     stack: ["React", "Quiz funnel", "CRM", "Analytics"],
   },
   {
-    slug: "cortex",
-    preview: "/projects/cortex/preview.jpg",
-    full: "/projects/cortex/full.jpg",
-    title: "Cortex",
-    cat: "Лэндинг бутика",
-    url: "cortex.app",
+    slug: "lightroom",
+    preview: "/projects/lightroom/preview.webp",
+    full: "/projects/lightroom/full.jpg",
+    title: "Товары для освещения",
+    cat: "Лэндинг магазина",
+    kinds: ["latest", "landing"],
+    url: "lightroom.kz",
     result: "×2.6 регистраций",
     time: "2 недели",
     year: "2024",
-    client: "Cortex",
+    client: "lightroom",
     summary:
       "Маркетинговый сайт SaaS, который объясняет сложный продукт за минуту и ведёт к пробному периоду.",
     challenge:
@@ -409,21 +488,21 @@ export const PROJECTS: Project[] = [
       {
         title: "Use-case storytelling",
         text: "Три роли пользователя — три сценария выгоды. Каждый видит себя в продукте за минуту.",
-        media: `/projects/cortex/1.gif`,
+        media: `/projects/lightroom/1.gif`,
 
         tech: ["Next.js", "Product demo"],
       },
       {
         title: "Интерактивное демо",
         text: "Ключевые экраны SaaS прямо на лендинге — меньше сомнений перед регистрацией.",
-        media: `/projects/cortex/2.gif`,
+        media: `/projects/lightroom/2.gif`,
 
         tech: ["TypeScript", "React"],
       },
       {
         title: "Trial без трения",
         text: "Короткая форма, соц.логин и подсказки с первой минуты онбординга.",
-        media: `/projects/cortex/3.gif`,
+        media: `/projects/lightroom/3.gif`,
 
         tech: ["Stripe", "Analytics"],
       },
@@ -437,16 +516,17 @@ export const PROJECTS: Project[] = [
     stack: ["Next.js", "Product demo", "Stripe", "Analytics"],
   },
   {
-    slug: "lumen",
-    preview: "/projects/lumen/preview.jpg",
-    full: "/projects/lumen/full.webp",
-    title: "Психлог Москва",
+    slug: "psychologist",
+    preview: "/projects/psychologist/preview.webp",
+    full: "/projects/psychologist/full.webp",
+    title: "Психолог Москва",
     cat: "Персональный сайт",
-    url: "психолог.moscow",
+    kinds: ["latest", "site"],
+    url: "psycho.info",
     result: "+134% выручки",
     time: "1 месяц",
-    year: "2025",
-    client: "Lumen Cosmetics",
+    year: "2026",
+    client: "Психолог Москва",
     summary:
       "D2C-бренд ухода за кожей: чистый визуал, подбор продукта и покупка без лишних кликов.",
     challenge:
@@ -465,30 +545,37 @@ export const PROJECTS: Project[] = [
       },
       {
         title: "Чистый бренд",
-        text: "Светлая эстетика и спокойная типографика отстроили Lumen от «кричащего» масс-маркета.",
+        text: "Светлая эстетика и спокойная типографика отстроили бренд от «кричащего» масс-маркета.",
       },
     ],
     features: [
       {
-        title: "Подбор за минуту",
-        text: "Квиз по типу кожи выдаёт 2–3 продукта — выше средний чек и меньше возвратов.",
-        media: `/projects/lumen/1.gif`,
+        title: "Понятный первый экран",
+        text: "Он чётко обозначает направления с которыми мы работает и представляет человека который может помочь.",
+        media: `/projects/psychologist/1.gif`,
 
         tech: ["Quiz", "React"],
       },
       {
-        title: "Доверие к составу",
-        text: "Ингредиенты и клинические факты рядом с кнопкой «В корзину» — возражения закрываются на месте.",
-        media: `/projects/lumen/2.gif`,
+        title: "Список популярных услуг",
+        text: "Помогает понять, что ваша проблема распространённая причина обращения к психологу, они решаемы и специалист работает именно с таким запросом.",
+        media: `/projects/psychologist/1.gif`,
 
-        tech: ["E-commerce", "CMS"],
+        tech: ["Примеры услуг"],
       },
       {
-        title: "Чистый D2C-бренд",
-        text: "Светлая эстетика и спокойная типографика отстраивают бренд от «кричащего» масс-маркета.",
-        media: `/projects/lumen/3.gif`,
+        title: "Дополнительные точки входа",
+        text: "Небольшие статьи о распространённых жизненных ситуациях и проблемах, с которыми может помочь психолог — привлекают потенциальных клиентов из поисковых систем по другим запросам.",
+        media: `/projects/psychologist/1.gif`,
 
-        tech: ["Email", "CSS"],
+        tech: ["Заметки", "SEO"],
+      },
+      {
+        title: "Форма связи",
+        text: "Светлая эстетика и спокойная типографика отстраивают бренд от «кричащего» масс-маркета.",
+        media: `/projects/psychologist/1.gif`,
+
+        tech: ["Telegram", "Макс", "Электронная почта"],
       },
     ],
     pagespeed: {
@@ -503,6 +590,47 @@ export const PROJECTS: Project[] = [
 
 export function getProject(slug: string) {
   return PROJECTS.find((p) => p.slug === slug);
+}
+
+export function localizeProject(project: Project, locale: "ru" | "en"): Project {
+  if (locale === "ru") return project;
+  const copy = PROJECTS_EN[project.slug];
+  if (!copy) return project;
+
+  return {
+    ...project,
+    title: copy.title,
+    cat: copy.cat,
+    result: copy.result,
+    time: copy.time,
+    client: copy.client,
+    summary: copy.summary,
+    challenge: copy.challenge,
+    solution: copy.solution,
+    highlights: project.highlights.map((item, i) => ({
+      ...item,
+      title: copy.highlights[i]?.title ?? item.title,
+      text: copy.highlights[i]?.text ?? item.text,
+      metric: copy.highlights[i]?.metric ?? item.metric,
+    })),
+    features: project.features.map((item, i) => ({
+      ...item,
+      title: copy.features[i]?.title ?? item.title,
+      text: copy.features[i]?.text ?? item.text,
+      tech: copy.features[i]?.tech ?? item.tech,
+    })),
+    quote: project.quote
+      ? {
+          ...project.quote,
+          text: copy.quote?.text ?? project.quote.text,
+          role: copy.quote?.role ?? project.quote.role,
+        }
+      : project.quote,
+  };
+}
+
+export function localizeProjects(locale: "ru" | "en"): Project[] {
+  return PROJECTS.map((project) => localizeProject(project, locale));
 }
 
 export function getAdjacentProjects(slug: string) {

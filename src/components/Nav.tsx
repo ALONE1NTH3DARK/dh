@@ -73,15 +73,15 @@ export default function Nav({ variant = "home" }: NavProps) {
 
   return (
     <>
-      <header
-        className={cn(
-          "fixed inset-x-0 top-0 z-[100] pt-[env(safe-area-inset-top,0px)] transition-all duration-500",
-          scrolled || open || isProject
-            ? "border-b border-white/[0.06] bg-void/70 backdrop-blur-xl"
-            : "border-b border-transparent bg-transparent"
-        )}
-      >
-        <div className="mx-auto flex max-w-[1600px] items-center justify-between px-5 py-4 md:px-10 md:py-5">
+      <header className="fixed inset-x-0 top-0 z-[100] pt-[env(safe-area-inset-top,0px)]">
+        <div
+          aria-hidden
+          className={cn(
+            "pointer-events-none absolute inset-0 border-b border-white/[0.06] bg-void/70 backdrop-blur-xl transition-opacity duration-500",
+            scrolled || open || isProject ? "opacity-100" : "opacity-0"
+          )}
+        />
+        <div className="relative mx-auto flex max-w-[1600px] items-center justify-between px-5 py-4 md:px-10 md:py-5">
           <button
             onClick={goHome}
             className="group flex items-center gap-1.5"
@@ -229,14 +229,16 @@ function LocaleToggle() {
         onClick={() => setOpen((value) => !value)}
         data-track="Хедер — Язык"
         className={cn(
-          "grid size-10 place-items-center rounded-full border border-white/15 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-ink transition-colors hover:border-vio hover:bg-vio/15",
+          "flex size-10 appearance-none items-center justify-center p-0 rounded-full border border-white/15 font-mono text-[11px] font-semibold uppercase leading-none tracking-[0.14em] text-ink transition-colors hover:border-vio hover:bg-vio/15",
           open && "border-vio bg-vio/15"
         )}
         aria-label={t.nav.locale}
         aria-haspopup="menu"
         aria-expanded={open}
       >
-        {locale}
+        <span className="block leading-none -me-[0.14em] supports-[not(-moz-appearance:none)]:translate-y-px">
+          {locale}
+        </span>
       </button>
 
       <AnimatePresence>
@@ -291,7 +293,7 @@ function ThemeToggle() {
       data-track={toLight ? "Хедер — Светлая тема" : "Хедер — Тёмная тема"}
       aria-label={actionLabel}
       title={actionLabel}
-      className="flex h-10 items-center rounded-full border border-white/15 p-[3px] transition-colors hover:border-vio"
+      className="hidden h-10 items-center rounded-full border border-white/15 p-[3px] transition-colors hover:border-vio md:flex"
     >
       {(
         [

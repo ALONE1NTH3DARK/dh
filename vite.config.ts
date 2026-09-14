@@ -124,5 +124,8 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react(), tailwindcss(), contactApiPlugin(env), analyticsDevApi(env)],
     appType: "spa",
+    ssr: {
+      noExternal: ["react-router", "react-router-dom", "framer-motion", "lenis"],
+    },
   };
 });

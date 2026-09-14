@@ -10,7 +10,7 @@ export function buildContactMessage(payload: ContactPayload): string {
     "🆕 Новая заявка с сайта",
     `Имя: ${payload.name || "—"}`,
     `Телефон / Telegram: ${payload.contact || "—"}`,
-    `Тип проекта: ${payload.project || "—"}`,
+    `Ответить: ${payload.project || "—"}`,
     `О задаче: ${payload.message || "—"}`,
   ].join("\n");
 }

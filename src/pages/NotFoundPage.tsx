@@ -1,14 +1,13 @@
 import { useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useT } from "../i18n/useT";
 import Nav from "../components/Nav";
 import Footer from "../components/Footer";
 import SectionAtmosphere from "../components/SectionAtmosphere";
 import SectionLabel from "../components/SectionLabel";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
-const TITLE = "DARKHORSE WEBAGENCY — продающие сайты под ключ";
-const ROBOTS = "index, follow, max-image-preview:large";
 
 const reveal = (delay: number) => ({
   initial: { opacity: 0, y: 40, filter: "blur(10px)" },
@@ -17,20 +16,12 @@ const reveal = (delay: number) => ({
 });
 
 export default function NotFoundPage() {
+  const t = useT();
   const { pathname } = useLocation();
   const stageRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    const robots = document.querySelector('meta[name="robots"]');
-    const prevRobots = robots?.getAttribute("content") ?? ROBOTS;
-    robots?.setAttribute("content", "noindex, follow");
-    document.title = "404 — страница не найдена · DARKHORSE";
     window.scrollTo(0, 0);
-
-    return () => {
-      robots?.setAttribute("content", prevRobots);
-      document.title = TITLE;
-    };
   }, []);
 
   const onMove = (event: React.MouseEvent<HTMLElement>) => {
@@ -75,7 +66,7 @@ export default function NotFoundPage() {
 
         <div className="relative mx-auto w-full max-w-[1200px] text-center">
           <motion.div {...reveal(0.08)}>
-            <SectionLabel center>Ошибка маршрута</SectionLabel>
+            <SectionLabel center>{t.notFound.label}</SectionLabel>
           </motion.div>
 
           <div
@@ -116,29 +107,28 @@ export default function NotFoundPage() {
             </motion.span>
           </div>
 
-          <h1 className="sr-only">404 — страница не найдена</h1>
+          <h1 className="sr-only">{t.notFound.title}</h1>
 
           <motion.p
             {...reveal(0.55)}
             className="mx-auto mt-8 max-w-lg font-display text-[clamp(1.5rem,3.4vw,2.35rem)] font-medium uppercase leading-[1.20] text-ink"
           >
-            Страницы нет.
-            <span className="text-gradient-neon"> Сайты — есть.</span>
+            {t.notFound.headline}
+            <span className="text-gradient-neon">{t.notFound.headlineAccent}</span>
           </motion.p>
 
           <motion.p
             {...reveal(0.68)}
             className="mx-auto mt-5 max-w-md text-base leading-relaxed text-mute md:text-lg"
           >
-            Этот адрес никуда не ведёт. Можно вернуться на главную или сразу
-            написать — разберёмся, что вы искали.
+            {t.notFound.text}
           </motion.p>
 
           <motion.p
             {...reveal(0.76)}
             className="mx-auto mt-4 max-w-full truncate font-mono text-[13px] uppercase tracking-[1.4px] text-mute/80"
           >
-            запрос · {pathname}
+            {t.notFound.query} · {pathname}
           </motion.p>
 
           <motion.div
@@ -150,7 +140,7 @@ export default function NotFoundPage() {
               data-track="404 — На главную"
               className="group flex items-center gap-3 rounded-full bg-ink px-7 py-4 font-mono text-[14px] font-semibold uppercase tracking-[2px] text-void transition-all duration-300 hover:bg-vio hover:text-ink hover:shadow-[0_0_45px_rgba(124,108,255,0.5)]"
             >
-              На главную
+              {t.notFound.home}
             </Link>
             <Link
               to="/"
@@ -158,7 +148,7 @@ export default function NotFoundPage() {
               data-track="404 — Написать нам"
               className="rounded-full border border-white/15 px-7 py-4 font-mono text-[14px] font-semibold uppercase tracking-[2px] text-ink transition-all duration-300 hover:border-vio/60 hover:bg-vio/15 hover:shadow-[0_0_28px_rgba(124,108,255,0.25)]"
             >
-              Написать нам
+              {t.notFound.write}
             </Link>
           </motion.div>
         </div>

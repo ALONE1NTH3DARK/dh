@@ -9,17 +9,22 @@ export default function HeroBackground() {
         style={{ backgroundImage: "url(/background.webp)" }}
       />
 
-      {/* Тёмная тема: спокойные пятна */}
-      <div className="pointer-events-none absolute inset-0 light:hidden">
-        <div className="absolute -left-[15%] bottom-[-10%] h-[70%] w-[55%] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(255,138,61,0.14)_0%,transparent_70%)] blur-3xl" />
-        <div className="absolute left-[18%] top-[55%] h-[50%] w-[45%] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(124,108,255,0.12)_0%,transparent_72%)] blur-3xl" />
-        <div className="absolute bottom-[5%] left-[5%] h-[40%] w-[40%] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(95,227,255,0.08)_0%,transparent_70%)] blur-3xl" />
-        <div className="absolute left-[40%] top-[20%] h-[45%] w-[35%] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(255,92,168,0.07)_0%,transparent_70%)] blur-3xl" />
-      </div>
+      {/* Тёмная тема: спокойные пятна одним слоем градиентов, без filter: blur */}
+      <div
+        className="pointer-events-none absolute inset-0 light:hidden"
+        style={{
+          backgroundImage: [
+            "radial-gradient(ellipse 62% 78% at 12% 96%, rgba(255,138,61,0.14) 0%, rgba(255,138,61,0.05) 45%, transparent 78%)",
+            "radial-gradient(ellipse 52% 58% at 40% 80%, rgba(124,108,255,0.12) 0%, rgba(124,108,255,0.04) 48%, transparent 80%)",
+            "radial-gradient(ellipse 46% 46% at 25% 85%, rgba(95,227,255,0.08) 0%, rgba(95,227,255,0.03) 46%, transparent 78%)",
+            "radial-gradient(ellipse 40% 50% at 58% 42%, rgba(255,92,168,0.07) 0%, rgba(255,92,168,0.03) 46%, transparent 78%)",
+          ].join(", "),
+        }}
+      />
 
       {/* Светлая тема: один слой mesh с очень мягким falloff */}
       <div
-        className="pointer-events-none absolute -inset-[8%] hidden light:block blur-[40px]"
+        className="pointer-events-none absolute -inset-[8%] hidden light:block"
         style={{
           backgroundImage: [
             // персик сверху справа
@@ -128,18 +133,19 @@ export default function HeroBackground() {
         alt=""
         className="pointer-events-none absolute right-[-8%] top-[42%] w-[min(72vw,300px)] -translate-y-1/2 select-none md:right-[3%] md:top-1/2 md:w-[min(34vw,400px)] lg:w-[min(32vw,440px)] light:opacity-70"
         draggable={false}
+        decoding="async"
       />
 
       {/* Лёгкий film-grain: только светлая тема */}
       <svg
         aria-hidden
-        className="pointer-events-none absolute inset-0 hidden h-full w-full opacity-[0.18] mix-blend-multiply light:block"
+        className="pointer-events-none absolute inset-0 hidden h-full w-full opacity-[0.11] mix-blend-multiply md:light:block"
       >
         <filter id="dh-hero-noise" x="0%" y="0%" width="100%" height="100%">
           <feTurbulence
             type="fractalNoise"
             baseFrequency="0.85"
-            numOctaves="4"
+            numOctaves="1"
             stitchTiles="stitch"
             result="noise"
           />

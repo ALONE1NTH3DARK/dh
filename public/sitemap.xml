@@ -26,23 +26,38 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://darkhorse.kz/project/nordhaus</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://darkhorse.kz/project/umami</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://darkhorse.kz/project/beyond</loc>
+    <loc>https://darkhorse.kz/project/borovoe-houses</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://darkhorse.kz/project/cortex</loc>
+    <loc>https://darkhorse.kz/project/light</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://darkhorse.kz/project/lumen</loc>
+    <loc>https://darkhorse.kz/project/psychologist</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://darkhorse.kz/privacy</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://darkhorse.kz/sitemap</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
   </url>
 </urlset>

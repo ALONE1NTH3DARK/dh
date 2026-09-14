@@ -102,7 +102,7 @@ $text = implode("\n", [
   '🆕 Новая заявка с сайта',
   'Имя: ' . $name,
   'Телефон / Telegram: ' . $contact,
-  'Тип проекта: ' . ($project !== '' ? $project : '—'),
+  'Ответить: ' . ($project !== '' ? $project : '—'),
   'О задаче: ' . ($message !== '' ? $message : '—'),
 ]);
 

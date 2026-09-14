@@ -1,6 +1,7 @@
 import { animate, motion, useInView } from "framer-motion";
 import { Gauge } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useT } from "../i18n/useT";
 
 export type PageSpeedScores = {
   performance: number;
@@ -8,13 +9,6 @@ export type PageSpeedScores = {
   bestPractices: number;
   seo: number;
 };
-
-const LABELS = [
-  { key: "performance" as const, label: "Производительность" },
-  { key: "accessibility" as const, label: "Доступность" },
-  { key: "bestPractices" as const, label: "Рекомендации" },
-  { key: "seo" as const, label: "SEO" },
-];
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 const GAUGE_R = 46;
@@ -114,30 +108,38 @@ export default function ProjectPageSpeed({
   idPrefix,
   projectTitle,
 }: Props) {
+  const t = useT();
+  const labels = [
+    { key: "performance" as const, label: t.pagespeed.performance },
+    { key: "accessibility" as const, label: t.pagespeed.accessibility },
+    { key: "bestPractices" as const, label: t.pagespeed.bestPractices },
+    { key: "seo" as const, label: t.pagespeed.seo },
+  ];
+
   return (
     <section className="relative scroll-mt-10 bg-void px-5 py-10 md:scroll-mt-16 md:px-10 md:py-12">
       <div className="mx-auto w-full max-w-[1200px]">
         <div className="grid items-end gap-5 md:grid-cols-[1fr_1.05fr] md:gap-12">
           <h2 className="font-display text-[clamp(1.8rem,4.2vw,2.4rem)] font-semibold uppercase leading-[1.20]">
-            <span className="text-ink">Результаты</span>{" "}
+            <span className="text-ink">{t.pagespeed.title1}</span>{" "}
             <br />
-            <span className="text-gradient-warm">в цифрах</span>
+            <span className="text-gradient-warm">{t.pagespeed.title2}</span>
           </h2>
           <p className="max-w-md text-sm leading-relaxed text-mute md:ml-auto md:text-right md:text-[15px]">
-            Оценки Google PageSpeed Insights — скорость загрузки и удобство.
+            {t.pagespeed.lead}
             {projectTitle ? (
               <>
                 {" "}
-                Цифры для проекта <span className="text-ink/80">{projectTitle}</span>.
+                {t.pagespeed.forProject} <span className="text-ink/80">{projectTitle}</span>.
               </>
             ) : (
-              " Цифры по этому проекту."
+              ` ${t.pagespeed.forThis}`
             )}
           </p>
         </div>
 
         <div className="mt-6 grid grid-cols-2 lg:grid-cols-4">
-          {LABELS.map((item, i) => (
+          {labels.map((item, i) => (
             <div key={item.key} className="relative">
               {i > 0 && (
                 <span
@@ -163,7 +165,7 @@ export default function ProjectPageSpeed({
               aria-hidden
             />
             <span className="min-w-0 text-pretty">
-              Выводим сайты на высокие оценки, чтобы они были быстрее, чем у конкурентов.
+              {t.pagespeed.footer}
             </span>
           </p>
         </div>

@@ -2,7 +2,9 @@ import { useEffect } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
-import { getAdjacentProjects, getProject } from "../data/projects";
+import { getAdjacentProjects, getProject, localizeProject } from "../data/projects";
+import { useT } from "../i18n/useT";
+import { useLocale } from "../lib/locale";
 import Nav from "../components/Nav";
 import ProjectFullScrub from "../components/ProjectFullScrub";
 import ProjectFeatures from "../components/ProjectFeatures";
@@ -16,16 +18,22 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 
 export default function ProjectPage() {
   const { slug = "" } = useParams();
-  const project = getProject(slug);
-  const { prev, next } = getAdjacentProjects(slug);
+  const t = useT();
+  const locale = useLocale();
+  const raw = getProject(slug);
+  const { prev: rawPrev, next: rawNext } = getAdjacentProjects(slug);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [slug]);
 
-  if (!project) {
+  if (!raw) {
     return <Navigate to="/" replace />;
   }
+
+  const project = localizeProject(raw, locale);
+  const prev = rawPrev ? localizeProject(rawPrev, locale) : null;
+  const next = rawNext ? localizeProject(rawNext, locale) : null;
 
   return (
     <div className="relative isolate min-h-screen bg-void font-body text-ink">
@@ -52,7 +60,7 @@ export default function ProjectPage() {
                   className="size-4 shrink-0 transition-transform duration-300 group-hover:-translate-x-0.5 md:size-[1.15rem]"
                   strokeWidth={1.75}
                 />
-                Все проекты
+                {t.project.all}
               </Link>
 
               <SectionLabel>
@@ -74,13 +82,13 @@ export default function ProjectPage() {
 
               <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3 border-t border-white/[0.07] pt-6 font-mono text-[11px] uppercase tracking-[0.12em] text-mute md:text-xs">
                 <span>
-                  Клиент · <span className="text-ink">{project.client}</span>
+                  {t.project.client} · <span className="text-ink">{project.client}</span>
                 </span>
                 <span>
-                  Срок · <span className="text-ink">{project.time}</span>
+                  {t.project.term} · <span className="text-ink">{project.time}</span>
                 </span>
                 <span>
-                  Сайт · <span className="text-ink">{project.url}</span>
+                  {t.project.site} · <span className="text-ink">{project.url}</span>
                 </span>
               </div>
             </motion.div>
@@ -104,9 +112,9 @@ export default function ProjectPage() {
               transition={{ duration: 0.8, ease: EASE }}
               className="rounded-2xl border border-white/[0.08] bg-void-2/80 p-6 md:p-7"
             >
-              <SectionLabel lineClassName="bg-[#ff6a9d]">Задача</SectionLabel>
+              <SectionLabel lineClassName="bg-[#ff6a9d]">{t.project.task}</SectionLabel>
               <h2 className="font-display text-2xl font-semibold uppercase leading-snug md:text-3xl">
-                С чем пришли
+                {t.project.cameWith}
               </h2>
               <p className="mt-5 text-base leading-relaxed text-mute md:text-lg">
                 {project.challenge}
@@ -120,9 +128,9 @@ export default function ProjectPage() {
               transition={{ duration: 0.8, delay: 0.1, ease: EASE }}
               className="rounded-2xl border border-white/[0.08] bg-void-2/80 p-6 md:p-7"
             >
-              <SectionLabel lineClassName="bg-[#8bedab]">Решение</SectionLabel>
+              <SectionLabel lineClassName="bg-[#8bedab]">{t.project.solution}</SectionLabel>
               <h2 className="font-display text-2xl font-semibold uppercase leading-snug md:text-3xl">
-                Что сделали
+                {t.project.weDid}
               </h2>
               <p className="mt-5 text-base leading-relaxed text-mute md:text-lg">
                 {project.solution}
@@ -150,10 +158,10 @@ export default function ProjectPage() {
               transition={{ duration: 0.8, ease: EASE }}
               className="mb-12 text-center md:mb-16"
             >
-              <SectionLabel center>Лучшие моменты</SectionLabel>
+              <SectionLabel center>{t.project.highlights}</SectionLabel>
               <h2 className="font-display text-[clamp(2.2rem,5.2vw,3.4rem)] font-semibold uppercase leading-[1.20]">
-                Что сработало{" "}
-                <span className="text-stroke">сильнее всего</span>
+                {t.project.worked}
+                <span className="text-stroke">{t.project.strongest}</span>
               </h2>
             </motion.div>
 
@@ -243,7 +251,7 @@ export default function ProjectPage() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-void via-void/75 to-void/45" />
                 <p className="relative z-10 font-mono text-[10px] uppercase tracking-[0.25em] text-mute">
-                  ← Предыдущий
+                  {t.project.prev}
                 </p>
                 <div className="relative z-10 mt-6">
                   <p className="font-display text-xl font-semibold uppercase text-ink md:text-2xl">
@@ -263,11 +271,11 @@ export default function ProjectPage() {
               className="group flex flex-1 flex-col items-start justify-between rounded-2xl border border-dashed border-white/20 p-6 shadow-[0_0_0_transparent] transition-[border-color,box-shadow] duration-500 hover:border-vio hover:shadow-[0_0_40px_rgba(124,108,255,0.18)] md:p-8"
             >
               <p className="font-display text-xl font-semibold uppercase leading-tight text-ink md:text-2xl">
-                Следующий кейс может быть —{" "}
-                <span className="text-gradient-neon">ваш</span>?
+                {t.project.nextYours}
+                <span className="text-gradient-neon">{t.project.yours}</span>?
               </p>
               <span className="mt-5 inline-flex rounded-full bg-ink px-6 py-3 font-mono text-[14px] font-semibold uppercase tracking-[2px] text-void transition-colors group-hover:bg-vio group-hover:text-ink">
-                Заказать сайт
+                {t.project.order}
               </span>
             </Link>
 
@@ -284,7 +292,7 @@ export default function ProjectPage() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-void via-void/75 to-void/45" />
                 <p className="relative z-10 font-mono text-[10px] uppercase tracking-[0.25em] text-mute">
-                  Следующий →
+                  {t.project.next}
                 </p>
                 <div className="relative z-10 mt-6">
                   <p className="font-display text-xl font-semibold uppercase text-ink md:text-2xl">

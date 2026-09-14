@@ -12,29 +12,25 @@ export function scrollY(): number {
   return lenisRef.current?.scroll ?? window.scrollY;
 }
 
+function elementStopTop(el: HTMLElement, y: number): number {
+  const margin = Number.parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
+  return Math.max(0, el.getBoundingClientRect().top + y - margin);
+}
+
 export function scrollToId(id: string) {
   const el = document.querySelector<HTMLElement>(id);
   if (!el) return;
-  const margin = Number.parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
-  if (lenisRef.current) {
-    lenisRef.current.scrollTo(el, { offset: -margin, duration: 1.6, easing: SCROLL_EASE });
-  } else {
-    el.scrollIntoView({ behavior: "smooth" });
-  }
+  scrollToY(elementStopTop(el, scrollY()), 1.6);
 }
 
 export function scrollToY(y: number, duration = 1.15) {
   const top = Math.max(0, y);
+  const immediate = duration <= 0 || prefersReducedMotion();
   if (lenisRef.current) {
-    lenisRef.current.scrollTo(top, prefersReducedMotion() ? { immediate: true } : { duration, easing: SCROLL_EASE });
+    lenisRef.current.scrollTo(top, immediate ? { immediate: true } : { duration, easing: SCROLL_EASE });
     return;
   }
-  window.scrollTo({ top, behavior: prefersReducedMotion() ? "auto" : "smooth" });
-}
-
-function elementStopTop(el: HTMLElement, y: number): number {
-  const margin = Number.parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
-  return Math.max(0, el.getBoundingClientRect().top + y - margin);
+  window.scrollTo({ top, behavior: immediate ? "auto" : "smooth" });
 }
 
 function stopTops(ids: string[]): number[] {

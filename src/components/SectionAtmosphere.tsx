@@ -50,6 +50,8 @@ type Props = {
   grid?: boolean;
   /** Точки на пересечениях сетки */
   dots?: boolean;
+  /** Мягкий край сверху */
+  fadeTop?: boolean;
   className?: string;
 };
 
@@ -58,6 +60,7 @@ export default function SectionAtmosphere({
   tone = "vio",
   grid = false,
   dots = false,
+  fadeTop = true,
   className = "",
 }: Props) {
   const t = TONES[tone];
@@ -77,7 +80,9 @@ export default function SectionAtmosphere({
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,var(--vignette)_100%)]" />
 
       {/* мягкие края сверху/снизу */}
-      <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-void/80 to-transparent" />
+      {fadeTop && (
+        <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-void/80 to-transparent" />
+      )}
       <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-void/70 to-transparent" />
 
       {grid && <div className="section-grid absolute inset-0 opacity-[0.35]" />}

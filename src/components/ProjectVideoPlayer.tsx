@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Pause, Play, Volume2, VolumeX } from "lucide-react";
+import { useT } from "../i18n/useT";
 
 type Props = {
   src: string;
@@ -14,6 +15,7 @@ export default function ProjectVideoPlayer({
   autoPlay = false,
   volume: showVolume = false,
 }: Props) {
+  const t = useT();
   const wrapRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const barRef = useRef<HTMLDivElement>(null);
@@ -26,10 +28,11 @@ export default function ProjectVideoPlayer({
   const [muted, setMuted] = useState(false);
 
   useEffect(() => {
-    setPlaying(false);
     setProgress(0);
+    if (autoPlay) return;
+    setPlaying(false);
     videoRef.current?.load();
-  }, [src]);
+  }, [src, autoPlay]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -53,6 +56,7 @@ export default function ProjectVideoPlayer({
   }, []);
 
   const paintPreviewFrame = () => {
+    if (autoPlay) return;
     const video = videoRef.current;
     if (!video || !video.paused) return;
     if (video.currentTime > 0.05) return;
@@ -102,7 +106,7 @@ export default function ProjectVideoPlayer({
         preload="auto"
         controls={false}
         disablePictureInPicture
-        aria-label={`Запись сайта ${title}`}
+        aria-label={`${t.player.recording} ${title}`}
         className="absolute inset-0 h-full w-full rounded-b-2xl bg-void-2 object-cover object-top"
         onClick={toggle}
         onPlay={() => setPlaying(true)}
@@ -131,7 +135,7 @@ export default function ProjectVideoPlayer({
           <button
             type="button"
             onClick={toggle}
-            aria-label="Смотреть"
+            aria-label={t.player.play}
             className="absolute inset-0 z-[1] grid place-items-center"
           >
             <span className="grid size-16 place-items-center rounded-full bg-ink text-void shadow-[0_0_40px_rgba(124,108,255,0.35)] transition-[transform,background-color,color] duration-300 hover:scale-105 hover:bg-vio hover:text-ink md:size-[4.5rem]">
@@ -146,7 +150,7 @@ export default function ProjectVideoPlayer({
           <button
             type="button"
             onClick={toggle}
-            aria-label={playing ? "Пауза" : "Смотреть"}
+            aria-label={playing ? t.player.pause : t.player.play}
             className="grid size-9 shrink-0 place-items-center rounded-full bg-ink text-void transition-colors hover:bg-vio hover:text-ink md:size-10"
           >
             {playing ? (
@@ -160,7 +164,7 @@ export default function ProjectVideoPlayer({
             ref={barRef}
             role="slider"
             tabIndex={0}
-            aria-label="Перемотка"
+            aria-label={t.player.seek}
             aria-valuemin={0}
             aria-valuemax={100}
             aria-valuenow={Math.round(progress * 100)}
@@ -207,7 +211,7 @@ export default function ProjectVideoPlayer({
               <button
                 type="button"
                 onClick={() => setMuted((on) => !on)}
-                aria-label={muted || level === 0 ? "Включить звук" : "Выключить звук"}
+                aria-label={muted || level === 0 ? t.player.unmute : t.player.mute}
                 className="grid size-9 place-items-center rounded-full text-ink transition-colors hover:text-vio md:size-10"
               >
                 {muted || level === 0 ? (
@@ -220,7 +224,7 @@ export default function ProjectVideoPlayer({
                 ref={volBarRef}
                 role="slider"
                 tabIndex={0}
-                aria-label="Громкость"
+                aria-label={t.player.volume}
                 aria-valuemin={0}
                 aria-valuemax={100}
                 aria-valuenow={Math.round((muted ? 0 : level) * 100)}

@@ -91,7 +91,7 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="relative overflow-hidden border-t border-white/[0.07] bg-void px-5 py-20 md:px-10 md:py-24">
+    <section id="contact" className="relative overflow-hidden border-t border-white/[0.07] bg-void px-5 py-20 scroll-mt-12 md:px-10 md:py-24">
       <SectionAtmosphere tone="vio" />
 
       <div className="relative mx-auto grid max-w-[1200px] items-center gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">

@@ -125,7 +125,7 @@ export default function BackToTop({ track = "Кейс — Наверх" }: { tra
 
   return (
     <div
-      className="pointer-events-none fixed z-[70] right-5 bottom-[max(1.25rem,env(safe-area-inset-bottom,0px))] md:right-11 md:bottom-11"
+      className="pointer-events-none fixed z-[70] left-5 right-auto bottom-[max(1.25rem,env(safe-area-inset-bottom,0px))] md:left-auto md:right-11 md:bottom-11"
     >
       <div className="relative w-[52px] overflow-visible" style={{ height: STACK }}>
         <div className="absolute left-0 top-0 size-[52px] origin-center animate-fab-telegram-enter">

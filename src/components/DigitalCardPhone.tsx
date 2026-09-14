@@ -7,6 +7,7 @@ import {
   Send,
   Share2,
 } from "lucide-react";
+import { useT } from "../i18n/useT";
 import { cn } from "../utils/cn";
 
 function ActionChip({
@@ -39,6 +40,8 @@ function ActionChip({
 const CHIP_W = "w-[calc((100%-0.75rem)/3)]";
 
 function DigitalCardScreen() {
+  const t = useT();
+
   return (
     <div className="relative flex h-full flex-col overflow-hidden bg-[#0e0a16]">
       <div
@@ -48,13 +51,13 @@ function DigitalCardScreen() {
 
       <div className="absolute inset-x-2.5 top-2.5 z-30 flex items-start justify-between">
         <span
-          aria-label="Поделиться"
+          aria-label={t.cardPhone.share}
           className="grid size-8 place-items-center rounded-full border border-[#ffffff]/15 bg-black/35 text-[#f2efff] backdrop-blur-sm"
         >
           <Share2 className="size-3.5" />
         </span>
         <span
-          aria-label="QR-код"
+          aria-label={t.cardPhone.qr}
           className="grid size-8 place-items-center rounded-full border border-[#ffffff]/15 bg-black/35 text-[#f2efff] backdrop-blur-sm"
         >
           <QrCode className="size-3.5" />
@@ -77,21 +80,19 @@ function DigitalCardScreen() {
           </div>
 
           <p className="mt-2.5 text-center text-[12px] leading-snug text-[#9a92b8]">
-            Создаю визуальные системы и брендинг для digital-продуктов. Открыта к
-            коллаборациям и новым смелым проектам — от лендингов до полного
-            редизайна бренда.
+            {t.cardPhone.bio}
           </p>
         </div>
 
         <div className="rounded-xl border border-[#ffffff]/[0.08] bg-[#ffffff]/[0.04] px-3.5 py-2.5 text-center backdrop-blur-sm">
           <p className="font-mono text-[8px] uppercase tracking-[0.2em] text-[#9a92b8]">
-            Телефон
+            {t.cardPhone.phone}
           </p>
           <p className="mt-0.5 text-[14px] text-[#f2efff]">+7 987 654-32-10</p>
         </div>
 
         <span className="block w-full rounded-full bg-gradient-to-br from-[#7c6cff]/80 to-[#5fe3ff]/50 py-2.5 text-center font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-[#f2efff]">
-          Сохранить в контакты
+          {t.cardPhone.save}
         </span>
 
         <div className="flex flex-col gap-1.5">
@@ -103,13 +104,13 @@ function DigitalCardScreen() {
           <div className="flex justify-center gap-1.5">
             <ActionChip
               icon={Mail}
-              label="Почта"
+              label={t.cardPhone.mail}
               color="text-[#ffb35c]"
               className={CHIP_W}
             />
             <ActionChip
               icon={Globe}
-              label="Сайт"
+              label={t.cardPhone.site}
               color="text-[#AF5]"
               className={CHIP_W}
             />
