@@ -1,4 +1,4 @@
-import { PROJECTS_EN } from "./projects.en";
+import { PROJECTS_EN } from "@/data/projects.en";
 
 export interface ProjectHighlight {
   title: string;
@@ -45,6 +45,8 @@ export interface Project {
     seo: number;
   };
   stack: string[];
+  /** Ролики в рамке кейса. Пусто — только скриншот. */
+  videos?: string[];
   quote?: { text: string; author: string; role: string };
 }
 
@@ -110,6 +112,7 @@ export const PROJECTS: Project[] = [
       seo: 100,
     },
     stack: ["React", "Headless CMS", "YooKassa", "SEO"],
+    videos: ["/projects/hype/video.mp4"],
     quote: {
       text: "Сайт окупается ежедневно. Конверсия выросла с 1,8% до 4,2%, а клиенты отдельно отмечают дизайн.",
       author: "Александр Громов",
@@ -585,6 +588,80 @@ export const PROJECTS: Project[] = [
       seo: 99,
     },
     stack: ["React", "E-commerce", "Quiz", "Email"],
+  },
+  {
+    slug: "fieldnotes",
+    preview: "/projects/umami/preview.webp",
+    full: "/projects/umami/full.jpg",
+    title: "Field Notes",
+    cat: "Редакционный блог",
+    kinds: ["latest", "blog"],
+    url: "fieldnotes.kz",
+    result: "×4 органический трафик",
+    time: "3 недели",
+    year: "2026",
+    client: "Field Notes",
+    summary:
+      "Журнал о еде, городах и людях, которые их готовят. Статьи читаются как журнал, а из поиска приходят по длинным запросам — без шума конструктора.",
+    challenge:
+      "Авторы писали в Telegram и на Medium. Архив разъехался, поиск не видел материалы, а рекламодатели не понимали, куда вести читателя.",
+    solution:
+      "Собрали собственный блог: рубрики, авторы, теги, оглавление длинных текстов и рассылка. Каждый материал — отдельная страница с понятной мета-разметкой.",
+    highlights: [
+      {
+        title: "Поиск находит статьи",
+        text: "Заголовки, описания и схема Article — материалы поднимаются по запросам вроде «где есть в Алматы».",
+        metric: "×4",
+      },
+      {
+        title: "Читать удобно с телефона",
+        text: "Узкая колонка, крупные фото и оглавление. Среднее время на статье выросло.",
+        metric: "+2,4 мин",
+      },
+      {
+        title: "Подписка без трения",
+        text: "Форма в конце материала и в шапке. Письма уходят в Telegram-бота редакции.",
+        metric: "1 200",
+      },
+    ],
+    features: [
+      {
+        title: "Лента по рубрикам",
+        text: "Город, рецепты, люди, гиды. Фильтр не перезагружает страницу — читатель остаётся в потоке.",
+        media: "/projects/umami/preview.webp",
+        tech: ["React", "CMS"],
+      },
+      {
+        title: "Длинная статья",
+        text: "Оглавление, подписи к кадрам, цитаты и блок «ещё по теме». Текст не теряется в ширине экрана.",
+        media: "/projects/umami/full.jpg",
+        tech: ["MDX", "JSON-LD"],
+      },
+      {
+        title: "Карточка автора",
+        text: "Кто пишет, чем занимается и какие материалы уже вышли. Доверие к редакции, а не к безымянной ленте.",
+        media: "/projects/photograph/preview.webp",
+        tech: ["Авторы", "SEO"],
+      },
+      {
+        title: "Рассылка",
+        text: "Раз в неделю — три материала и один гид. Форма в конце статьи, подтверждение на почту.",
+        media: "/projects/psychologist/1.gif",
+        tech: ["Telegram", "Email"],
+      },
+    ],
+    pagespeed: {
+      performance: 99,
+      accessibility: 100,
+      bestPractices: 100,
+      seo: 100,
+    },
+    stack: ["React", "MDX", "CMS", "SEO"],
+    quote: {
+      text: "Наконец все тексты в одном месте. Из поиска приходят люди, которые реально читают — не случайный трафик с картинок.",
+      author: "Мария Ерёмина",
+      role: "Главный редактор Field Notes",
+    },
   },
 ];
 

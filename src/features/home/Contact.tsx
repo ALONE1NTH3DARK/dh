@@ -8,16 +8,15 @@ import {
   Send,
   Share2,
 } from "lucide-react";
-import { useT } from "../i18n/useT";
-import { useLocale } from "../lib/locale";
-import { trackFormSubmit } from "../lib/analytics";
-import { submitContact } from "../lib/submitContact";
-import { TURNSTILE_SITE_KEY } from "../lib/turnstile";
-import SectionAtmosphere from "./SectionAtmosphere";
-import SectionLabel from "./SectionLabel";
-import TurnstileField from "./TurnstileField";
-
-const EASE = [0.16, 1, 0.3, 1] as const;
+import { useT } from "@/i18n/useT";
+import { useLocale } from "@/lib/locale";
+import { trackFormSubmit } from "@/lib/analytics";
+import { submitContact } from "@/lib/submitContact";
+import { TURNSTILE_SITE_KEY } from "@/lib/turnstile";
+import SectionAtmosphere from "@/components/ui/SectionAtmosphere";
+import SectionLabel from "@/components/ui/SectionLabel";
+import TurnstileField from "@/components/ui/TurnstileField";
+import { EASE } from "@/lib/motion";
 
 const INPUT_CLASS =
   "w-full border-b border-white/15 bg-transparent py-4 text-base text-ink outline-none transition-colors placeholder:text-mute/55 focus:border-vio";
@@ -91,7 +90,7 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="relative overflow-hidden border-t border-white/[0.07] bg-void px-5 py-20 scroll-mt-12 md:px-10 md:py-24">
+    <section id="contact" className="relative overflow-hidden border-t border-white/[0.07] bg-void px-5 py-24 md:px-10 md:py-32">
       <SectionAtmosphere tone="vio" />
 
       <div className="relative mx-auto grid max-w-[1200px] items-center gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
@@ -100,7 +99,6 @@ export default function Contact() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-12% 0px" }}
           transition={{ duration: 0.9, ease: EASE }}
-          className="lg:pt-4"
         >
           <SectionLabel className="mb-5">{t.contact.label}</SectionLabel>
 
@@ -208,17 +206,17 @@ export default function Contact() {
             <div className="grid gap-x-6 md:grid-cols-2">
               <label>
                 <span className="font-mono text-[14px] uppercase tracking-[1.4px] text-mute">{t.contact.name}</span>
-                <input className={INPUT_CLASS} name="name" required placeholder={t.contact.namePlaceholder} />
+                <input className={INPUT_CLASS} name="name" required maxLength={100} placeholder={t.contact.namePlaceholder} />
               </label>
               <label>
                 <span className="font-mono text-[14px] uppercase tracking-[1.4px] text-mute">{t.contact.phoneLabel}</span>
-                <input className={INPUT_CLASS} name="contact" required placeholder="+7 000 000 00 00" />
+                <input className={INPUT_CLASS} name="contact" required maxLength={100} placeholder="+7 000 000 00 00" />
               </label>
             </div>
 
             <label className="block pt-4">
               <span className="font-mono text-[14px] uppercase tracking-[1.4px] text-mute">{t.contact.message}</span>
-              <textarea className={`${INPUT_CLASS} min-h-28 resize-none`} name="message" placeholder={t.contact.messagePlaceholder} />
+              <textarea className={`${INPUT_CLASS} min-h-28 resize-none`} name="message" maxLength={2000} placeholder={t.contact.messagePlaceholder} />
             </label>
 
             <label className="block pt-4">

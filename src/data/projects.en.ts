@@ -1,4 +1,4 @@
-import type { Project } from "./projects";
+import type { Project } from "@/data/projects";
 
 type ProjectI18n = Pick<
   Project,
@@ -357,5 +357,61 @@ export const PROJECTS_EN: Record<string, ProjectI18n> = {
         tech: ["Telegram", "Max", "Email"],
       },
     ],
+  },
+  fieldnotes: {
+    title: "Field Notes",
+    cat: "Editorial blog",
+    result: "×4 organic traffic",
+    time: "3 weeks",
+    client: "Field Notes",
+    summary:
+      "A magazine about food, cities and the people who cook there. Pieces read like a journal, and search brings long-tail readers — without the template noise.",
+    challenge:
+      "Writers published in Telegram and on Medium. The archive scattered, search never saw the pieces, and advertisers had nowhere to send readers.",
+    solution:
+      "We built a dedicated blog: sections, authors, tags, a table of contents for long reads, and a newsletter. Every article is its own page with clear metadata.",
+    highlights: [
+      {
+        title: "Search finds the pieces",
+        text: "Titles, descriptions and Article schema — stories rank for queries like “where to eat in Almaty”.",
+        metric: "×4",
+      },
+      {
+        title: "Comfortable on a phone",
+        text: "Narrow column, large photos and a table of contents. Time on article went up.",
+        metric: "+2.4 min",
+      },
+      {
+        title: "Subscribe without friction",
+        text: "A form at the end of each piece and in the header. Emails go to the newsroom’s Telegram bot.",
+        metric: "1,200",
+      },
+    ],
+    features: [
+      {
+        title: "Feed by section",
+        text: "City, recipes, people, guides. Filters do not reload the page — the reader stays in the flow.",
+        tech: ["React", "CMS"],
+      },
+      {
+        title: "Long article",
+        text: "Table of contents, captions, pull quotes and a “more on this” block. The text does not get lost in the viewport.",
+        tech: ["MDX", "JSON-LD"],
+      },
+      {
+        title: "Author card",
+        text: "Who writes, what they do, and which pieces already ran. Trust in the newsroom, not an anonymous feed.",
+        tech: ["Authors", "SEO"],
+      },
+      {
+        title: "Newsletter",
+        text: "Once a week — three pieces and one guide. Form at the end of the article, email confirmation.",
+        tech: ["Telegram", "Email"],
+      },
+    ],
+    quote: {
+      text: "Finally all the writing lives in one place. Search now brings people who actually read — not random traffic from pictures.",
+      role: "Editor-in-chief, Field Notes",
+    },
   },
 };

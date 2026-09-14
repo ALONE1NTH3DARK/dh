@@ -487,6 +487,7 @@ function Timeline({
 }) {
   const max = Math.max(1, ...data.map((point) => point.views));
   const columns = Math.max(data.length, 1);
+  const colRem = hourly ? 2.75 : 2.5;
 
   return (
     <section className={`${CARD} ${className}`}>
@@ -504,31 +505,36 @@ function Timeline({
         </div>
       </div>
 
-      <div
-        className="mt-7 grid h-48 items-end gap-1"
-        style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
-      >
-        {data.map((point) => (
-          <div
-            key={point.bucket}
-            className="group flex h-full min-w-0 flex-col justify-end gap-1"
-            title={`${point.label}: ${point.views} просмотров, ${point.visitors} посетителей`}
-          >
-            <div className="flex min-h-0 flex-1 items-end justify-center gap-px">
-              <span
-                className="min-w-0 flex-1 rounded-t bg-vio/80 transition-colors group-hover:bg-vio"
-                style={{ height: `${Math.max(2, (point.views / max) * 100)}%` }}
-              />
-              <span
-                className="min-w-0 flex-1 rounded-t bg-cyan-neon/60 transition-colors group-hover:bg-cyan-neon"
-                style={{ height: `${Math.max(2, (point.visitors / max) * 100)}%` }}
-              />
+      <div className="mt-7 min-w-0 overflow-x-auto overscroll-x-contain pb-1">
+        <div
+          className="grid h-48 items-end gap-1"
+          style={{
+            width: `calc(${columns} * ${colRem}rem + ${Math.max(0, columns - 1)} * 0.25rem)`,
+            gridTemplateColumns: `repeat(${columns}, ${colRem}rem)`,
+          }}
+        >
+          {data.map((point) => (
+            <div
+              key={point.bucket}
+              className="group flex h-full min-w-0 flex-col justify-end gap-1"
+              title={`${point.label}: ${point.views} просмотров, ${point.visitors} посетителей`}
+            >
+              <div className="flex min-h-0 flex-1 items-end justify-center gap-px">
+                <span
+                  className="min-w-0 flex-1 rounded-t bg-vio/80 transition-colors group-hover:bg-vio"
+                  style={{ height: `${Math.max(2, (point.views / max) * 100)}%` }}
+                />
+                <span
+                  className="min-w-0 flex-1 rounded-t bg-cyan-neon/60 transition-colors group-hover:bg-cyan-neon"
+                  style={{ height: `${Math.max(2, (point.visitors / max) * 100)}%` }}
+                />
+              </div>
+              <span className="block h-4 shrink-0 overflow-hidden text-ellipsis whitespace-nowrap text-center font-mono text-[8px] uppercase tracking-wide text-mute/60 md:text-[9px]">
+                {point.label}
+              </span>
             </div>
-            <span className="truncate text-center font-mono text-[8px] uppercase tracking-wide text-mute/60 md:text-[9px]">
-              {point.label}
-            </span>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );

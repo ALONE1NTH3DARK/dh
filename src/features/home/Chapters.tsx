@@ -1,25 +1,11 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useState, type ReactNode } from "react";
-import { useT } from "../i18n/useT";
-import SectionAtmosphere from "./SectionAtmosphere";
-import SectionLabel from "./SectionLabel";
-
-const EASE = [0.16, 1, 0.3, 1] as const;
-
-function Reveal({ children, delay = 0, className = "" }: { children: ReactNode; delay?: number; className?: string }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 38 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-16% 0px" }}
-      transition={{ duration: 0.95, delay, ease: EASE }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
+import Reveal from "@/components/ui/Reveal";
+import SectionAtmosphere from "@/components/ui/SectionAtmosphere";
+import SectionLabel from "@/components/ui/SectionLabel";
+import { useT } from "@/i18n/useT";
+import { EASE } from "@/lib/motion";
 
 function SpoilerButton({
   open,
@@ -89,7 +75,7 @@ export function ResultChapter() {
   const [formatOpen, setFormatOpen] = useState(false);
 
   return (
-    <section id="clients" className="relative scroll-mt-12 bg-void px-5 py-16 md:px-10 md:py-24">
+    <section id="clients" className="relative bg-void px-5 py-24 md:px-10 md:py-32">
       <SectionAtmosphere tone="cyan" dots />
 
       <div className="relative mx-auto flex w-full max-w-[1200px] flex-col gap-16 md:gap-24">

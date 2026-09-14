@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import type { ProjectFeature } from "../data/projects";
-import { useT } from "../i18n/useT";
-import ProjectAtmosphere from "./ProjectAtmosphere";
-import SectionLabel from "./SectionLabel";
-
-const EASE = [0.16, 1, 0.3, 1] as const;
+import type { ProjectFeature } from "@/data/projects";
+import { useT } from "@/i18n/useT";
+import ProjectAtmosphere from "@/features/project/ProjectAtmosphere";
+import SectionLabel from "@/components/ui/SectionLabel";
+import { EASE } from "@/lib/motion";
 
 /** Слот под gif: до 400×300, на мобиле сжимается по ширине контейнера */
 function MediaSlot({ src, alt }: { src: string; alt: string }) {
@@ -49,7 +48,7 @@ export default function ProjectFeatures({ features, slug }: Props) {
   if (!features?.length) return null;
 
   return (
-    <section className="relative overflow-hidden bg-void px-5 py-20 md:px-10 md:py-28">
+    <section className="relative overflow-hidden bg-void px-5 py-24 md:px-10 md:py-32">
       <ProjectAtmosphere slug={slug} section={2} dim />
       <div className="relative mx-auto flex w-full max-w-[1200px] flex-col gap-16 md:gap-24">
         <motion.div

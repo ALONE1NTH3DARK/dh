@@ -8,13 +8,23 @@ function prefersReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
+/** Lenis only on the homepage; ignore a leftover instance after leaving `/`. */
+function activeLenis(): Lenis | null {
+  const lenis = lenisRef.current;
+  if (!lenis) return null;
+  if (!document.documentElement.classList.contains("lenis")) {
+    lenisRef.current = null;
+    return null;
+  }
+  return lenis;
+}
+
 export function scrollY(): number {
-  return lenisRef.current?.scroll ?? window.scrollY;
+  return activeLenis()?.scroll ?? window.scrollY;
 }
 
 function elementStopTop(el: HTMLElement, y: number): number {
-  const margin = Number.parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
-  return Math.max(0, el.getBoundingClientRect().top + y - margin);
+  return Math.max(0, el.getBoundingClientRect().top + y);
 }
 
 export function scrollToId(id: string) {
@@ -26,21 +36,36 @@ export function scrollToId(id: string) {
 export function scrollToY(y: number, duration = 1.15) {
   const top = Math.max(0, y);
   const immediate = duration <= 0 || prefersReducedMotion();
-  if (lenisRef.current) {
-    lenisRef.current.scrollTo(top, immediate ? { immediate: true } : { duration, easing: SCROLL_EASE });
+  const lenis = activeLenis();
+  if (lenis) {
+    lenis.scrollTo(top, immediate ? { immediate: true } : { duration, easing: SCROLL_EASE });
     return;
   }
   window.scrollTo({ top, behavior: immediate ? "auto" : "smooth" });
 }
 
+const SKIP_HOP_IDS = new Set(["digital-card"]);
+
+function isHopSection(el: HTMLElement): boolean {
+  if (el.dataset.skipHop != null) return false;
+  if (SKIP_HOP_IDS.has(el.id)) return false;
+  if (el.getBoundingClientRect().height < 120) return false;
+  return true;
+}
+
 function stopTops(ids: string[]): number[] {
   const y = scrollY();
-  const fromIds = ids
+  const named = ids
     .map((id) => document.getElementById(id))
     .filter((el): el is HTMLElement => !!el);
-  const els = fromIds.length
-    ? fromIds
-    : [...document.querySelectorAll<HTMLElement>("main section")];
+  const sections = [...document.querySelectorAll<HTMLElement>("main section")];
+  const seen = new Set<HTMLElement>();
+  const els: HTMLElement[] = [];
+  for (const el of [...named, ...sections]) {
+    if (seen.has(el) || !isHopSection(el)) continue;
+    seen.add(el);
+    els.push(el);
+  }
   const tops = els
     .map((el) => elementStopTop(el, y))
     .filter((top) => Number.isFinite(top))
@@ -59,6 +84,8 @@ export function prevSectionTop(fromY: number, ids: string[]): number {
   for (let i = 0; i < tops.length; i++) {
     if (tops[i] <= fromY + 8) current = i;
   }
+  const currentTop = tops[current] ?? 0;
+  if (fromY - currentTop > 80) return currentTop;
   return current <= 0 ? 0 : tops[current - 1];
 }
 
