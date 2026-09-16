@@ -1,6 +1,11 @@
 <?php
 declare(strict_types=1);
 
+if (!defined('DH_API')) {
+  http_response_code(403);
+  exit;
+}
+
 /**
  * Скопируйте этот файл в admin-config.php на сервере и заполните значения.
  * admin-config.php в git не попадает и напрямую по URL не отдаётся.

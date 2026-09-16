@@ -35,32 +35,33 @@
       href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700&family=Onest:wght@300;400;500&family=JetBrains+Mono:wght@400;600&display=swap"
       rel="stylesheet"
     />
+    <script>
+      try {
+        document.documentElement.classList.add("dh-anim");
+        if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+        const hist = history.state;
+        if (hist?.usr?.scrollTo) {
+          history.replaceState({ ...hist, usr: { ...hist.usr, scrollTo: undefined } }, "");
+        }
+        const stored = localStorage.getItem("dh_theme");
+        const hour = new Date().getHours();
+        const theme =
+          stored === "light" || stored === "dark"
+            ? stored
+            : hour >= 6 && hour < 18
+              ? "light"
+              : "dark";
+        if (theme === "light") {
+          document.documentElement.dataset.theme = "light";
+          document.documentElement.style.colorScheme = "light";
+          document.querySelector('meta[name="theme-color"]')?.setAttribute("content", "#f4f1fa");
+        }
+        const storedLocale = localStorage.getItem("dh_locale");
+        document.documentElement.lang =
+          storedLocale === "en" || storedLocale === "ru" ? storedLocale : "ru";
+      } catch (e) {}
+    </script>
   </head>
-  <script>
-    try {
-      if ("scrollRestoration" in history) history.scrollRestoration = "manual";
-      const hist = history.state;
-      if (hist?.usr?.scrollTo) {
-        history.replaceState({ ...hist, usr: { ...hist.usr, scrollTo: undefined } }, "");
-      }
-      const stored = localStorage.getItem("dh_theme");
-      const hour = new Date().getHours();
-      const theme =
-        stored === "light" || stored === "dark"
-          ? stored
-          : hour >= 6 && hour < 18
-            ? "light"
-            : "dark";
-      if (theme === "light") {
-        document.documentElement.dataset.theme = "light";
-        document.documentElement.style.colorScheme = "light";
-        document.querySelector('meta[name="theme-color"]')?.setAttribute("content", "#f4f1fa");
-      }
-      const storedLocale = localStorage.getItem("dh_locale");
-      document.documentElement.lang =
-        storedLocale === "en" || storedLocale === "ru" ? storedLocale : "ru";
-    } catch (e) {}
-  </script>
   <body>
     <div id="root"></div>
     <noscript>

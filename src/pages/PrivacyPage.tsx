@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import type { ReactNode } from "react";
-import LegalLayout from "../components/LegalLayout";
-import { useT } from "../i18n/useT";
-import { SITE } from "../lib/seo";
+import LegalLayout from "@/features/legal/LegalLayout";
+import { useT } from "@/i18n/useT";
+import { SITE } from "@/lib/seo";
 
 function Block({ title, children }: { title: string; children: ReactNode }) {
   return (

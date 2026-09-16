@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { isLabCrawler } from "../lib/labCrawler";
+import { isLabCrawler } from "@/lib/labCrawler";
 
 const SCRIPT_ID = "cf-turnstile-script";
 const SCRIPT_SRC =

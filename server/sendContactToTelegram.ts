@@ -5,6 +5,41 @@ export type ContactPayload = {
   message: string;
 };
 
+export const CONTACT_MAX_BODY = 16 * 1024;
+export const CONTACT_MAX_NAME = 100;
+export const CONTACT_MAX_CONTACT = 100;
+export const CONTACT_MAX_PROJECT = 80;
+export const CONTACT_MAX_MESSAGE = 2000;
+export const CONTACT_RATE_MAX = 5;
+export const CONTACT_RATE_WINDOW_MS = 60 * 60 * 1000;
+
+const TURNSTILE_HOSTS = new Set([
+  "darkhorse.kz",
+  "www.darkhorse.kz",
+  "localhost",
+  "127.0.0.1",
+]);
+
+const contactHits = new Map<string, number[]>();
+
+export function allowContactIpRate(ip: string): boolean {
+  const key = ip || "unknown";
+  const now = Date.now();
+  const prev = (contactHits.get(key) ?? []).filter((stamp) => now - stamp < CONTACT_RATE_WINDOW_MS);
+  if (prev.length >= CONTACT_RATE_MAX) {
+    contactHits.set(key, prev);
+    return false;
+  }
+  prev.push(now);
+  contactHits.set(key, prev);
+  return true;
+}
+
+export function isAllowedTurnstileHostname(hostname: string | undefined): boolean {
+  if (!hostname) return false;
+  return TURNSTILE_HOSTS.has(hostname.toLowerCase().split(":")[0] ?? "");
+}
+
 export function buildContactMessage(payload: ContactPayload): string {
   return [
     "🆕 Новая заявка с сайта",
@@ -62,8 +97,8 @@ export async function verifyTurnstileToken(
 
   if (!response.ok) return false;
 
-  const result = (await response.json()) as { success?: boolean };
-  return Boolean(result.success);
+  const result = (await response.json()) as { success?: boolean; hostname?: string };
+  return Boolean(result.success) && isAllowedTurnstileHostname(result.hostname);
 }
 
 export function parseContactPayload(body: unknown): ContactPayload | null {
@@ -76,6 +111,14 @@ export function parseContactPayload(body: unknown): ContactPayload | null {
   const message = String(data.message ?? "").trim();
 
   if (!name || !contact) return null;
+  if (
+    name.length > CONTACT_MAX_NAME ||
+    contact.length > CONTACT_MAX_CONTACT ||
+    project.length > CONTACT_MAX_PROJECT ||
+    message.length > CONTACT_MAX_MESSAGE
+  ) {
+    return null;
+  }
 
   return { name, contact, project, message };
 }

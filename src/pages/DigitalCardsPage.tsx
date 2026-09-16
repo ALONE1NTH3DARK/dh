@@ -1,13 +1,12 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import { ArrowLeft, Link2, QrCode, Share2, Smartphone, Sparkles, Zap } from "lucide-react";
 import PageShell from "@/components/layout/PageShell";
+import Reveal from "@/components/ui/Reveal";
 import SectionAtmosphere from "@/components/ui/SectionAtmosphere";
 import SectionLabel from "@/components/ui/SectionLabel";
 import DigitalCardPhone from "@/features/digital-cards/DigitalCardPhone";
 import { useT } from "@/i18n/useT";
-import { EASE } from "@/lib/motion";
 
 const WHY_ICONS = [Smartphone, Sparkles, Zap] as const;
 const CHIP_ICONS = [QrCode, Link2, Share2] as const;
@@ -39,11 +38,7 @@ export default function DigitalCardsPage() {
           <SectionAtmosphere tone="cyan" grid />
 
           <div className="relative mx-auto grid w-full max-w-[1200px] items-center gap-12 px-5 pb-16 md:px-10 md:pb-24 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: EASE }}
-            >
+            <Reveal from="left">
               <Link
                 to="/"
                 state={{ scrollTo: "digital-card" }}
@@ -68,29 +63,24 @@ export default function DigitalCardsPage() {
               <p className="mt-6 max-w-2xl text-base leading-relaxed text-mute md:text-lg">
                 {t.cards.lead}
               </p>
-            </motion.div>
+            </Reveal>
 
-            <motion.div
-              initial={{ opacity: 0, y: 28 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.12, ease: EASE }}
-              className="hidden justify-center md:flex lg:justify-end"
-            >
+            <Reveal delay={0.12} from="left" className="hidden justify-center md:flex lg:justify-end">
               <DigitalCardPhone />
-            </motion.div>
+            </Reveal>
           </div>
         </section>
 
         {/* What */}
         <section className="border-t border-white/[0.07] px-5 py-24 md:px-10 md:py-32">
           <div className="mx-auto grid w-full max-w-[1100px] gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
-            <div>
+            <Reveal from="left">
               <SectionLabel>{t.cards.whatLabel}</SectionLabel>
               <h2 className="mt-0 font-display text-[clamp(1.95rem,4.5vw,2.6rem)] font-semibold uppercase leading-[1.20]">
                 {t.cards.whatTitle}
               </h2>
-            </div>
-            <div className="space-y-5 text-base leading-relaxed text-mute md:text-lg">
+            </Reveal>
+            <Reveal delay={0.12} from="left" className="space-y-5 text-base leading-relaxed text-mute md:text-lg">
               <p>{t.cards.whatP1}</p>
               <p>{t.cards.whatP2}</p>
               <div className="flex flex-wrap gap-3 pt-2">
@@ -107,60 +97,59 @@ export default function DigitalCardsPage() {
                   );
                 })}
               </div>
-            </div>
+            </Reveal>
           </div>
         </section>
 
         {/* Why */}
         <section className="border-t border-white/[0.07] bg-void-2/40 px-5 py-24 md:px-10 md:py-32">
           <div className="mx-auto w-full max-w-[1100px]">
-            <SectionLabel>{t.cards.whyLabel}</SectionLabel>
-            <h2 className="mt-0 max-w-xl font-display text-[clamp(1.95rem,4.5vw,2.6rem)] font-semibold uppercase leading-[1.20]">
-              {t.cards.whyTitle}
-            </h2>
+            <Reveal>
+              <SectionLabel>{t.cards.whyLabel}</SectionLabel>
+              <h2 className="mt-0 max-w-xl font-display text-[clamp(1.95rem,4.5vw,2.6rem)] font-semibold uppercase leading-[1.20]">
+                {t.cards.whyTitle}
+              </h2>
+            </Reveal>
 
-            <div className="mt-12 grid gap-5 md:grid-cols-3">
+            <Reveal from="left">
+            <div data-reveal-group className="mt-12 grid gap-5 md:grid-cols-3">
               {t.cards.why.map((item, i) => {
                 const Icon = WHY_ICONS[i];
                 return (
-                <motion.div
+                <div
                   key={item.title}
-                  initial={{ opacity: 0, y: 28 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-10% 0px" }}
-                  transition={{ duration: 0.7, delay: 0.08 * i, ease: EASE }}
                   className="rounded-2xl border border-white/[0.08] bg-void/60 p-6 md:p-7"
                 >
-                  <Icon className="mb-4 size-5 text-cyan-neon" />
+                  <Icon data-reveal-pop className="mb-4 size-5 text-cyan-neon" />
                   <h3 className="font-display text-base font-medium text-ink md:text-lg">
                     {item.title}
                   </h3>
                   <p className="mt-2 text-sm leading-relaxed text-mute md:text-[15px]">
                     {item.text}
                   </p>
-                </motion.div>
+                </div>
                 );
               })}
             </div>
+            </Reveal>
           </div>
         </section>
 
         {/* How */}
         <section className="border-t border-white/[0.07] px-5 py-24 md:px-10 md:py-32">
           <div className="mx-auto w-full max-w-[1100px]">
-            <SectionLabel>{t.cards.howLabel}</SectionLabel>
-            <h2 className="mt-0 max-w-xl font-display text-[clamp(1.95rem,4.5vw,2.6rem)] font-semibold uppercase leading-[1.20]">
-              {t.cards.howTitle}
-            </h2>
+            <Reveal>
+              <SectionLabel>{t.cards.howLabel}</SectionLabel>
+              <h2 className="mt-0 max-w-xl font-display text-[clamp(1.95rem,4.5vw,2.6rem)] font-semibold uppercase leading-[1.20]">
+                {t.cards.howTitle}
+              </h2>
+            </Reveal>
 
-            <ol className="mt-12 grid gap-6 md:grid-cols-3 md:gap-8">
+            <Reveal from="left">
+            <ol data-reveal-group className="mt-12 grid gap-6 md:grid-cols-3 md:gap-8">
               {t.cards.how.map((step, i) => (
-                <motion.li
+                <li
                   key={step.title}
-                  initial={{ opacity: 0, y: 28 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-10% 0px" }}
-                  transition={{ duration: 0.7, delay: 0.08 * i, ease: EASE }}
                   className="relative border-t border-white/10 pt-6"
                 >
                   <span className="font-mono text-xs text-vio">{String(i + 1).padStart(2, "0")}</span>
@@ -170,31 +159,33 @@ export default function DigitalCardsPage() {
                   <p className="mt-2 text-sm leading-relaxed text-mute md:text-[15px]">
                     {step.text}
                   </p>
-                </motion.li>
+                </li>
               ))}
             </ol>
+            </Reveal>
           </div>
         </section>
 
         {/* Gallery */}
         <section id="gallery" className="border-t border-white/[0.07] px-5 py-24 md:px-10 md:py-32">
           <div className="mx-auto w-full max-w-[1200px]">
-            <SectionLabel>{t.cards.galleryLabel}</SectionLabel>
-            <h2 className="mt-0 max-w-xl font-display text-[clamp(1.95rem,4.5vw,2.6rem)] font-semibold uppercase leading-[1.20]">
-              {t.cards.galleryTitle}
-            </h2>
-            <p className="mt-4 max-w-lg text-base text-mute">
-              {t.cards.galleryLead}
-            </p>
+            <Reveal>
+              <SectionLabel>{t.cards.galleryLabel}</SectionLabel>
+              <h2 className="mt-0 max-w-xl font-display text-[clamp(1.95rem,4.5vw,2.6rem)] font-semibold uppercase leading-[1.20]">
+                {t.cards.galleryTitle}
+              </h2>
+              <p className="mt-4 max-w-lg text-base text-mute">
+                {t.cards.galleryLead}
+              </p>
+            </Reveal>
 
             <div className="mt-12 columns-1 gap-4 sm:columns-2 lg:columns-3">
               {GALLERY.map((item, i) => (
-                <motion.div
+                <Reveal
                   key={item.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-8% 0px" }}
-                  transition={{ duration: 0.6, delay: 0.04 * i, ease: EASE }}
+                  solid
+                  delay={0.12 * i}
+                  from="left"
                   className={`mb-4 break-inside-avoid overflow-hidden rounded-2xl border border-white/[0.08] bg-void-2 ${item.h}`}
                 >
                   <div className="flex h-full flex-col items-center justify-center gap-2 bg-[linear-gradient(160deg,rgba(124,108,255,0.12),transparent_55%),linear-gradient(340deg,rgba(95,227,255,0.08),transparent_40%)]">
@@ -205,7 +196,7 @@ export default function DigitalCardsPage() {
                       {t.cards.example} 0{item.id}
                     </span>
                   </div>
-                </motion.div>
+                </Reveal>
               ))}
             </div>
           </div>
@@ -213,7 +204,7 @@ export default function DigitalCardsPage() {
 
         {/* CTA */}
         <section className="border-t border-white/[0.07] px-5 py-24 md:px-10 md:py-32">
-          <div className="mx-auto max-w-[700px] text-center">
+          <Reveal from="fold" className="mx-auto max-w-[700px] text-center">
             <h2 className="font-display text-[clamp(1.95rem,5vw,2.8rem)] font-semibold uppercase leading-[1.20]">
               {t.cards.ctaTitle}
               <span className="text-gradient-neon">{t.cards.ctaAccent}</span>?
@@ -229,7 +220,7 @@ export default function DigitalCardsPage() {
             >
               {t.cards.discuss}
             </Link>
-          </div>
+          </Reveal>
         </section>
       </main>
     </PageShell>

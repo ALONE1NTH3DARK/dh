@@ -30,7 +30,6 @@
 
   --animate-marquee: marquee 60s linear infinite;
   --animate-scroll-dash: scroll-dash 2.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
-  --animate-play-wave: play-wave 2.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
   --animate-fab-telegram-enter: fab-telegram-enter 0.45s 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
   --animate-fab-totop-enter: fab-totop-enter 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
   --animate-fab-totop-exit: fab-totop-exit 0.18s ease-out both;
@@ -60,17 +59,6 @@
     100% {
       transform: scaleY(0);
       transform-origin: bottom;
-    }
-  }
-
-  @keyframes play-wave {
-    0% {
-      transform: scale(1);
-      opacity: 0.55;
-    }
-    100% {
-      transform: scale(2.6);
-      opacity: 0;
     }
   }
 
@@ -360,15 +348,6 @@ h4 {
     -webkit-text-stroke-width: 2px;
   }
 }
-.text-stroke-vio {
-  -webkit-text-stroke: 1.5px rgba(124, 108, 255, 0.9);
-  color: transparent;
-}
-@media (min-width: 768px) {
-  .text-stroke-vio {
-    -webkit-text-stroke-width: 2px;
-  }
-}
 .text-stroke-ghost {
   -webkit-text-stroke: 1px color-mix(in srgb, var(--color-ink) 16%, transparent);
   color: transparent;
@@ -435,9 +414,31 @@ h4 {
     radial-gradient(ellipse at 50% 0%, rgba(95, 227, 255, 0.07), transparent 60%);
 }
 
+/* ------- появление секций ------- */
+
+/*
+  Стартовое состояние держим в CSS, а не в разметке: предрендеренный HTML
+  и страница без JS остаются видимыми, класс на html ставит инлайн-скрипт.
+*/
+html.dh-anim [data-reveal-root],
+html.dh-anim [data-reveal-hide] {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.dh-anim [data-reveal-root],
+  html.dh-anim [data-reveal-hide] {
+    opacity: 1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-fab-telegram-enter,
-  .animate-fab-totop-enter {
+  .animate-fab-totop-enter,
+  .animate-marquee,
+  .animate-scroll-dash,
+  .animate-bounce,
+  .animate-pulse {
     animation: none;
   }
 

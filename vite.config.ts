@@ -1,19 +1,32 @@
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import type { IncomingMessage } from "node:http";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { defineConfig, loadEnv, type Plugin } from "vite";
 import { analyticsDevApi } from "./server/analyticsDevApi";
 import {
+  allowContactIpRate,
+  CONTACT_MAX_BODY,
   parseContactPayload,
   parseTurnstileToken,
   sendContactToTelegram,
   verifyTurnstileToken,
 } from "./server/sendContactToTelegram";
 
-function readBody(req: IncomingMessage): Promise<string> {
+function readBody(req: IncomingMessage, maxBytes: number): Promise<string> {
   return new Promise((resolve, reject) => {
     const chunks: Buffer[] = [];
-    req.on("data", (chunk) => chunks.push(Buffer.from(chunk)));
+    let size = 0;
+    req.on("data", (chunk) => {
+      size += Buffer.byteLength(chunk);
+      if (size > maxBytes) {
+        req.destroy();
+        reject(new Error("too large"));
+        return;
+      }
+      chunks.push(Buffer.from(chunk));
+    });
     req.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
     req.on("error", reject);
   });
@@ -30,6 +43,12 @@ function contactApiPlugin(env: Record<string, string>): Plugin {
           return;
         }
 
+        const send = (status: number, body: unknown) => {
+          res.statusCode = status;
+          res.setHeader("Content-Type", "application/json");
+          res.end(JSON.stringify(body));
+        };
+
         if (req.method === "OPTIONS") {
           res.statusCode = 204;
           res.end();
@@ -37,9 +56,7 @@ function contactApiPlugin(env: Record<string, string>): Plugin {
         }
 
         if (req.method !== "POST") {
-          res.statusCode = 405;
-          res.setHeader("Content-Type", "application/json");
-          res.end(JSON.stringify({ ok: false, error: "Method not allowed" }));
+          send(405, { ok: false, error: "Method not allowed" });
           return;
         }
 
@@ -48,38 +65,30 @@ function contactApiPlugin(env: Record<string, string>): Plugin {
         const turnstileSecret = env.TURNSTILE_SECRET_KEY;
 
         if (!token || !chatId || !turnstileSecret) {
-          res.statusCode = 500;
-          res.setHeader("Content-Type", "application/json");
-          res.end(JSON.stringify({ ok: false, error: "Server is not configured" }));
+          send(500, { ok: false, error: "Server is not configured" });
           return;
         }
 
         try {
-          const raw = await readBody(req);
+          const raw = await readBody(req, CONTACT_MAX_BODY);
           const body = JSON.parse(raw);
           const payload = parseContactPayload(body);
           const turnstileToken = parseTurnstileToken(body);
 
           if (!payload) {
-            res.statusCode = 400;
-            res.setHeader("Content-Type", "application/json");
-            res.end(
-              JSON.stringify({ ok: false, error: "Name and contact are required" })
-            );
+            send(400, { ok: false, error: "Name and contact are required" });
             return;
           }
 
           if (!turnstileToken) {
-            res.statusCode = 400;
-            res.setHeader("Content-Type", "application/json");
-            res.end(JSON.stringify({ ok: false, error: "Turnstile token missing" }));
+            send(400, { ok: false, error: "Turnstile token missing" });
             return;
           }
 
+          const forwardedCf = req.headers["cf-connecting-ip"];
           const remoteip =
-            (typeof req.headers["x-forwarded-for"] === "string"
-              ? req.headers["x-forwarded-for"].split(",")[0]?.trim()
-              : undefined) || req.socket.remoteAddress;
+            (typeof forwardedCf === "string" ? forwardedCf.split(",")[0]?.trim() : undefined) ||
+            req.socket.remoteAddress;
 
           const turnstileOk = await verifyTurnstileToken(
             turnstileToken,
@@ -88,41 +97,47 @@ function contactApiPlugin(env: Record<string, string>): Plugin {
           );
 
           if (!turnstileOk) {
-            res.statusCode = 403;
-            res.setHeader("Content-Type", "application/json");
-            res.end(
-              JSON.stringify({ ok: false, error: "Turnstile verification failed" })
-            );
+            send(403, { ok: false, error: "Turnstile verification failed" });
+            return;
+          }
+
+          if (!allowContactIpRate(remoteip || "unknown")) {
+            send(429, { ok: false, error: "Too many requests" });
             return;
           }
 
           const result = await sendContactToTelegram(payload, { token, chatId });
 
           if (!result.ok) {
-            res.statusCode = 502;
-            res.setHeader("Content-Type", "application/json");
-            res.end(JSON.stringify({ ok: false, error: "Failed to deliver message" }));
+            send(502, { ok: false, error: "Failed to deliver message" });
             return;
           }
 
-          res.statusCode = 200;
-          res.setHeader("Content-Type", "application/json");
-          res.end(JSON.stringify({ ok: true }));
-        } catch {
-          res.statusCode = 400;
-          res.setHeader("Content-Type", "application/json");
-          res.end(JSON.stringify({ ok: false, error: "Invalid JSON" }));
+          send(200, { ok: true });
+        } catch (error) {
+          if (error instanceof Error && error.message === "too large") {
+            send(413, { ok: false, error: "Payload too large" });
+            return;
+          }
+          send(400, { ok: false, error: "Invalid JSON" });
         }
       });
     },
   };
 }
 
+const rootDir = path.dirname(fileURLToPath(import.meta.url));
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
 
   return {
     plugins: [react(), tailwindcss(), contactApiPlugin(env), analyticsDevApi(env)],
+    resolve: {
+      alias: {
+        "@": path.resolve(rootDir, "src"),
+      },
+    },
     appType: "spa",
     ssr: {
       noExternal: ["react-router", "react-router-dom", "framer-motion", "lenis"],

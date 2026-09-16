@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
 import type { ProjectFeature } from "@/data/projects";
 import { useT } from "@/i18n/useT";
 import ProjectAtmosphere from "@/features/project/ProjectAtmosphere";
+import Reveal from "@/components/ui/Reveal";
 import SectionLabel from "@/components/ui/SectionLabel";
-import { EASE } from "@/lib/motion";
 
 /** Слот под gif: до 400×300, на мобиле сжимается по ширине контейнера */
 function MediaSlot({ src, alt }: { src: string; alt: string }) {
@@ -19,6 +18,7 @@ function MediaSlot({ src, alt }: { src: string; alt: string }) {
         width={400}
         height={300}
         className={`absolute inset-0 h-full w-full object-cover ${ok ? "opacity-100" : "opacity-0"}`}
+        data-reveal-media
         onLoad={() => setOk(true)}
         onError={() => setOk(false)}
       />
@@ -51,29 +51,21 @@ export default function ProjectFeatures({ features, slug }: Props) {
     <section className="relative overflow-hidden bg-void px-5 py-24 md:px-10 md:py-32">
       <ProjectAtmosphere slug={slug} section={2} dim />
       <div className="relative mx-auto flex w-full max-w-[1200px] flex-col gap-16 md:gap-24">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, ease: EASE }}
-          className="text-center"
-        >
+        <Reveal className="text-center">
           <SectionLabel center>{t.project.featuresLabel}</SectionLabel>
           <h2 className="font-display text-[clamp(2.2rem,5.2vw,3.2rem)] font-semibold uppercase leading-[1.20] text-pretty">
             {t.project.featuresTitle}<span className="text-stroke">{t.project.featuresStroke}</span>{" "}
             <span className="text-gradient-neon">{t.project.featuresAccent}</span>
           </h2>
-        </motion.div>
+        </Reveal>
 
         {features.map((f, i) => {
           const mediaLeft = i % 2 === 1;
           return (
-            <motion.div
+            <Reveal
               key={`${f.title}-${i}`}
-              initial={{ opacity: 0, y: 28 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-8% 0px" }}
-              transition={{ duration: 0.7, delay: 0.04 * i, ease: EASE }}
+              delay={0.08 * i}
+              from="left"
               className={`grid min-w-0 items-center gap-8 lg:gap-14 ${
                 mediaLeft ? "lg:grid-cols-[2fr_3fr]" : "lg:grid-cols-[3fr_2fr]"
               }`}
@@ -107,7 +99,7 @@ export default function ProjectFeatures({ features, slug }: Props) {
               >
                 <MediaSlot src={f.media} alt={f.title} />
               </div>
-            </motion.div>
+            </Reveal>
           );
         })}
       </div>

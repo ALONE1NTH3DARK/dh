@@ -1,25 +1,19 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { gsap } from "gsap";
 import { ArrowRight, ChevronRight, Play } from "lucide-react";
-import { useT } from "../i18n/useT";
-import { scrollToId } from "../lib/scrollState";
-import HeroBackground from "./HeroBackground";
-import ProjectVideoPlayer from "./ProjectVideoPlayer";
-import SectionLabel from "./SectionLabel";
+import { useT } from "@/i18n/useT";
+import { scrollToId } from "@/lib/scrollState";
+import HeroBackground from "@/features/home/HeroBackground";
+import ProjectVideoPlayer from "@/features/project/ProjectVideoPlayer";
+import SectionLabel from "@/components/ui/SectionLabel";
+import { EASE } from "@/lib/motion";
+import {
+  EASE as GSAP_EASE,
+  prefersReducedMotion,
+} from "@/lib/reveal";
 
-const EASE = [0.16, 1, 0.3, 1] as const;
-
-const reveal = (delay: number) => ({
-  initial: { opacity: 0, y: 40, filter: "blur(12px)" },
-  animate: {
-    opacity: 1,
-    y: 0,
-    filter: "blur(0px)",
-    // Снимаем filter после появления, иначе слой остаётся размываемым
-    transitionEnd: { filter: "none" },
-  },
-  transition: { duration: 1.2, delay, ease: EASE },
-});
+const useStageEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 const CTA_PRIMARY =
   "group flex items-center justify-center gap-3 rounded-full bg-ink px-6 py-3.5 font-mono text-[14px] font-semibold uppercase tracking-[2px] text-void transition-all duration-300 hover:bg-vio hover:text-ink hover:shadow-[0_0_45px_rgba(124,108,255,0.5)] md:px-7 md:py-4";
@@ -33,6 +27,67 @@ export default function Hero() {
     () => typeof window !== "undefined" && window.matchMedia("(min-width: 768px)").matches
   );
   const sectionRef = useRef<HTMLElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+
+  /**
+   * Вход первого экрана: блоки по очереди выезжают снизу.
+   * Строки заголовка едут так же, но ещё проявляются из размытия.
+   */
+  useStageEffect(() => {
+    const stage = stageRef.current;
+    if (!stage) return;
+
+    const pick = (name: string) => stage.querySelector<HTMLElement>(`[data-hero-in="${name}"]`);
+    const lines = [...stage.querySelectorAll<HTMLElement>("[data-hero-line]")];
+    const rule = stage.querySelector<HTMLElement>("[data-reveal-line]");
+    const label = pick("label");
+    const play = pick("play");
+    const lead = pick("lead");
+    const cta = pick("cta");
+    const parts = [label, play, lead, cta].filter((el): el is HTMLElement => el !== null);
+
+    if (prefersReducedMotion()) {
+      gsap.set([...lines, ...parts], { opacity: 1, filter: "none" });
+      return;
+    }
+
+    const rise = 44;
+
+    gsap.set(lines, {
+      opacity: 0,
+      y: rise,
+      filter: "blur(20px)",
+    });
+    gsap.set(parts, { opacity: 0, y: rise });
+    if (rule) gsap.set(rule, { scaleX: 0 });
+
+    // clearProps без opacity: инлайн-прозрачность держит содержимое видимым
+    // поверх стартового правила в CSS.
+    const tl = gsap.timeline({ defaults: { ease: GSAP_EASE } });
+    if (label) tl.to(label, { opacity: 1, y: 0, duration: 0.98, clearProps: "transform" }, 0.06);
+    if (play) tl.to(play, { opacity: 1, y: 0, duration: 0.98, clearProps: "transform" }, 0.1);
+    if (rule) {
+      tl.to(rule, { scaleX: 1, duration: 1, transformOrigin: "left center" }, 0.12);
+    }
+    tl.to(
+      lines,
+      {
+        opacity: 1,
+        y: 0,
+        filter: "blur(0px)",
+        duration: 1.28,
+        stagger: 0.13,
+        clearProps: "transform,filter",
+      },
+      0.16
+    );
+    if (lead) tl.to(lead, { opacity: 1, y: 0, duration: 1.08, clearProps: "transform" }, 0.58);
+    if (cta) tl.to(cta, { opacity: 1, y: 0, duration: 1.08, clearProps: "transform" }, 0.72);
+
+    return () => {
+      tl.kill();
+    };
+  }, []);
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 768px)");
@@ -69,7 +124,7 @@ export default function Hero() {
             ? { opacity: 0, scale: 0.85 }
             : { opacity: 1, scale: 1 }
         }
-        transition={{ duration: watching ? 0.35 : 0.8, delay: watching ? 0 : 0.4, ease: EASE }}
+        transition={{ duration: watching ? 0.35 : 0.8, delay: watching ? 0 : 0.55, ease: EASE }}
         onClick={() => setWatching(true)}
         data-track="Герой — Смотреть шоурил"
         aria-label={t.hero.watchVideo}
@@ -140,49 +195,63 @@ export default function Hero() {
 
       {/* Главный экран уезжает вправо на ~50% */}
       <motion.div
+        ref={stageRef}
         className="relative z-10 mx-auto flex min-h-dvh w-full max-w-[1200px] flex-col items-center justify-center px-5 pb-20 pt-28 text-center md:items-start md:px-10 md:pb-24 md:pt-32 md:text-left"
         initial={false}
         animate={{ x: watching ? (isMd ? "50%" : "100%") : "0%" }}
         transition={{ duration: 0.9, ease: EASE }}
       >
         <div className="mb-6 flex w-full items-center justify-between md:mb-8 md:justify-start">
-          <motion.div {...reveal(0.15)}>
+          <div data-hero-in="label" data-reveal-hide>
             <SectionLabel className="mb-0">{t.hero.agency}</SectionLabel>
-          </motion.div>
-          <motion.button
+          </div>
+          <button
             type="button"
-            {...reveal(0.05)}
+            data-hero-in="play"
+            data-reveal-hide
             onClick={() => setWatching(true)}
             data-track="Герой — Смотреть шоурил"
             aria-label={t.hero.watchVideo}
             className="grid size-14 shrink-0 place-items-center rounded-full bg-ink text-void shadow-[0_12px_36px_rgba(0,0,0,0.35)] transition-colors hover:bg-vio hover:text-ink light:shadow-[0_10px_28px_rgba(24,21,31,0.12)] md:hidden"
           >
             <Play className="size-5 translate-x-px fill-current" strokeWidth={1.75} />
-          </motion.button>
+          </button>
         </div>
 
         <h1 className="font-display text-[clamp(2.2rem,6.4vw,5rem)] font-semibold uppercase leading-[1.20] tracking-tight">
-          <motion.span {...reveal(0.3)} className="block text-ink">
+          <span data-hero-line data-reveal-hide className="block text-ink">
             {t.hero.line1}
-          </motion.span>
-          <motion.span {...reveal(0.45)} className="block">
+          </span>
+          <span data-hero-line data-reveal-hide className="block">
             <span className="text-ink">{t.hero.line2Before}</span>
             <span className="text-stroke">{t.hero.line2Stroke}</span>
-          </motion.span>
-          <motion.span {...reveal(0.6)} className="text-gradient-hero mx-auto block w-fit md:mx-0">
+          </span>
+          <span
+            data-hero-line
+            data-reveal-hide
+            className="text-gradient-hero mx-auto block w-fit md:mx-0"
+          >
             {t.hero.line3}
-          </motion.span>
+          </span>
         </h1>
 
         <div className="mt-6 flex flex-col gap-6 md:mt-8 md:gap-7">
-          <motion.p {...reveal(0.8)} className="max-w-[36rem] text-[19px] leading-relaxed text-mute">
+          <p
+            data-hero-in="lead"
+            data-reveal-hide
+            className="max-w-[36rem] text-[19px] leading-relaxed text-mute"
+          >
             {t.hero.lead}
             <span className="mt-1 block text-ink">
               {t.hero.leadAccent}
             </span>
-          </motion.p>
+          </p>
 
-          <motion.div {...reveal(0.95)} className="flex max-w-full flex-wrap items-center justify-center gap-4 md:justify-start">
+          <div
+            data-hero-in="cta"
+            data-reveal-hide
+            className="flex max-w-full flex-wrap items-center justify-center gap-4 md:justify-start"
+          >
             <button
               type="button"
               onClick={() => scrollToId("#portfolio")}
@@ -199,7 +268,7 @@ export default function Hero() {
             >
               {t.hero.discuss}
             </button>
-          </motion.div>
+          </div>
         </div>
       </motion.div>
 
@@ -225,9 +294,9 @@ export default function Hero() {
       </motion.button>
 
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: watching ? 0 : 1 }}
-        transition={{ duration: 0.5 }}
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: watching ? 0 : 1, y: watching ? 12 : 0 }}
+        transition={{ duration: 0.8, delay: watching ? 0 : 0.88, ease: EASE }}
         className="pointer-events-none absolute inset-x-5 bottom-[max(1.25rem,env(safe-area-inset-bottom,0px))] z-10 hidden justify-center md:inset-x-10 md:bottom-7 md:flex"
       >
         <div className="flex items-center gap-4">

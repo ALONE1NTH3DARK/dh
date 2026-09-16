@@ -3,10 +3,6 @@
     {
       "source": "/api/contact.php",
       "destination": "/api/contact"
-    },
-    {
-      "source": "/((?!api/|robots\\.txt|sitemap\\.xml).*)",
-      "destination": "/index.html"
     }
   ]
 }

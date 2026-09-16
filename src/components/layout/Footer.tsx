@@ -1,13 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useT } from "../i18n/useT";
-import { scrollToId } from "../lib/scrollState";
-
-const SOCIAL = [
-  { label: "Instagram", href: "https://instagram.com/darkhorse_webagency" },
-  { label: "Telegram", href: "https://t.me/darkhorse_webagency" },
-  { label: "WhatsApp", href: "https://wa.me/77070701337" },
-];
+import { useT } from "@/i18n/useT";
+import { SITE } from "@/lib/seo";
+import { scrollToId } from "@/lib/scrollState";
+import Reveal from "@/components/ui/Reveal";
 
 /** Подгоняет текст ровно по ширине контейнера. */
 function FitWidthWordmark({
@@ -90,7 +86,7 @@ export default function Footer() {
       />
       {/* Как хедер: max-w-[1600px] + px-5/md:px-10 — от логотипа до «Связаться» */}
       <div className="relative mx-auto w-full max-w-[1600px] px-5 md:px-10">
-        <div className="relative z-30 flex flex-col gap-8 md:flex-row md:items-center md:justify-between md:gap-16">
+        <Reveal from="fold" className="relative z-30 flex flex-col gap-8 md:flex-row md:items-center md:justify-between md:gap-16">
           <div className="min-w-0 flex-1">
             <Link
               to="/"
@@ -116,53 +112,26 @@ export default function Footer() {
               +7 70 70 70 13 37
             </a>
 
-            <div className="group relative mt-1">
-              <button
-                type="button"
-                className="bg-ink px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.3em] text-void md:text-xs"
-                aria-haspopup="menu"
-                aria-label={t.footer.social}
-              >
-                @DARKHORSE_WEBAGENCY
-              </button>
-
-              <div
-                role="menu"
-                className="invisible absolute right-0 top-full z-40 min-w-full opacity-0 transition-opacity duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
-              >
-                <div className="border border-ink/20 bg-void-2 py-0.5 light:border-black/10">
-                  {SOCIAL.map((item) => (
-                    <a
-                      key={item.label}
-                      role="menuitem"
-                      href={item.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      data-track={`Футер — ${item.label}`}
-                      className="block px-1.5 py-0.5 font-mono text-[11px] uppercase tracking-[0.18em] text-ink transition-colors hover:bg-ink hover:text-void"
-                    >
-                      {item.label}
-                    </a>
-                  ))}
-                </div>
-              </div>
-            </div>
+            <SocialMenu />
 
             <p className="mt-2 text-[15px] text-mute/45 light:text-mute/70">
               {t.footer.tagline}
             </p>
           </div>
-        </div>
+        </Reveal>
 
         {/* Низ */}
-        <div className="relative z-10 mt-8 flex flex-col items-center justify-between gap-4 border-t border-white/[0.06] py-6 text-center light:border-black/[0.06] md:mt-10 md:flex-row md:text-left">
+        <Reveal
+          delay={0.1}
+          className="relative z-10 mt-8 flex flex-col items-center justify-between gap-4 border-t border-white/[0.06] py-6 text-center light:border-black/[0.06] md:mt-10 md:flex-row md:text-left"
+        >
           <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-mute">
             © {new Date().getFullYear()} Darkhorse · {t.footer.rights}
           </p>
 
           <nav className="flex flex-wrap items-center justify-center gap-x-2 gap-y-2 md:justify-end">
             <a
-              href="mailto:hello@darkhorse.kz"
+              href={`mailto:${SITE.email}`}
               data-track="Футер — Почта"
               className="font-mono text-[10px] uppercase tracking-[0.22em] text-mute transition-colors hover:text-ink"
             >
@@ -187,8 +156,65 @@ export default function Footer() {
               {t.footer.sitemap}
             </Link>
           </nav>
-        </div>
+        </Reveal>
       </div>
     </footer>
+  );
+}
+
+function SocialMenu() {
+  const t = useT();
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onPointer = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointer);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onPointer);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  return (
+    <div ref={rootRef} className="relative mt-1">
+      <button
+        type="button"
+        onClick={() => setOpen((value) => !value)}
+        className="bg-ink px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.3em] text-void md:text-xs"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        aria-label={t.footer.social}
+      >
+        @DARKHORSE_WEBAGENCY
+      </button>
+
+      {open ? (
+        <div role="menu" className="absolute right-0 top-full z-40 min-w-full">
+          <div className="border border-ink/20 bg-void-2 py-0.5 light:border-black/10">
+            {SITE.social.map((item) => (
+              <a
+                key={item.label}
+                role="menuitem"
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-track={`Футер — ${item.label}`}
+                className="block px-1.5 py-0.5 font-mono text-[11px] uppercase tracking-[0.18em] text-ink transition-colors hover:bg-ink hover:text-void"
+              >
+                {item.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      ) : null}
+    </div>
   );
 }

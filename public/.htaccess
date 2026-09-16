@@ -1,3 +1,5 @@
+ErrorDocument 404 /404.html
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
@@ -5,6 +7,7 @@
   # Google PageSpeed / Lighthouse / Search — не переписывать служебные файлы в SPA
   RewriteRule ^robots\.txt$ - [L]
   RewriteRule ^sitemap\.xml$ - [L]
+  RewriteRule ^404\.html$ - [L]
 
   RewriteRule ^api/telegram-config\.php$ - [F,L]
   RewriteRule ^api/admin-config\.php$ - [F,L]
@@ -16,7 +19,7 @@
   RewriteRule ^(.+?)/?$ $1/index.html [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule . /index.html [L]
+  RewriteRule ^ - [R=404,L]
 </IfModule>
 
 # Метка для хостинга/WAF: эти UA — легитимные краулеры Google, не банить

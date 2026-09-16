@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState, type TransitionEvent } from "react";
-import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Quote, Send, Star } from "lucide-react";
 import { useT } from "@/i18n/useT";
+import CountUp from "@/components/ui/CountUp";
+import Reveal from "@/components/ui/Reveal";
 import SectionLabel from "@/components/ui/SectionLabel";
 
 const META = [
@@ -32,7 +33,6 @@ const META = [
   },
 ] as const;
 
-const EASE = [0.22, 1, 0.36, 1] as const;
 const INTERVAL = 6000;
 const CARD_MAX = 680;
 const GAP = 28;
@@ -152,13 +152,7 @@ export default function Testimonials() {
       className="relative overflow-hidden border-t border-white/[0.07] bg-void py-24 md:py-32"
     >
       <div className="relative mx-auto mb-12 w-full max-w-[1200px] px-5 md:px-10">
-        <motion.div
-          initial={{ opacity: 0, y: 32 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-12% 0px" }}
-          transition={{ duration: 0.9, ease: EASE }}
-          className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between"
-        >
+        <Reveal className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
             <SectionLabel>{t.reviews.label}</SectionLabel>
             <h2 className="font-display text-[clamp(2.2rem,5.4vw,3.6rem)] font-semibold uppercase leading-[1.20]">
@@ -167,8 +161,8 @@ export default function Testimonials() {
           </div>
 
           <div className="flex items-center gap-4 md:pb-1">
-            <span className="font-display text-2xl font-semibold text-ink md:text-3xl">
-              4.6
+            <span className="font-display text-2xl font-semibold text-ink tabular-nums md:text-3xl">
+              <CountUp value={4.6} decimals={1} />
             </span>
             <div>
               <span className="flex gap-1">
@@ -184,9 +178,10 @@ export default function Testimonials() {
               </span>
             </div>
           </div>
-        </motion.div>
+        </Reveal>
       </div>
 
+      <Reveal solid>
       <div ref={viewportRef} className="relative w-full">
         <div
           className="flex items-stretch"
@@ -234,8 +229,10 @@ export default function Testimonials() {
           className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-void to-transparent md:w-28"
         />
       </div>
+      </Reveal>
 
-      <div
+      <Reveal
+        delay={0.1}
         className="relative mx-auto mt-8 flex w-full items-center justify-between px-5"
         style={{ maxWidth: CARD_MAX }}
       >
@@ -270,9 +267,9 @@ export default function Testimonials() {
             <ArrowRight className="size-4" />
           </button>
         </div>
-      </div>
+      </Reveal>
 
-      <div className="relative mx-auto mt-10 flex w-full max-w-[1200px] flex-col items-center gap-5 px-5 md:px-10">
+      <Reveal delay={0.16} className="relative mx-auto mt-10 flex w-full max-w-[1200px] flex-col items-center gap-5 px-5 md:px-10">
         <p className="text-center text-[15px] text-mute">
           {t.reviews.thanks}
         </p>
@@ -286,7 +283,7 @@ export default function Testimonials() {
           <Send className="size-4" />
           {t.reviews.leave}
         </a>
-      </div>
+      </Reveal>
     </section>
   );
 }

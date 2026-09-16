@@ -1,13 +1,13 @@
 import { Route, Routes } from "react-router-dom";
-import AnalyticsTracker from "./components/AnalyticsTracker";
-import Seo from "./components/Seo";
-import HomePage from "./pages/HomePage";
-import ProjectPage from "./pages/ProjectPage";
-import DigitalCardsPage from "./pages/DigitalCardsPage";
-import PrivacyPage from "./pages/PrivacyPage";
-import SitemapPage from "./pages/SitemapPage";
-import NotFoundPage from "./pages/NotFoundPage";
-import AdminPage from "./pages/AdminPage";
+import AnalyticsTracker from "@/components/seo/AnalyticsTracker";
+import Seo from "@/components/seo/Seo";
+import HomePage from "@/pages/HomePage";
+import ProjectPage from "@/pages/ProjectPage";
+import DigitalCardsPage from "@/pages/DigitalCardsPage";
+import PrivacyPage from "@/pages/PrivacyPage";
+import SitemapPage from "@/pages/SitemapPage";
+import NotFoundPage from "@/pages/NotFoundPage";
+import AdminPage from "@/pages/AdminPage";
 
 export default function App() {
   return (

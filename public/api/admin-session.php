@@ -1,6 +1,10 @@
 <?php
 declare(strict_types=1);
 
+if (!defined('DH_API')) {
+  define('DH_API', true);
+}
+
 require_once __DIR__ . '/lib/admin-auth.php';
 
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
@@ -40,7 +44,7 @@ try {
   analytics_json(['ok' => false, 'error' => 'storage_failed'], 500);
 }
 
-$visitor = analytics_visitor_id();
+$visitor = admin_throttle_id();
 
 if (admin_is_throttled($db, $visitor)) {
   analytics_json(['ok' => false, 'error' => 'too_many_attempts'], 429);

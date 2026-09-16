@@ -1,17 +1,19 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Lenis from "lenis";
-import Nav from "../components/Nav";
-import Hero from "../components/Hero";
-import { ResultChapter, AboutChapter } from "../components/Chapters";
-import Portfolio from "../components/Portfolio";
-import DigitalCardGift from "../components/DigitalCardGift";
-import SolidSections, { Services, Process } from "../components/SolidSections";
-import Pricing from "../components/Pricing";
-import Footer from "../components/Footer";
-import BackToTop from "../components/BackToTop";
-import { lenisRef, scrollToId } from "../lib/scrollState";
-import { isLabCrawler } from "../lib/labCrawler";
+import PageShell from "@/components/layout/PageShell";
+import { AboutChapter, ResultChapter } from "@/features/home/Chapters";
+import Contact from "@/features/home/Contact";
+import Cta from "@/features/home/Cta";
+import DigitalCardGift from "@/features/home/DigitalCardGift";
+import Hero from "@/features/home/Hero";
+import Portfolio from "@/features/home/Portfolio";
+import Pricing from "@/features/home/Pricing";
+import Process from "@/features/home/Process";
+import Services from "@/features/home/Services";
+import Testimonials from "@/features/home/Testimonials";
+import { isLabCrawler } from "@/lib/labCrawler";
+import { lenisRef, scrollToId } from "@/lib/scrollState";
 
 function pinHomeToTop() {
   window.scrollTo(0, 0);
@@ -64,9 +66,7 @@ export default function HomePage() {
   }, [location.state, location.key]);
 
   return (
-    <div className="relative bg-void font-body text-ink">
-      <Nav />
-
+    <PageShell backToTop="Главная — Наверх">
       <main className="relative z-10">
         <Hero />
         <Services />
@@ -76,11 +76,12 @@ export default function HomePage() {
         <AboutChapter />
         <ResultChapter />
         <Pricing />
-        <SolidSections />
+        <div className="relative z-20 bg-void">
+          <Testimonials />
+          <Cta />
+          <Contact />
+        </div>
       </main>
-
-      <Footer />
-      <BackToTop track="Главная — Наверх" />
-    </div>
+    </PageShell>
   );
 }

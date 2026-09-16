@@ -1,64 +1,30 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { Image, Play } from "lucide-react";
-import { useT } from "../i18n/useT";
-import { lenisRef, readSvh } from "../lib/scrollState";
-import ProjectVideoPlayer from "./ProjectVideoPlayer";
+import { useT } from "@/i18n/useT";
+import { lenisRef, readSvh } from "@/lib/scrollState";
+import ProjectVideoPlayer from "@/features/project/ProjectVideoPlayer";
 
 type Props = {
   src: string;
-  slug: string;
   url: string;
   title: string;
+  videos?: string[];
 };
 
-const VIDEO_FILES = ["video.mp4", "video-1.mp4", "video-2.mp4"] as const;
-
 type ActiveMedia = "image" | number;
-
-async function mediaExists(path: string): Promise<boolean> {
-  try {
-    const res = await fetch(path, {
-      method: "GET",
-      headers: { Range: "bytes=0-0" },
-    });
-    if (!res.ok && res.status !== 206) return false;
-    const type = (res.headers.get("content-type") ?? "").split(";")[0].trim().toLowerCase();
-    if (type.startsWith("video/")) return true;
-    if (type.includes("html") || type.includes("json") || type.includes("javascript")) {
-      return false;
-    }
-    const length = Number(
-      res.headers.get("content-range")?.split("/")[1] || res.headers.get("content-length") || 0
-    );
-    return length > 50_000;
-  } catch {
-    return false;
-  }
-}
-
-async function discoverProjectVideos(slug: string): Promise<string[]> {
-  const found = await Promise.all(
-    VIDEO_FILES.map(async (file) => {
-      const path = `/projects/${slug}/${file}`;
-      return (await mediaExists(path)) ? path : null;
-    })
-  );
-  return found.filter((path): path is string => Boolean(path));
-}
 
 const switchBtn =
   "grid size-10 place-items-center rounded-full border transition-colors";
 
-/** Sticky-рамка: сначала всегда full-скриншот. Если в папке есть video*.mp4 —
+/** Sticky-рамка: сначала всегда full-скриншот. Если у проекта есть video —
  *  под окном появляются круглые кнопки, чтобы переключить зону на плеер. */
-export default function ProjectFullScrub({ src, slug, url, title }: Props) {
+export default function ProjectFullScrub({ src, url, title, videos = [] }: Props) {
   const t = useT();
   const wrapRef = useRef<HTMLElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const thumbRef = useRef<HTMLDivElement>(null);
-  const [videos, setVideos] = useState<string[]>([]);
   const [active, setActive] = useState<ActiveMedia>("image");
 
   const showImage = active === "image";
@@ -66,18 +32,8 @@ export default function ProjectFullScrub({ src, slug, url, title }: Props) {
   const showSwitcher = videos.length > 0;
 
   useEffect(() => {
-    let cancelled = false;
     setActive("image");
-    setVideos([]);
-
-    discoverProjectVideos(slug).then((found) => {
-      if (!cancelled) setVideos(found);
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [slug]);
+  }, [src]);
 
   useLayoutEffect(() => {
     if (showImage) return;
@@ -106,6 +62,7 @@ export default function ProjectFullScrub({ src, slug, url, title }: Props) {
     if (!wrap || !frame || !img || !thumb) return;
 
     let raf = 0;
+    let running = false;
     let svh = readSvh();
     let maxScroll = 1;
 
@@ -133,8 +90,16 @@ export default function ProjectFullScrub({ src, slug, url, title }: Props) {
     };
 
     const loop = () => {
+      if (!running) return;
       paint();
       raf = requestAnimationFrame(loop);
+    };
+
+    const setRunning = (next: boolean) => {
+      if (next === running) return;
+      running = next;
+      cancelAnimationFrame(raf);
+      if (running) raf = requestAnimationFrame(loop);
     };
 
     const onLoad = () => {
@@ -144,10 +109,26 @@ export default function ProjectFullScrub({ src, slug, url, title }: Props) {
     img.addEventListener("load", onLoad);
     window.addEventListener("resize", measure);
     measure();
-    raf = requestAnimationFrame(loop);
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        setRunning(Boolean(entry?.isIntersecting) && document.visibilityState === "visible");
+      },
+      { rootMargin: "20% 0px" }
+    );
+    io.observe(wrap);
+
+    const onVisibility = () => {
+      const rect = wrap.getBoundingClientRect();
+      const onScreen = rect.bottom > 0 && rect.top < window.innerHeight;
+      setRunning(document.visibilityState === "visible" && onScreen);
+    };
+    document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
-      cancelAnimationFrame(raf);
+      setRunning(false);
+      io.disconnect();
+      document.removeEventListener("visibilitychange", onVisibility);
       img.removeEventListener("load", onLoad);
       window.removeEventListener("resize", measure);
       wrap.style.height = "";
@@ -192,6 +173,7 @@ export default function ProjectFullScrub({ src, slug, url, title }: Props) {
                     alt={`${t.project.siteAlt} ${title}`}
                     className="absolute left-0 top-0 w-full will-change-transform"
                     draggable={false}
+                    decoding="async"
                   />
                 ) : videoSrc ? (
                   <ProjectVideoPlayer

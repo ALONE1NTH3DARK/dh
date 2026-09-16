@@ -1,6 +1,10 @@
 <?php
 declare(strict_types=1);
 
+if (!defined('DH_API')) {
+  define('DH_API', true);
+}
+
 require_once __DIR__ . '/lib/analytics.php';
 
 header('Cache-Control: no-store');
@@ -51,6 +55,10 @@ try {
   }
 
   $visitor = analytics_visitor_id();
+  if (!analytics_burst_ok($visitor)) {
+    http_response_code(204);
+    exit;
+  }
   $session = $sanitizeText($body['session'] ?? '', 40);
   if ($session === '') {
     $session = $visitor;

@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useState, type ReactNode } from "react";
+import CountUp from "@/components/ui/CountUp";
 import Reveal from "@/components/ui/Reveal";
 import SectionAtmosphere from "@/components/ui/SectionAtmosphere";
 import SectionLabel from "@/components/ui/SectionLabel";
@@ -80,7 +81,7 @@ export function ResultChapter() {
 
       <div className="relative mx-auto flex w-full max-w-[1200px] flex-col gap-16 md:gap-24">
         {/* 1/3 заголовок · 2/3 текст */}
-        <Reveal className="grid md:gap-8 lg:grid-cols-3 lg:gap-16">
+        <Reveal from="left" className="grid md:gap-8 lg:grid-cols-3 lg:gap-16">
           <div className="lg:col-span-1">
             <SectionLabel>{t.clients.label}</SectionLabel>
             <div className="flex items-start justify-between gap-4">
@@ -115,7 +116,7 @@ export function ResultChapter() {
         </Reveal>
 
         {/* 2/3 текст · 1/3 заголовок справа */}
-        <Reveal delay={0.08} className="grid md:gap-8 lg:grid-cols-3 lg:gap-16">
+        <Reveal delay={0.12} from="left" className="grid md:gap-8 lg:grid-cols-3 lg:gap-16">
           <SpoilerCopy
             id="format-copy"
             open={formatOpen}
@@ -173,7 +174,7 @@ export function AboutChapter() {
           </h2>
         </Reveal>
 
-        <Reveal delay={0.12} className="mt-12 md:mt-16">
+        <Reveal delay={0.1} from="fold" className="mt-12 md:mt-16">
           <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-gradient-to-br from-void-2/90 via-void to-void px-6 py-10 md:px-12 md:py-14">
             <div
               aria-hidden
@@ -187,8 +188,8 @@ export function AboutChapter() {
                 <p className="font-mono text-[14px] uppercase tracking-[2px] text-[#8a8494]">
                   {t.about.experience}
                 </p>
-                <p className="mt-2 font-display text-[clamp(3.5rem,9vw,6.5rem)] font-bold leading-[0.9] text-gradient-warm">
-                  7+
+                <p className="mt-2 font-display text-[clamp(3.5rem,9vw,6.5rem)] font-bold leading-[0.9] text-gradient-warm tabular-nums">
+                  <CountUp value={7} suffix="+" />
                 </p>
                 <p className="mt-3 font-display text-[14px] font-bold uppercase tracking-[2px] text-gradient-warm">
                   {t.about.years}
@@ -207,8 +208,11 @@ export function AboutChapter() {
           </div>
         </Reveal>
 
-        <Reveal delay={0.18} className="mt-8 md:mt-10">
-          <div className="mx-auto grid max-w-5xl gap-8 text-center md:grid-cols-3 md:gap-8 md:text-left">
+        <Reveal delay={0.18} from="left" className="mt-8 md:mt-10">
+          <div
+            data-reveal-group
+            className="mx-auto grid max-w-5xl gap-8 text-center md:grid-cols-3 md:gap-8 md:text-left"
+          >
             {t.about.points.map((point, i) => (
               <div key={point}>
                 <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-vio">

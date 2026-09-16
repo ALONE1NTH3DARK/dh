@@ -1,13 +1,17 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, Moon, Sun, X } from "lucide-react";
-import { useT } from "../i18n/useT";
-import { setLocale, useLocale, type Locale } from "../lib/locale";
-import { scrollToId } from "../lib/scrollState";
-import { setTheme, useTheme } from "../lib/theme";
-import { cn } from "../utils/cn";
-import BrandMark from "./BrandMark";
+import { useT } from "@/i18n/useT";
+import { setLocale, useLocale, type Locale } from "@/lib/locale";
+import { scrollToId, lenisRef } from "@/lib/scrollState";
+import { setTheme, useTheme } from "@/lib/theme";
+import { cn } from "@/lib/cn";
+import BrandMark from "@/components/layout/BrandMark";
+import { EASE } from "@/lib/motion";
+import { playNavIn } from "@/lib/reveal";
+
+const useArmEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 type NavProps = {
   variant?: "home" | "project";
@@ -22,6 +26,16 @@ export default function Nav({ variant = "home" }: NavProps) {
   const navigate = useNavigate();
   const isProject = variant === "project";
   const LINKS = t.nav.links;
+  const barRef = useRef<HTMLDivElement>(null);
+
+  useArmEffect(() => {
+    const bar = barRef.current;
+    if (!bar) return;
+    const tl = playNavIn(bar);
+    return () => {
+      tl?.kill();
+    };
+  }, []);
 
   useEffect(() => {
     const syncScrolled = () => {
@@ -48,9 +62,22 @@ export default function Nav({ variant = "home" }: NavProps) {
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
+    const lenis = lenisRef.current;
+    if (open) lenis?.stop();
+    else lenis?.start();
     return () => {
       document.body.style.overflow = "";
+      lenisRef.current?.start();
     };
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
   }, [open]);
 
   const goSection = (id: string) => {
@@ -81,9 +108,14 @@ export default function Nav({ variant = "home" }: NavProps) {
             scrolled || open || isProject ? "opacity-100" : "opacity-0"
           )}
         />
-        <div className="relative mx-auto flex max-w-[1600px] items-center justify-between px-5 py-4 md:px-10 md:py-5">
+        <div
+          ref={barRef}
+          className="relative mx-auto flex max-w-[1600px] items-center justify-between px-5 py-4 md:px-10 md:py-5"
+        >
           <button
             onClick={goHome}
+            data-nav-in
+            data-reveal-hide
             className="group flex items-center gap-1.5"
             aria-label={t.nav.home}
           >
@@ -97,6 +129,8 @@ export default function Nav({ variant = "home" }: NavProps) {
             {LINKS.map((l) => (
               <button
                 key={l.id}
+                data-nav-in
+                data-reveal-hide
                 onClick={() => goSection(l.id)}
                 data-track={`Меню — ${l.label}`}
                 className="group relative font-mono text-[14px] font-semibold uppercase tracking-[2px] text-mute transition-colors duration-300 hover:text-ink"
@@ -107,7 +141,7 @@ export default function Nav({ variant = "home" }: NavProps) {
             ))}
           </nav>
 
-          <div className="flex items-center gap-2 md:gap-3">
+          <div data-nav-in data-reveal-hide className="flex items-center gap-2 md:gap-3">
             <LocaleToggle />
             <ThemeToggle />
             {isProject ? (
@@ -134,6 +168,7 @@ export default function Nav({ variant = "home" }: NavProps) {
               className="grid size-10 place-items-center rounded-full border border-white/15 text-ink transition-colors hover:border-vio hover:bg-vio/15 md:hidden"
               aria-label={open ? t.nav.closeMenu : t.nav.openMenu}
               aria-expanded={open}
+              aria-controls="mobile-nav"
             >
               {open ? <X className="size-4" /> : <Menu className="size-4" />}
             </button>
@@ -144,6 +179,10 @@ export default function Nav({ variant = "home" }: NavProps) {
       <AnimatePresence>
         {open && (
           <motion.div
+            id="mobile-nav"
+            role="dialog"
+            aria-modal="true"
+            aria-label={t.nav.openMenu}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -154,7 +193,7 @@ export default function Nav({ variant = "home" }: NavProps) {
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 16 }}
-              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.35, ease: EASE }}
               className="flex h-full flex-col justify-center gap-2 px-8 pt-[calc(5rem+env(safe-area-inset-top,0px))]"
             >
               {LINKS.map((l, i) => (
@@ -249,7 +288,7 @@ function LocaleToggle() {
             initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
-            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.18, ease: EASE }}
             className="absolute left-0 top-[calc(100%+8px)] z-[110] min-w-[10.5rem] rounded-2xl border border-white/15 bg-void/90 p-1 shadow-[0_16px_40px_rgba(0,0,0,0.35)] backdrop-blur-xl light:shadow-[0_12px_32px_rgba(24,21,31,0.12)]"
           >
             {options.map((option) => {

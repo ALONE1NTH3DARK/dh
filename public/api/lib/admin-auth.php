@@ -93,6 +93,16 @@ function admin_clear_failures(PDO $db, string $visitor): void
     ->execute([':visitor' => $visitor]);
 }
 
+function admin_throttle_id(): string
+{
+  $salt = trim((string)(analytics_config()['hash_salt'] ?? ''));
+  if ($salt === '') {
+    $salt = 'darkhorse-analytics';
+  }
+
+  return substr(hash('sha256', $salt . '|auth|' . analytics_auth_ip()), 0, 16);
+}
+
 function admin_log_in(): void
 {
   admin_session_start();

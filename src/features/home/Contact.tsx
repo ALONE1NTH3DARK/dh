@@ -1,25 +1,28 @@
 import { useRef, useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import {
   AtSign,
   MessageCircle,
   Phone,
   Send,
   Share2,
+  Users,
 } from "lucide-react";
 import { useT } from "@/i18n/useT";
 import { useLocale } from "@/lib/locale";
 import { trackFormSubmit } from "@/lib/analytics";
 import { submitContact } from "@/lib/submitContact";
 import { TURNSTILE_SITE_KEY } from "@/lib/turnstile";
+import Reveal from "@/components/ui/Reveal";
 import SectionAtmosphere from "@/components/ui/SectionAtmosphere";
 import SectionLabel from "@/components/ui/SectionLabel";
 import TurnstileField from "@/components/ui/TurnstileField";
-import { EASE } from "@/lib/motion";
 
 const INPUT_CLASS =
   "w-full border-b border-white/15 bg-transparent py-4 text-base text-ink outline-none transition-colors placeholder:text-mute/55 focus:border-vio";
+
+const CHIP_CLASS =
+  "group flex items-center gap-2.5 rounded-full border border-white/15 px-5 py-3 font-mono text-[14px] font-semibold uppercase tracking-[2px] text-ink transition-all";
 
 export default function Contact() {
   const t = useT();
@@ -94,12 +97,7 @@ export default function Contact() {
       <SectionAtmosphere tone="vio" />
 
       <div className="relative mx-auto grid max-w-[1200px] items-center gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
-        <motion.div
-          initial={{ opacity: 0, y: 36 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-12% 0px" }}
-          transition={{ duration: 0.9, ease: EASE }}
-        >
+        <Reveal from="left">
           <SectionLabel className="mb-5">{t.contact.label}</SectionLabel>
 
           <h2 className="font-display text-[clamp(2.2rem,5.2vw,3.4rem)] font-semibold uppercase leading-[1.20]">
@@ -144,7 +142,7 @@ export default function Contact() {
             */}
 
             <div className="flex items-start gap-5">
-              <Share2 className="mt-0.5 size-5 shrink-0 text-cyan-neon" />
+              <MessageCircle className="mt-0.5 size-5 shrink-0 text-cyan-neon" />
               <span className="min-w-0">
                 <span className="block font-mono text-[14px] uppercase tracking-[1.4px] text-mute">
                   {t.contact.messengers}
@@ -155,39 +153,57 @@ export default function Contact() {
                     target="_blank"
                     rel="noreferrer"
                     data-track="Контакты — Telegram"
-                    className="group flex items-center gap-2.5 rounded-full border border-white/15 px-5 py-3 font-mono text-[14px] font-semibold uppercase tracking-[2px] text-ink transition-all hover:border-vio hover:bg-vio/15"
+                    className={`${CHIP_CLASS} hover:border-vio hover:bg-vio/15`}
                   >
-                    <Send className="size-4 text-vio" /> Telegram
+                    <Send className="size-4 shrink-0 text-vio" /> {t.contact.writeTelegram}
                   </a>
                   <a
                     href="https://wa.me/77070701337"
                     target="_blank"
                     rel="noreferrer"
                     data-track="Контакты — WhatsApp"
-                    className="group flex items-center gap-2.5 rounded-full border border-white/15 px-5 py-3 font-mono text-[14px] font-semibold uppercase tracking-[2px] text-ink transition-all hover:border-cyan-neon hover:bg-cyan-neon/10"
+                    className={`${CHIP_CLASS} hover:border-cyan-neon hover:bg-cyan-neon/10`}
                   >
-                    <MessageCircle className="size-4 text-cyan-neon" /> WhatsApp
+                    <MessageCircle className="size-4 shrink-0 text-cyan-neon" /> {t.contact.writeWhatsApp}
+                  </a>
+                </div>
+              </span>
+            </div>
+
+            <div className="flex items-start gap-5">
+              <Share2 className="mt-0.5 size-5 shrink-0 text-cyan-neon" />
+              <span className="min-w-0">
+                <span className="block font-mono text-[14px] uppercase tracking-[1.4px] text-mute">
+                  {t.contact.socials}
+                </span>
+                <div className="mt-4 flex flex-col items-start gap-3">
+                  <a
+                    href="https://t.me/darkhorse_webagency"
+                    target="_blank"
+                    rel="noreferrer"
+                    data-track="Контакты — Группа Telegram"
+                    className={`${CHIP_CLASS} hover:border-vio hover:bg-vio/15`}
+                  >
+                    <Users className="size-4 shrink-0 text-vio" /> {t.contact.telegramGroup}
                   </a>
                   <a
                     href="https://instagram.com/darkhorse_webagency"
                     target="_blank"
                     rel="noreferrer"
                     data-track="Контакты — Instagram"
-                    className="group flex items-center gap-2.5 rounded-full border border-white/15 px-5 py-3 font-mono text-[14px] font-semibold uppercase tracking-[2px] text-ink transition-all hover:border-pink-neon hover:bg-pink-neon/10"
+                    className={`${CHIP_CLASS} hover:border-pink-neon hover:bg-pink-neon/10`}
                   >
-                    <AtSign className="size-4 text-pink-neon" /> Instagram
+                    <AtSign className="size-4 shrink-0 text-pink-neon" /> {t.contact.watchInstagram}
                   </a>
                 </div>
               </span>
             </div>
           </div>
-        </motion.div>
+        </Reveal>
 
-        <motion.div
-          initial={{ opacity: 0, y: 36 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-12% 0px" }}
-          transition={{ duration: 0.9, delay: 0.12, ease: EASE }}
+        <Reveal
+          delay={0.12}
+          from="left"
           className="self-center rounded-3xl border border-white/10 bg-void-2/85 p-6 shadow-[var(--card-shadow)] backdrop-blur-xl md:p-8"
         >
           <div className="mb-6 flex items-center justify-between gap-4">
@@ -269,7 +285,7 @@ export default function Contact() {
               </button>
             </div>
           </form>
-        </motion.div>
+        </Reveal>
       </div>
     </section>
   );

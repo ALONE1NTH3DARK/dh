@@ -1,8 +1,9 @@
-import { animate, motion, useInView } from "framer-motion";
 import { Gauge } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useEffect, useRef } from "react";
+import { gsap } from "gsap";
 import { useT } from "@/i18n/useT";
-import { EASE } from "@/lib/motion";
+import Reveal from "@/components/ui/Reveal";
+import { onEnter, prefersReducedMotion } from "@/lib/reveal";
 
 type PageSpeedScores = {
   performance: number;
@@ -13,6 +14,8 @@ type PageSpeedScores = {
 
 const GAUGE_R = 46;
 const GAUGE_C = 2 * Math.PI * GAUGE_R;
+
+const useArmEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 function InsightGauge({
   score,
@@ -25,23 +28,53 @@ function InsightGauge({
   delay?: number;
   gradId: string;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-12% 0px" });
-  const [n, setN] = useState(0);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const circleRef = useRef<SVGCircleElement>(null);
+  const numRef = useRef<HTMLSpanElement>(null);
 
-  useEffect(() => {
-    if (!inView) return;
-    const controls = animate(0, score, {
-      duration: 1.7,
-      delay,
-      ease: EASE,
-      onUpdate: (v) => setN(Math.round(v)),
+  useArmEffect(() => {
+    const wrap = wrapRef.current;
+    const circle = circleRef.current;
+    const num = numRef.current;
+    if (!wrap || !circle || !num) return;
+
+    const offsetEnd = GAUGE_C * (1 - score / 100);
+
+    if (prefersReducedMotion()) {
+      circle.style.strokeDashoffset = String(offsetEnd);
+      num.textContent = String(score);
+      return;
+    }
+
+    gsap.set(circle, { strokeDashoffset: GAUGE_C });
+    const state = { n: 0 };
+    num.textContent = "0";
+
+    let tl: gsap.core.Timeline | null = null;
+    const stop = onEnter(wrap, () => {
+      tl = gsap.timeline({ delay, defaults: { ease: "power2.out", duration: 1.7 } });
+      tl.to(circle, { strokeDashoffset: offsetEnd }, 0);
+      tl.to(
+        state,
+        {
+          n: score,
+          onUpdate: () => {
+            num.textContent = String(Math.round(state.n));
+          },
+        },
+        0
+      );
     });
-    return () => controls.stop();
-  }, [inView, score, delay]);
+
+    return () => {
+      stop();
+      tl?.kill();
+      num.textContent = String(score);
+    };
+  }, [score, delay]);
 
   return (
-    <div ref={ref} className="flex flex-col items-center px-2 py-3 md:py-4">
+    <div ref={wrapRef} className="flex flex-col items-center px-2 py-3 md:py-4">
       <div className="relative flex size-[7.5rem] items-center justify-center md:size-[8.25rem]">
         <div
           aria-hidden
@@ -66,7 +99,8 @@ function InsightGauge({
             stroke="rgba(255,255,255,0.08)"
             strokeWidth="6"
           />
-          <motion.circle
+          <circle
+            ref={circleRef}
             cx="60"
             cy="60"
             r={GAUGE_R}
@@ -75,17 +109,14 @@ function InsightGauge({
             strokeWidth="6"
             strokeLinecap="round"
             strokeDasharray={GAUGE_C}
-            initial={{ strokeDashoffset: GAUGE_C }}
-            animate={
-              inView
-                ? { strokeDashoffset: GAUGE_C * (1 - score / 100) }
-                : { strokeDashoffset: GAUGE_C }
-            }
-            transition={{ duration: 1.7, delay, ease: EASE }}
+            strokeDashoffset={GAUGE_C}
           />
         </svg>
-        <span className="pointer-events-none absolute inset-0 grid place-items-center font-display text-2xl font-semibold text-ink md:text-3xl">
-          {n}
+        <span
+          ref={numRef}
+          className="pointer-events-none absolute inset-0 grid place-items-center font-display text-2xl font-semibold text-ink md:text-3xl"
+        >
+          {score}
         </span>
       </div>
       <p className="mt-3 text-center font-mono text-[10px] uppercase tracking-[0.2em] text-mute">
@@ -119,7 +150,7 @@ export default function ProjectPageSpeed({
   return (
     <section className="relative bg-void px-5 py-24 md:px-10 md:py-32">
       <div className="mx-auto w-full max-w-[1200px]">
-        <div className="grid items-end gap-5 md:grid-cols-[1fr_1.05fr] md:gap-12">
+        <Reveal className="grid items-end gap-5 md:grid-cols-[1fr_1.05fr] md:gap-12">
           <h2 className="font-display text-[clamp(1.8rem,4.2vw,2.4rem)] font-semibold uppercase leading-[1.20]">
             <span className="text-ink">{t.pagespeed.title1}</span>{" "}
             <br />
@@ -136,7 +167,7 @@ export default function ProjectPageSpeed({
               ` ${t.pagespeed.forThis}`
             )}
           </p>
-        </div>
+        </Reveal>
 
         <div className="mt-6 grid grid-cols-2 lg:grid-cols-4">
           {labels.map((item, i) => (
@@ -157,7 +188,7 @@ export default function ProjectPageSpeed({
           ))}
         </div>
 
-        <div className="mt-6 flex justify-center md:mt-8">
+        <Reveal delay={0.2} className="mt-6 flex justify-center md:mt-8">
           <p className="inline-flex max-w-full items-start gap-2.5 rounded-full border border-white/15 px-4 py-2.5 text-[12px] leading-snug text-mute sm:items-center sm:gap-3 sm:px-6 sm:py-3 sm:text-[15px] sm:leading-none">
             <Gauge
               className="mt-0.5 size-3.5 shrink-0 text-amber-neon sm:mt-0 sm:size-4"
@@ -168,7 +199,7 @@ export default function ProjectPageSpeed({
               {t.pagespeed.footer}
             </span>
           </p>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

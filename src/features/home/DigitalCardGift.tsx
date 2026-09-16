@@ -72,7 +72,7 @@ export default function DigitalCardGift() {
           >
             <div className="relative px-5 pb-24 pt-8 md:px-10 md:pb-32 md:pt-10">
               <div className="relative mx-auto grid w-full max-w-[1200px] items-center gap-12 sm:gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
-                <Reveal>
+                <Reveal from="left">
                   <SectionLabel>{t.digitalCard.kicker}</SectionLabel>
 
                   <h2 className="font-display text-[clamp(2.25rem,5.5vw,3.6rem)] font-semibold uppercase leading-[1.20] text-pretty">
@@ -100,6 +100,7 @@ export default function DigitalCardGift() {
 
                 <Reveal
                   delay={0.12}
+                  from="left"
                   className="hidden justify-center md:flex lg:justify-end"
                 >
                   <DigitalCardPhone />

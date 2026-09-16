@@ -49,10 +49,6 @@ export function setTheme(theme: Theme) {
   window.dispatchEvent(new Event(EVENT));
 }
 
-export function toggleTheme() {
-  setTheme(getTheme() === "light" ? "dark" : "light");
-}
-
 export function useTheme(): Theme {
   const [theme, set] = useState<Theme>(() =>
     typeof window === "undefined" ? "dark" : getTheme()

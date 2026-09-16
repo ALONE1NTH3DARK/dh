@@ -1,25 +1,9 @@
-import { motion } from "framer-motion";
 import { Check, Clock3 } from "lucide-react";
-import { useT } from "../i18n/useT";
-import { scrollToId } from "../lib/scrollState";
-import SectionAtmosphere from "./SectionAtmosphere";
-import SectionLabel from "./SectionLabel";
-
-const EASE = [0.16, 1, 0.3, 1] as const;
-
-function Reveal({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 38 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-14% 0px" }}
-      transition={{ duration: 0.9, delay, ease: EASE }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
+import Reveal from "@/components/ui/Reveal";
+import SectionAtmosphere from "@/components/ui/SectionAtmosphere";
+import SectionLabel from "@/components/ui/SectionLabel";
+import { useT } from "@/i18n/useT";
+import { scrollToId } from "@/lib/scrollState";
 
 export default function Pricing() {
   const t = useT();
@@ -39,12 +23,13 @@ export default function Pricing() {
           </p>
         </Reveal>
 
-        <div className="grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <Reveal from="left">
+        <div data-reveal-group className="grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[...t.pricing.plans].map((plan, i) => {
             const popular = i === 1;
             return (
-            <Reveal key={plan.name} delay={0.08 * i}>
               <div
+                key={plan.name}
                 className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-void-2 p-6 shadow-[0_0_0_transparent] transition-[border-color,box-shadow] duration-500 hover:border-vio/40 hover:shadow-[0_0_40px_rgba(124,108,255,0.18)]"
               >
                 <div className="mb-4 flex items-center justify-between gap-2">
@@ -55,7 +40,10 @@ export default function Pricing() {
                     </span>
                   </div>
                   {popular && (
-                    <span className="rounded-full bg-ink px-2.5 py-1 font-mono text-[11px] font-semibold uppercase tracking-[1px] text-void">
+                    <span
+                      data-reveal-pop
+                      className="rounded-full bg-ink px-2.5 py-1 font-mono text-[11px] font-semibold uppercase tracking-[1px] text-void"
+                    >
                       {t.pricing.popular}
                     </span>
                   )}
@@ -94,10 +82,10 @@ export default function Pricing() {
                   {t.pricing.order}
                 </button>
               </div>
-            </Reveal>
             );
           })}
         </div>
+        </Reveal>
 
         <Reveal delay={0.2} className="mt-10 text-center">
           <p className="mx-auto max-w-lg text-[17px] leading-relaxed text-mute/70">

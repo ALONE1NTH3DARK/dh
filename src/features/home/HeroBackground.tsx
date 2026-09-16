@@ -133,6 +133,8 @@ export default function HeroBackground() {
         alt=""
         className="pointer-events-none absolute right-[-8%] top-[42%] w-[min(72vw,300px)] -translate-y-1/2 select-none md:right-[3%] md:top-1/2 md:w-[min(34vw,400px)] lg:w-[min(32vw,440px)] light:opacity-70"
         draggable={false}
+        width={871}
+        height={864}
         decoding="async"
       />
 

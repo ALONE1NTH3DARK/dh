@@ -1,4 +1,4 @@
-import { isLabCrawler } from "./labCrawler";
+import { isLabCrawler } from "@/lib/labCrawler";
 
 /**
  * Сбор статистики посещений: просмотры страниц, время на странице,

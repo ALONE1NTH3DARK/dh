@@ -7,8 +7,8 @@ import {
   Send,
   Share2,
 } from "lucide-react";
-import { useT } from "../i18n/useT";
-import { cn } from "../utils/cn";
+import { useT } from "@/i18n/useT";
+import { cn } from "@/lib/cn";
 
 function ActionChip({
   icon: Icon,

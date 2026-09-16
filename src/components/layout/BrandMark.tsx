@@ -1,5 +1,5 @@
 import type { SVGProps } from "react";
-import { cn } from "../utils/cn";
+import { cn } from "@/lib/cn";
 
 function HorseshoeIcon({ className, ...props }: SVGProps<SVGSVGElement>) {
   return (

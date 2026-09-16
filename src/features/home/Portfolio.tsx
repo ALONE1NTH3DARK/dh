@@ -6,6 +6,7 @@ import { useT } from "@/i18n/useT";
 import { useLocale } from "@/lib/locale";
 import { lenisRef, readSvh, scrollToId, scrollToY, scrollY } from "@/lib/scrollState";
 import { cn } from "@/lib/cn";
+import Reveal from "@/components/ui/Reveal";
 import SectionLabel from "@/components/ui/SectionLabel";
 
 const FILTERS: readonly ProjectKind[] = [
@@ -365,7 +366,7 @@ export default function Portfolio() {
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(124,108,255,0.05),transparent_50%)]"
         />
         <div className="relative z-20 px-5 pt-24 md:px-14 md:pt-32">
-          <div className="flex items-start justify-between gap-6">
+          <Reveal from="left" className="flex items-start justify-between gap-6">
             <div>
               <SectionLabel>{t.portfolio.label}</SectionLabel>
               <h2 className="font-display text-[clamp(2.2rem,5.2vw,3.6rem)] font-semibold uppercase leading-[1.20]">
@@ -378,8 +379,11 @@ export default function Portfolio() {
                 <span className="text-mute/60 text-2xl"> / {String(visibleProjects.length).padStart(2, "0")}</span>
               </span>
             </div>
-          </div>
-          <div className="mt-3 flex items-center justify-between gap-3 md:mt-5 md:gap-8">
+          </Reveal>
+          <Reveal
+            delay={0.12}
+            className="mt-3 flex items-center justify-between gap-3 md:mt-5 md:gap-8"
+          >
             <p className="flex min-w-0 items-center gap-2 text-sm leading-relaxed text-mute md:text-base">
               {t.portfolio.scrollHint}
               <MoveDown className="size-3.5 shrink-0 animate-bounce" strokeWidth={2} />
@@ -390,7 +394,7 @@ export default function Portfolio() {
               ariaLabel={t.portfolio.filterLabel}
               onChange={setFilter}
             />
-          </div>
+          </Reveal>
         </div>
 
         <div className="relative flex min-h-0 flex-1 items-stretch pb-[max(1.25rem,env(safe-area-inset-bottom,0px))] pt-4 md:items-center md:pb-0 md:pt-0">

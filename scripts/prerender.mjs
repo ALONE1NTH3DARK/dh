@@ -27,7 +27,7 @@ const template = fs.readFileSync(path.join(dist, "index.html"), "utf8");
 const mod = await import(pathToFileURL(findSsrEntry()).href);
 const { render, getPublicPaths, getPageSeo, renderSeoHead, renderSitemapXml } = mod;
 
-for (const url of [...getPublicPaths(), "/admin"]) {
+for (const url of [...getPublicPaths(), "/admin", "/404"]) {
   const appHtml = render(url);
   const head = renderSeoHead(getPageSeo(url));
   let html = replaceSeoBlock(template, head);
@@ -39,7 +39,9 @@ for (const url of [...getPublicPaths(), "/admin"]) {
   const file =
     url === "/"
       ? path.join(dist, "index.html")
-      : path.join(dist, url.slice(1), "index.html");
+      : url === "/404"
+        ? path.join(dist, "404.html")
+        : path.join(dist, url.slice(1), "index.html");
 
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, html);

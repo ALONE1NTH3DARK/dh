@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Pause, Play, Volume2, VolumeX } from "lucide-react";
-import { useT } from "../i18n/useT";
+import { useT } from "@/i18n/useT";
 
 type Props = {
   src: string;
@@ -25,7 +25,7 @@ export default function ProjectVideoPlayer({
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [level, setLevel] = useState(0.8);
-  const [muted, setMuted] = useState(false);
+  const [muted, setMuted] = useState(!showVolume && Boolean(autoPlay));
 
   useEffect(() => {
     setProgress(0);
@@ -37,6 +37,7 @@ export default function ProjectVideoPlayer({
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
+    video.muted = muted;
     video.volume = muted ? 0 : level;
   }, [level, muted]);
 
@@ -103,7 +104,8 @@ export default function ProjectVideoPlayer({
       <video
         ref={videoRef}
         playsInline
-        preload="auto"
+        muted={muted}
+        preload={showVolume ? "auto" : "metadata"}
         controls={false}
         disablePictureInPicture
         aria-label={`${t.player.recording} ${title}`}

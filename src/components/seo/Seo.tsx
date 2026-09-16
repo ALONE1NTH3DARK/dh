@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { useLocale } from "../lib/locale";
-import { getPageSeo, ogLocaleFor, SITE, type PageSeo } from "../lib/seo";
+import { useLocale } from "@/lib/locale";
+import { getPageSeo, ogLocaleFor, SITE, type PageSeo } from "@/lib/seo";
 
 function upsertMeta(
   attr: "name" | "property",

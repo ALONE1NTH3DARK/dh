@@ -1,5 +1,11 @@
-import { getProject, PROJECTS, localizeProject } from "../data/projects";
-import type { Locale } from "./locale";
+import { getProject, PROJECTS, localizeProject } from "@/data/projects";
+import type { Locale } from "@/lib/locale";
+
+const SOCIAL = [
+  { label: "Instagram", href: "https://instagram.com/darkhorse_webagency" },
+  { label: "Telegram", href: "https://t.me/darkhorse_webagency" },
+  { label: "WhatsApp", href: "https://wa.me/77070701337" },
+] as const;
 
 export const SITE = {
   origin: "https://darkhorse.kz",
@@ -11,11 +17,8 @@ export const SITE = {
   language: "ru-KZ",
   defaultOgPath: "/og.jpg",
   logoPath: "/logo-512.png",
-  sameAs: [
-    "https://instagram.com/darkhorse_webagency",
-    "https://t.me/darkhorse_webagency",
-    "https://wa.me/77070701337",
-  ],
+  social: SOCIAL,
+  sameAs: SOCIAL.map((item) => item.href),
 } as const;
 
 const HOME = {
@@ -94,7 +97,6 @@ const COPY = {
   },
 } as const;
 
-const HOME_TITLE = HOME.ru.title;
 const INDEX_ROBOTS = "index, follow, max-image-preview:large";
 const NOINDEX = "noindex, nofollow";
 
@@ -405,5 +407,3 @@ export function renderSeoHead(seo: PageSeo): string {
     `<script type="application/ld+json" id="json-ld">${JSON.stringify(seo.jsonLd)}</script>`,
   ].join("\n    ");
 }
-
-export { HOME_TITLE, INDEX_ROBOTS };

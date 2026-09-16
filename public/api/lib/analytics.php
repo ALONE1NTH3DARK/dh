@@ -1,6 +1,11 @@
 <?php
 declare(strict_types=1);
 
+if (!defined('DH_API')) {
+  http_response_code(403);
+  exit;
+}
+
 /**
  * Ядро аналитики: конфиг, SQLite-хранилище и разбор запроса посетителя.
  * Используется track.php (запись событий) и stats.php (отчёты для админки).
@@ -123,6 +128,17 @@ function analytics_client_ip(): string
   return (string)($_SERVER['REMOTE_ADDR'] ?? '');
 }
 
+/** IP для lockout логина: только CF или прямой REMOTE_ADDR, без клиентского XFF. */
+function analytics_auth_ip(): string
+{
+  $cf = trim((string)($_SERVER['HTTP_CF_CONNECTING_IP'] ?? ''));
+  if ($cf !== '' && filter_var($cf, FILTER_VALIDATE_IP)) {
+    return $cf;
+  }
+
+  return (string)($_SERVER['REMOTE_ADDR'] ?? '');
+}
+
 /**
  * Идентификатор посетителя: соль из конфига + IP + User-Agent.
  * IP в базу не пишется, восстановить его из хэша нельзя.
@@ -137,6 +153,61 @@ function analytics_visitor_id(): string
   $ua = (string)($_SERVER['HTTP_USER_AGENT'] ?? '');
 
   return substr(hash('sha256', $salt . '|' . analytics_client_ip() . '|' . $ua), 0, 16);
+}
+
+/** Мягкий лимит запросов на посетителя (трекинг). */
+function analytics_burst_ok(string $visitor, int $max = 60, int $window = 60): bool
+{
+  $dir = dirname(analytics_db_path());
+  if (!is_dir($dir) && !@mkdir($dir, 0775, true) && !is_dir($dir)) {
+    return true;
+  }
+
+  $file = $dir . '/track-rate.json';
+  $now = time();
+  $data = [];
+  if (is_file($file)) {
+    $decoded = json_decode((string)file_get_contents($file), true);
+    if (is_array($decoded)) {
+      $data = $decoded;
+    }
+  }
+
+  $times = [];
+  foreach ($data[$visitor] ?? [] as $stamp) {
+    if (is_int($stamp) && $stamp > $now - $window) {
+      $times[] = $stamp;
+    }
+  }
+
+  if (count($times) >= $max) {
+    return false;
+  }
+
+  $times[] = $now;
+  $data[$visitor] = $times;
+
+  foreach ($data as $id => $stamps) {
+    if (!is_array($stamps)) {
+      unset($data[$id]);
+      continue;
+    }
+    $fresh = [];
+    foreach ($stamps as $stamp) {
+      if (is_int($stamp) && $stamp > $now - $window) {
+        $fresh[] = $stamp;
+      }
+    }
+    if ($fresh === []) {
+      unset($data[$id]);
+    } else {
+      $data[$id] = $fresh;
+    }
+  }
+
+  @file_put_contents($file, json_encode($data), LOCK_EX);
+
+  return true;
 }
 
 function analytics_is_bot(): bool

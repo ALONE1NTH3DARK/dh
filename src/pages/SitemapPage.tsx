@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import LegalLayout from "../components/LegalLayout";
-import { localizeProjects } from "../data/projects";
-import { useT } from "../i18n/useT";
-import { useLocale } from "../lib/locale";
+import LegalLayout from "@/features/legal/LegalLayout";
+import { localizeProjects } from "@/data/projects";
+import { useT } from "@/i18n/useT";
+import { useLocale } from "@/lib/locale";
 
 const linkClass =
   "text-ink underline decoration-white/20 underline-offset-4 transition-colors hover:decoration-vio";

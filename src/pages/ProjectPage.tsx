@@ -1,18 +1,17 @@
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import NotFoundPage from "@/pages/NotFoundPage";
-import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import { getAdjacentProjects, getProject, localizeProject } from "@/data/projects";
 import { useT } from "@/i18n/useT";
 import { useLocale } from "@/lib/locale";
 import PageShell from "@/components/layout/PageShell";
+import Reveal from "@/components/ui/Reveal";
 import SectionLabel from "@/components/ui/SectionLabel";
 import ProjectAtmosphere, { ProjectPageWash } from "@/features/project/ProjectAtmosphere";
 import ProjectFeatures from "@/features/project/ProjectFeatures";
 import ProjectFullScrub from "@/features/project/ProjectFullScrub";
 import ProjectPageSpeed from "@/features/project/ProjectPageSpeed";
-import { EASE } from "@/lib/motion";
 
 export default function ProjectPage() {
   const { slug = "" } = useParams();
@@ -47,11 +46,7 @@ export default function ProjectPage() {
           <ProjectAtmosphere slug={project.slug} section={0} />
 
           <div className="relative mx-auto w-full max-w-[1200px] px-5 pb-10 md:px-10 md:pb-14">
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: EASE }}
-            >
+            <Reveal>
               <Link
                 to="/"
                 state={{ scrollTo: "portfolio" }}
@@ -92,7 +87,7 @@ export default function ProjectPage() {
                   {t.project.site} · <span className="text-ink">{project.url}</span>
                 </span>
               </div>
-            </motion.div>
+            </Reveal>
           </div>
         </section>
 
@@ -106,13 +101,7 @@ export default function ProjectPage() {
         {/* Challenge / Solution — тёмный блок */}
         <section className="relative bg-void px-5 py-24 md:px-10 md:py-32">
           <div className="mx-auto grid max-w-[1200px] gap-4 lg:grid-cols-2 lg:gap-4">
-            <motion.div
-              initial={{ opacity: 0, y: 28 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-10% 0px" }}
-              transition={{ duration: 0.8, ease: EASE }}
-              className="rounded-2xl border border-white/[0.08] bg-void-2/80 p-6 md:p-7"
-            >
+            <Reveal className="rounded-2xl border border-white/[0.08] bg-void-2/80 p-6 md:p-7" from="left">
               <SectionLabel lineClassName="bg-[#ff6a9d]">{t.project.task}</SectionLabel>
               <h2 className="font-display text-2xl font-semibold uppercase leading-snug md:text-3xl">
                 {t.project.cameWith}
@@ -120,13 +109,11 @@ export default function ProjectPage() {
               <p className="mt-5 text-base leading-relaxed text-mute md:text-lg">
                 {project.challenge}
               </p>
-            </motion.div>
+            </Reveal>
 
-            <motion.div
-              initial={{ opacity: 0, y: 28 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-10% 0px" }}
-              transition={{ duration: 0.8, delay: 0.1, ease: EASE }}
+            <Reveal
+              delay={0.12}
+              from="left"
               className="rounded-2xl border border-white/[0.08] bg-void-2/80 p-6 md:p-7"
             >
               <SectionLabel lineClassName="bg-[#8bedab]">{t.project.solution}</SectionLabel>
@@ -136,7 +123,7 @@ export default function ProjectPage() {
               <p className="mt-5 text-base leading-relaxed text-mute md:text-lg">
                 {project.solution}
               </p>
-            </motion.div>
+            </Reveal>
           </div>
         </section>
 
@@ -152,29 +139,20 @@ export default function ProjectPage() {
         {/* Highlights — тёмный блок */}
         <section className="relative border-y border-white/[0.07] bg-void px-5 py-24 md:px-10 md:py-32">
           <div className="mx-auto max-w-[1200px]">
-            <motion.div
-              initial={{ opacity: 0, y: 28 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, ease: EASE }}
-              className="mb-12 text-center md:mb-16"
-            >
+            <Reveal className="mb-12 text-center md:mb-16">
               <SectionLabel center>{t.project.highlights}</SectionLabel>
               <h2 className="font-display text-[clamp(2.2rem,5.2vw,3.4rem)] font-semibold uppercase leading-[1.20]">
                 {t.project.worked}
                 <span className="text-stroke">{t.project.strongest}</span>
               </h2>
-            </motion.div>
+            </Reveal>
 
             {/* Ширина карточки = 1/3 ряда; 1–2 шт. тоже по центру, не растягиваются */}
-            <div className="flex flex-wrap justify-center gap-4">
+            <Reveal from="left">
+            <div data-reveal-group className="flex flex-wrap justify-center gap-4">
               {project.highlights.map((h, i) => (
-                <motion.article
+                <article
                   key={h.title}
-                  initial={{ opacity: 0, y: 32 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-8% 0px" }}
-                  transition={{ duration: 0.7, delay: 0.08 * i, ease: EASE }}
                   className="flex w-full flex-col md:w-[calc((100%-2rem)/3)] md:shrink-0"
                 >
                   <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-vio">
@@ -191,9 +169,10 @@ export default function ProjectPage() {
                   <p className="mt-3 flex-1 text-sm leading-relaxed text-mute">
                     {h.text}
                   </p>
-                </motion.article>
+                </article>
               ))}
             </div>
+            </Reveal>
 
             <div className="mt-10 flex flex-wrap justify-center gap-2">
               {project.stack.map((s) => (
@@ -210,13 +189,7 @@ export default function ProjectPage() {
 
         {project.quote?.text.trim() ? (
           <section className="relative bg-void px-5 py-24 md:px-10 md:py-32">
-            <motion.blockquote
-              initial={{ opacity: 0, y: 28 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, ease: EASE }}
-              className="mx-auto max-w-[900px] text-center"
-            >
+            <Reveal as="blockquote" from="fold" className="mx-auto max-w-[900px] text-center">
               <p className="font-display text-[clamp(1.3rem,3vw,2.2rem)] font-medium leading-snug text-ink">
                 «{project.quote.text}»
               </p>
@@ -228,7 +201,7 @@ export default function ProjectPage() {
                   {project.quote.role}
                 </p>
               </footer>
-            </motion.blockquote>
+            </Reveal>
           </section>
         ) : null}
 
@@ -240,13 +213,15 @@ export default function ProjectPage() {
           </div>
           <div className="relative mx-auto flex max-w-[1200px] flex-col gap-8 md:flex-row md:items-stretch md:justify-between">
             {prev && (
+              <Reveal from="left" solid className="flex-1">
               <Link
                 to={`/project/${prev.slug}`}
-                className="group relative flex min-h-[11rem] flex-1 flex-col justify-between overflow-hidden rounded-2xl border border-white/[0.08] p-6 shadow-[0_0_0_transparent] transition-[border-color,box-shadow] duration-500 hover:border-vio/40 hover:shadow-[0_0_40px_rgba(124,108,255,0.18)] md:min-h-[13rem] md:p-8"
+                className="group relative flex min-h-[11rem] h-full flex-col justify-between overflow-hidden rounded-2xl border border-white/[0.08] p-6 shadow-[0_0_0_transparent] transition-[border-color,box-shadow] duration-500 hover:border-vio/40 hover:shadow-[0_0_40px_rgba(124,108,255,0.18)] md:min-h-[13rem] md:p-8"
               >
                 <img
                   src={prev.preview}
                   alt=""
+                  data-reveal-media
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                   aria-hidden
                 />
@@ -263,13 +238,15 @@ export default function ProjectPage() {
                   </p>
                 </div>
               </Link>
+              </Reveal>
             )}
 
+            <Reveal from="left" delay={0.12} solid className="flex-1">
             <Link
               to="/"
               state={{ scrollTo: "contact" }}
               data-track="Кейс — Заказать сайт"
-              className="group flex flex-1 flex-col items-start justify-between rounded-2xl border border-dashed border-white/20 p-6 shadow-[0_0_0_transparent] transition-[border-color,box-shadow] duration-500 hover:border-vio hover:shadow-[0_0_40px_rgba(124,108,255,0.18)] md:p-8"
+              className="group flex h-full min-h-[11rem] flex-col items-start justify-between rounded-2xl border border-dashed border-white/20 p-6 shadow-[0_0_0_transparent] transition-[border-color,box-shadow] duration-500 hover:border-vio hover:shadow-[0_0_40px_rgba(124,108,255,0.18)] md:min-h-[13rem] md:p-8"
             >
               <p className="font-display text-xl font-semibold uppercase leading-tight text-ink md:text-2xl">
                 {t.project.nextYours}
@@ -279,15 +256,18 @@ export default function ProjectPage() {
                 {t.project.order}
               </span>
             </Link>
+            </Reveal>
 
             {next && (
+              <Reveal from="left" delay={0.24} solid className="flex-1">
               <Link
                 to={`/project/${next.slug}`}
-                className="group relative flex min-h-[11rem] flex-1 flex-col justify-between overflow-hidden rounded-2xl border border-white/[0.08] p-6 text-right shadow-[0_0_0_transparent] transition-[border-color,box-shadow] duration-500 hover:border-vio/40 hover:shadow-[0_0_40px_rgba(124,108,255,0.18)] md:min-h-[13rem] md:p-8"
+                className="group relative flex min-h-[11rem] h-full flex-col justify-between overflow-hidden rounded-2xl border border-white/[0.08] p-6 text-right shadow-[0_0_0_transparent] transition-[border-color,box-shadow] duration-500 hover:border-vio/40 hover:shadow-[0_0_40px_rgba(124,108,255,0.18)] md:min-h-[13rem] md:p-8"
               >
                 <img
                   src={next.preview}
                   alt=""
+                  data-reveal-media
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                   aria-hidden
                 />
@@ -304,6 +284,7 @@ export default function ProjectPage() {
                   </p>
                 </div>
               </Link>
+              </Reveal>
             )}
           </div>
         </section>

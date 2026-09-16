@@ -1,6 +1,10 @@
 <?php
 declare(strict_types=1);
 
+if (!defined('DH_API')) {
+  define('DH_API', true);
+}
+
 require_once __DIR__ . '/lib/admin-auth.php';
 require_once __DIR__ . '/lib/reports.php';
 
