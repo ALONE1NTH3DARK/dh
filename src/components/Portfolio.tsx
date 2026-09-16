@@ -1,12 +1,12 @@
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight, ChevronDown, MoveDown } from "lucide-react";
-import { localizeProjects, type ProjectKind } from "@/data/projects";
-import { useT } from "@/i18n/useT";
-import { useLocale } from "@/lib/locale";
-import { lenisRef, readSvh, scrollToId, scrollToY, scrollY } from "@/lib/scrollState";
-import { cn } from "@/lib/cn";
-import SectionLabel from "@/components/ui/SectionLabel";
+import { localizeProjects, type ProjectKind } from "../data/projects";
+import { useT } from "../i18n/useT";
+import { useLocale } from "../lib/locale";
+import { lenisRef, readSvh, scrollToId, scrollToY, scrollY } from "../lib/scrollState";
+import { cn } from "../utils/cn";
+import SectionLabel from "./SectionLabel";
 
 const FILTERS: readonly ProjectKind[] = [
   "latest",
@@ -305,9 +305,7 @@ export default function Portfolio() {
     ro.observe(track);
 
     let raf = 0;
-    let running = false;
     const loop = () => {
-      if (!running) return;
       const rect = sec.getBoundingClientRect();
       const vh = dims.current.svh || window.innerHeight;
       const total = Math.max(1, rect.height - vh);
@@ -315,8 +313,14 @@ export default function Portfolio() {
       const x = -p * dims.current.over;
       track.style.transform = `translate3d(${x}px, 0, 0)`;
 
+      const { offsets } = dims.current;
       const n = visibleProjects.length;
-      const projIdx = n <= 0 ? 0 : n === 1 ? 1 : 1 + Math.round(p * (n - 1));
+      const step = offsets.length > 1 ? offsets[1] - offsets[0] : 0;
+      const projIdx = !n
+        ? 0
+        : !step
+          ? 1
+          : Math.min(n, Math.floor(-x / step) + 1);
       if (counterRef.current && lastIdx.current !== projIdx) {
         lastIdx.current = projIdx;
         counterRef.current.textContent = String(projIdx).padStart(2, "0");
@@ -324,33 +328,10 @@ export default function Portfolio() {
 
       raf = requestAnimationFrame(loop);
     };
-
-    const setRunning = (next: boolean) => {
-      if (next === running) return;
-      running = next;
-      cancelAnimationFrame(raf);
-      if (running) raf = requestAnimationFrame(loop);
-    };
-
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        setRunning(Boolean(entry?.isIntersecting) && document.visibilityState === "visible");
-      },
-      { rootMargin: "20% 0px" }
-    );
-    io.observe(sec);
-
-    const onVisibility = () => {
-      const visible = document.visibilityState === "visible";
-      const onScreen = sec.getBoundingClientRect().bottom > 0 && sec.getBoundingClientRect().top < window.innerHeight;
-      setRunning(visible && onScreen);
-    };
-    document.addEventListener("visibilitychange", onVisibility);
+    raf = requestAnimationFrame(loop);
 
     return () => {
-      setRunning(false);
-      io.disconnect();
-      document.removeEventListener("visibilitychange", onVisibility);
+      cancelAnimationFrame(raf);
       ro.disconnect();
       window.removeEventListener("resize", measure);
       window.removeEventListener("load", measure);
@@ -364,7 +345,7 @@ export default function Portfolio() {
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(124,108,255,0.05),transparent_50%)]"
         />
-        <div className="relative z-20 px-5 pt-24 md:px-14 md:pt-32">
+        <div className="relative z-20 px-5 pt-20 md:px-14 md:pt-28">
           <div className="flex items-start justify-between gap-6">
             <div>
               <SectionLabel>{t.portfolio.label}</SectionLabel>

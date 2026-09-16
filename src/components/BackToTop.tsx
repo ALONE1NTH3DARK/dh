@@ -1,9 +1,9 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { ArrowUp } from "lucide-react";
-import telegramPlane from "@/assets/telegram-plane.png";
-import { useT } from "@/i18n/useT";
-import { lenisRef, prevSectionTop, scrollToY, scrollY } from "@/lib/scrollState";
-import { cn } from "@/lib/cn";
+import telegramPlane from "../assets/telegram-plane.png";
+import { useT } from "../i18n/useT";
+import { lenisRef, prevSectionTop, scrollToY, scrollY } from "../lib/scrollState";
+import { cn } from "../utils/cn";
 
 const TELEGRAM_HREF = "https://t.me/darkhorse_webagency";
 const SIZE = 52;
@@ -33,7 +33,7 @@ const FAB_TELEGRAM = [
   "light:shadow-[0_10px_28px_rgba(124,108,255,0.28)]",
 ].join(" ");
 
-const EXTRA_SECTION_IDS = ["process", "clients", "cta", "gallery"];
+const EXTRA_SECTION_IDS = ["process", "clients", "cta"];
 const ICON_HOVER = "transition-transform duration-200 ease-out group-hover:scale-125";
 
 function scrollProgress(): number {
@@ -95,17 +95,12 @@ export default function BackToTop({ track = "Кейс — Наверх" }: { tra
     ro.observe(document.documentElement);
 
     let offLenis: (() => void) | undefined;
-    let tries = 0;
     const bindLenis = window.setInterval(() => {
-      tries += 1;
       const lenis = lenisRef.current;
-      if (lenis && !offLenis) {
-        lenis.on("scroll", onScroll);
-        offLenis = () => lenis.off("scroll", onScroll);
-        window.clearInterval(bindLenis);
-        return;
-      }
-      if (tries > 40) window.clearInterval(bindLenis);
+      if (!lenis || offLenis) return;
+      lenis.on("scroll", onScroll);
+      offLenis = () => lenis.off("scroll", onScroll);
+      window.clearInterval(bindLenis);
     }, 50);
 
     return () => {
@@ -118,9 +113,7 @@ export default function BackToTop({ track = "Кейс — Наверх" }: { tra
   }, []);
 
   const goPrevSection = () => {
-    const y = scrollY();
-    const pending = pendingYRef.current;
-    const fromY = pending != null && Math.abs(y - pending) < 480 ? pending : y;
+    const fromY = pendingYRef.current ?? scrollY();
     const target = prevSectionTop(fromY, sectionIds);
     pendingYRef.current = target;
     if (target <= SHOW_AFTER) {
@@ -166,7 +159,7 @@ export default function BackToTop({ track = "Кейс — Наверх" }: { tra
             tabIndex={visible ? 0 : -1}
             aria-hidden={!visible}
             data-track={track}
-            aria-label={t.prevSection}
+            aria-label={t.backToTop}
             className={cn(FAB_CLASS, FAB_GLASS, visible ? "pointer-events-auto" : "pointer-events-none")}
           >
             <svg

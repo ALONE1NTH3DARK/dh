@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState, type TransitionEvent } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Quote, Send, Star } from "lucide-react";
-import { useT } from "@/i18n/useT";
-import SectionLabel from "@/components/ui/SectionLabel";
+import { useT } from "../i18n/useT";
+import SectionLabel from "./SectionLabel";
 
 const META = [
   {
@@ -64,10 +64,8 @@ export default function Testimonials() {
 
   const resetTimer = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     timerRef.current = setInterval(() => {
       if (lockRef.current) return;
-      if (document.visibilityState !== "visible") return;
       lockRef.current = true;
       setOffset((p) => p + 1);
     }, INTERVAL);
@@ -149,7 +147,7 @@ export default function Testimonials() {
   return (
     <section
       id="reviews"
-      className="relative overflow-hidden border-t border-white/[0.07] bg-void py-24 md:py-32"
+      className="relative overflow-hidden border-t border-white/[0.07] bg-void py-24"
     >
       <div className="relative mx-auto mb-12 w-full max-w-[1200px] px-5 md:px-10">
         <motion.div

@@ -2,12 +2,14 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Link2, QrCode, Share2, Smartphone, Sparkles, Zap } from "lucide-react";
-import PageShell from "@/components/layout/PageShell";
-import SectionAtmosphere from "@/components/ui/SectionAtmosphere";
-import SectionLabel from "@/components/ui/SectionLabel";
-import DigitalCardPhone from "@/features/digital-cards/DigitalCardPhone";
-import { useT } from "@/i18n/useT";
-import { EASE } from "@/lib/motion";
+import { useT } from "../i18n/useT";
+import Nav from "../components/Nav";
+import Footer from "../components/Footer";
+import DigitalCardPhone from "../components/DigitalCardPhone";
+import SectionAtmosphere from "../components/SectionAtmosphere";
+import SectionLabel from "../components/SectionLabel";
+
+const EASE = [0.16, 1, 0.3, 1] as const;
 
 const WHY_ICONS = [Smartphone, Sparkles, Zap] as const;
 const CHIP_ICONS = [QrCode, Link2, Share2] as const;
@@ -32,10 +34,12 @@ export default function DigitalCardsPage() {
   }, []);
 
   return (
-    <PageShell variant="project" className="min-h-screen" backToTop="Визитки — Наверх">
+    <div className="relative min-h-screen bg-void font-body text-ink">
+      <Nav variant="project" />
+
       <main className="relative z-10">
         {/* Hero */}
-        <section className="relative overflow-hidden pt-24 md:pt-32">
+        <section className="relative overflow-hidden pt-28 md:pt-32">
           <SectionAtmosphere tone="cyan" grid />
 
           <div className="relative mx-auto grid w-full max-w-[1200px] items-center gap-12 px-5 pb-16 md:px-10 md:pb-24 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
@@ -82,7 +86,7 @@ export default function DigitalCardsPage() {
         </section>
 
         {/* What */}
-        <section className="border-t border-white/[0.07] px-5 py-24 md:px-10 md:py-32">
+        <section className="border-t border-white/[0.07] px-5 py-20 md:px-10 md:py-28">
           <div className="mx-auto grid w-full max-w-[1100px] gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
             <div>
               <SectionLabel>{t.cards.whatLabel}</SectionLabel>
@@ -112,7 +116,7 @@ export default function DigitalCardsPage() {
         </section>
 
         {/* Why */}
-        <section className="border-t border-white/[0.07] bg-void-2/40 px-5 py-24 md:px-10 md:py-32">
+        <section className="border-t border-white/[0.07] bg-void-2/40 px-5 py-20 md:px-10 md:py-28">
           <div className="mx-auto w-full max-w-[1100px]">
             <SectionLabel>{t.cards.whyLabel}</SectionLabel>
             <h2 className="mt-0 max-w-xl font-display text-[clamp(1.95rem,4.5vw,2.6rem)] font-semibold uppercase leading-[1.20]">
@@ -146,7 +150,7 @@ export default function DigitalCardsPage() {
         </section>
 
         {/* How */}
-        <section className="border-t border-white/[0.07] px-5 py-24 md:px-10 md:py-32">
+        <section className="border-t border-white/[0.07] px-5 py-20 md:px-10 md:py-28">
           <div className="mx-auto w-full max-w-[1100px]">
             <SectionLabel>{t.cards.howLabel}</SectionLabel>
             <h2 className="mt-0 max-w-xl font-display text-[clamp(1.95rem,4.5vw,2.6rem)] font-semibold uppercase leading-[1.20]">
@@ -177,7 +181,7 @@ export default function DigitalCardsPage() {
         </section>
 
         {/* Gallery */}
-        <section id="gallery" className="border-t border-white/[0.07] px-5 py-24 md:px-10 md:py-32">
+        <section className="border-t border-white/[0.07] px-5 py-20 md:px-10 md:py-28">
           <div className="mx-auto w-full max-w-[1200px]">
             <SectionLabel>{t.cards.galleryLabel}</SectionLabel>
             <h2 className="mt-0 max-w-xl font-display text-[clamp(1.95rem,4.5vw,2.6rem)] font-semibold uppercase leading-[1.20]">
@@ -212,7 +216,7 @@ export default function DigitalCardsPage() {
         </section>
 
         {/* CTA */}
-        <section className="border-t border-white/[0.07] px-5 py-24 md:px-10 md:py-32">
+        <section className="border-t border-white/[0.07] px-5 py-20 md:px-10 md:py-24">
           <div className="mx-auto max-w-[700px] text-center">
             <h2 className="font-display text-[clamp(1.95rem,5vw,2.8rem)] font-semibold uppercase leading-[1.20]">
               {t.cards.ctaTitle}
@@ -232,6 +236,8 @@ export default function DigitalCardsPage() {
           </div>
         </section>
       </main>
-    </PageShell>
+
+      <Footer />
+    </div>
   );
 }

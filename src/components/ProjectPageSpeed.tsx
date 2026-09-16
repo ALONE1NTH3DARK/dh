@@ -1,16 +1,16 @@
 import { animate, motion, useInView } from "framer-motion";
 import { Gauge } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { useT } from "@/i18n/useT";
-import { EASE } from "@/lib/motion";
+import { useT } from "../i18n/useT";
 
-type PageSpeedScores = {
+export type PageSpeedScores = {
   performance: number;
   accessibility: number;
   bestPractices: number;
   seo: number;
 };
 
+const EASE = [0.16, 1, 0.3, 1] as const;
 const GAUGE_R = 46;
 const GAUGE_C = 2 * Math.PI * GAUGE_R;
 
@@ -117,7 +117,7 @@ export default function ProjectPageSpeed({
   ];
 
   return (
-    <section className="relative bg-void px-5 py-24 md:px-10 md:py-32">
+    <section className="relative scroll-mt-10 bg-void px-5 py-10 md:scroll-mt-16 md:px-10 md:py-12">
       <div className="mx-auto w-full max-w-[1200px]">
         <div className="grid items-end gap-5 md:grid-cols-[1fr_1.05fr] md:gap-12">
           <h2 className="font-display text-[clamp(1.8rem,4.2vw,2.4rem)] font-semibold uppercase leading-[1.20]">

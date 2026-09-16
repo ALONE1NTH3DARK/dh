@@ -1,4 +1,4 @@
-import { PROJECTS_EN } from "@/data/projects.en";
+import { PROJECTS_EN } from "./projects.en";
 
 export interface ProjectHighlight {
   title: string;

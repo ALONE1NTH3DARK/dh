@@ -1,18 +1,20 @@
 import { useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
-import NotFoundPage from "@/pages/NotFoundPage";
+import { Link, Navigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
-import { getAdjacentProjects, getProject, localizeProject } from "@/data/projects";
-import { useT } from "@/i18n/useT";
-import { useLocale } from "@/lib/locale";
-import PageShell from "@/components/layout/PageShell";
-import SectionLabel from "@/components/ui/SectionLabel";
-import ProjectAtmosphere, { ProjectPageWash } from "@/features/project/ProjectAtmosphere";
-import ProjectFeatures from "@/features/project/ProjectFeatures";
-import ProjectFullScrub from "@/features/project/ProjectFullScrub";
-import ProjectPageSpeed from "@/features/project/ProjectPageSpeed";
-import { EASE } from "@/lib/motion";
+import { getAdjacentProjects, getProject, localizeProject } from "../data/projects";
+import { useT } from "../i18n/useT";
+import { useLocale } from "../lib/locale";
+import Nav from "../components/Nav";
+import ProjectFullScrub from "../components/ProjectFullScrub";
+import ProjectFeatures from "../components/ProjectFeatures";
+import ProjectPageSpeed from "../components/ProjectPageSpeed";
+import Footer from "../components/Footer";
+import BackToTop from "../components/BackToTop";
+import ProjectAtmosphere, { ProjectPageWash } from "../components/ProjectAtmosphere";
+import SectionLabel from "../components/SectionLabel";
+
+const EASE = [0.16, 1, 0.3, 1] as const;
 
 export default function ProjectPage() {
   const { slug = "" } = useParams();
@@ -26,7 +28,7 @@ export default function ProjectPage() {
   }, [slug]);
 
   if (!raw) {
-    return <NotFoundPage />;
+    return <Navigate to="/" replace />;
   }
 
   const project = localizeProject(raw, locale);
@@ -34,16 +36,13 @@ export default function ProjectPage() {
   const next = rawNext ? localizeProject(rawNext, locale) : null;
 
   return (
-    <PageShell
-      variant="project"
-      className="isolate min-h-screen"
-      wash={<ProjectPageWash slug={project.slug} />}
-      backToTop
-      backToTopKey={project.slug}
-    >
+    <div className="relative isolate min-h-screen bg-void font-body text-ink">
+      <ProjectPageWash slug={project.slug} />
+      <Nav variant="project" />
+
       <main className="relative z-10">
         {/* Hero text */}
-        <section className="relative overflow-hidden pt-24 md:pt-32">
+        <section className="relative overflow-hidden pt-28 md:pt-32">
           <ProjectAtmosphere slug={project.slug} section={0} />
 
           <div className="relative mx-auto w-full max-w-[1200px] px-5 pb-10 md:px-10 md:pb-14">
@@ -98,13 +97,13 @@ export default function ProjectPage() {
 
         <ProjectFullScrub
           src={project.full}
+          slug={project.slug}
           url={project.url}
           title={project.title}
-          videos={project.videos}
         />
 
         {/* Challenge / Solution — тёмный блок */}
-        <section className="relative bg-void px-5 py-24 md:px-10 md:py-32">
+        <section className="relative bg-void px-5 py-20 md:px-10 md:py-28">
           <div className="mx-auto grid max-w-[1200px] gap-4 lg:grid-cols-2 lg:gap-4">
             <motion.div
               initial={{ opacity: 0, y: 28 }}
@@ -150,7 +149,7 @@ export default function ProjectPage() {
         />
 
         {/* Highlights — тёмный блок */}
-        <section className="relative border-y border-white/[0.07] bg-void px-5 py-24 md:px-10 md:py-32">
+        <section className="relative border-y border-white/[0.07] bg-void px-5 py-20 md:px-10 md:py-28">
           <div className="mx-auto max-w-[1200px]">
             <motion.div
               initial={{ opacity: 0, y: 28 }}
@@ -209,7 +208,7 @@ export default function ProjectPage() {
         </section>
 
         {project.quote?.text.trim() ? (
-          <section className="relative bg-void px-5 py-24 md:px-10 md:py-32">
+          <section className="relative bg-void px-5 py-20 md:px-10 md:py-24">
             <motion.blockquote
               initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -233,7 +232,7 @@ export default function ProjectPage() {
         ) : null}
 
         {/* Next / CTA — тёмная секция, два пятна по бокам */}
-        <section className="relative overflow-hidden bg-void px-5 py-24 md:px-10 md:py-32">
+        <section className="relative overflow-hidden bg-void px-5 py-16 md:px-10 md:py-20">
           <div aria-hidden className="pointer-events-none absolute inset-0">
             <div className="absolute -left-[12%] top-1/2 size-[22rem] -translate-y-1/2 rounded-full bg-vio/20 blur-[100px]" />
             <div className="absolute -right-[10%] top-1/2 size-[20rem] -translate-y-1/2 rounded-full bg-cyan-neon/15 blur-[100px]" />
@@ -308,6 +307,9 @@ export default function ProjectPage() {
           </div>
         </section>
       </main>
-    </PageShell>
+
+      <Footer />
+      <BackToTop key={project.slug} />
+    </div>
   );
 }

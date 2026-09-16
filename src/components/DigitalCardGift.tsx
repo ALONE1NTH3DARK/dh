@@ -1,13 +1,35 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, ChevronDown } from "lucide-react";
-import Reveal from "@/components/ui/Reveal";
-import SectionAtmosphere from "@/components/ui/SectionAtmosphere";
-import SectionLabel from "@/components/ui/SectionLabel";
-import DigitalCardPhone from "@/features/digital-cards/DigitalCardPhone";
-import { useT } from "@/i18n/useT";
-import { EASE } from "@/lib/motion";
+import { useT } from "../i18n/useT";
+import DigitalCardPhone from "./DigitalCardPhone";
+import SectionAtmosphere from "./SectionAtmosphere";
+import SectionLabel from "./SectionLabel";
+
+const EASE = [0.16, 1, 0.3, 1] as const;
+
+function Reveal({
+  children,
+  delay = 0,
+  className = "",
+}: {
+  children: ReactNode;
+  delay?: number;
+  className?: string;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 36 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-12% 0px" }}
+      transition={{ duration: 0.9, delay, ease: EASE }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 export default function DigitalCardGift() {
   const t = useT();
@@ -16,7 +38,6 @@ export default function DigitalCardGift() {
   return (
     <section
       id="digital-card"
-      data-skip-hop
       className="relative overflow-hidden border-y border-white/[0.07] bg-void"
     >
       {open && <SectionAtmosphere tone="amber" fadeTop={false} />}
